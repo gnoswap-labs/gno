@@ -1,11 +1,14 @@
 package stdlibs
 
 import (
-	"crypto/sha1"
 	"math"
 	"reflect"
 	"strconv"
 	"time"
+
+	"crypto/sha1"
+
+	"golang.org/x/crypto/sha3"
 
 	"github.com/gnolang/gno/pkgs/bech32"
 	"github.com/gnolang/gno/pkgs/crypto"
@@ -21,6 +24,33 @@ func InjectNativeMappings(store gno.Store) {
 
 func InjectPackage(store gno.Store, pn *gno.PackageNode) {
 	switch pn.PkgPath {
+	case "internal/crypto/sha3":
+		pn.DefineNative("Sum256",
+			gno.Flds(
+				"data", "string",
+			),
+			gno.Flds(
+				"bs", "[]byte",
+			),
+			func(m *gno.Machine) {
+				arg0 := m.LastBlock().GetParams1().TV
+				hash := sha3.Sum256([]byte(arg0.GetString()))
+				m.PushValue(typedByteArray(32, m.Alloc.NewArrayFromData(hash[:])))
+			},
+		)
+		pn.DefineNative("Sum512",
+			gno.Flds(
+				"data", "string",
+			),
+			gno.Flds(
+				"bs", "[]byte",
+			),
+			func(m *gno.Machine) {
+				arg0 := m.LastBlock().GetParams1().TV
+				hash := sha3.Sum512([]byte(arg0.GetString()))
+				m.PushValue(typedByteArray(64, m.Alloc.NewArrayFromData(hash[:])))
+			},
+		)
 	case "internal/crypto/sha1":
 		pn.DefineNative("Sum",
 			gno.Flds(
