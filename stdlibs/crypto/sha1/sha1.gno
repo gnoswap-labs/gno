@@ -14,6 +14,6 @@ import (
 )
 
 // Sum returns the SHA-1 checksum of the data.
-func Sum(data []byte) []byte {
+func Sum(data string) []byte {
 	return isha1.Sum(data)
 }
