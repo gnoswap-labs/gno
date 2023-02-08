@@ -24,7 +24,7 @@ func InjectPackage(store gno.Store, pn *gno.PackageNode) {
 	case "internal/crypto/sha1":
 		pn.DefineNative("Sum",
 			gno.Flds(
-				"s", "string",
+				"data", "string",
 			),
 			gno.Flds(
 				"bs", "[]byte",
