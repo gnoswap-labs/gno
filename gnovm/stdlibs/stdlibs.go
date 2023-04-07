@@ -2,11 +2,14 @@ package stdlibs
 
 import (
 	"crypto/sha256"
+	"fmt"
 	"math"
+	"math/big"
 	"reflect"
 	"strconv"
 	"time"
 
+	"github.com/cockroachdb/apd"
 	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
 	"github.com/gnolang/gno/tm2/pkg/bech32"
 	"github.com/gnolang/gno/tm2/pkg/crypto"
@@ -483,6 +486,121 @@ func InjectPackage(store gno.Store, pn *gno.PackageNode) {
 				m.PushValue(res0)
 			},
 		)
+	case "internal/big":
+		pn.DefineNative("Abs",
+			gno.Flds( // params
+				"x", gno.AnyT(),
+			),
+			gno.Flds( // results
+				"res", gno.AnyT(),
+			),
+			func(m *gno.Machine) {
+				arg0 := m.LastBlock().GetParams1().TV
+
+				switch arg0.T {
+				case gno.BigintType:
+					x := arg0.GetBigInt()
+					abs := big.NewInt(0).Abs(x)
+					res0 := typedBigint(abs)
+					m.PushValue(res0)
+				case gno.BigdecType:
+					x := arg0.GetBigDec()
+					abs := apd.New(0, 0).Abs(x)
+					res0 := typedBigdec(abs)
+					m.PushValue(res0)
+				default:
+					panic(
+						fmt.Sprintf("Abs: invalid type %v", arg0.T),
+					)
+				}
+			},
+		)
+		pn.DefineNative("Exp",
+			gno.Flds( // params
+				"x", "bigint",
+				"y", "bigint",
+			),
+			gno.Flds( // results
+				"res", "bigint",
+			),
+			func(m *gno.Machine) {
+				arg0, arg1 := m.LastBlock().GetParams2()
+				x, y := arg0.TV.GetBigInt(), arg1.TV.GetBigInt()
+
+				exp := big.NewInt(0).Exp(x, y, nil)
+				res0 := typedBigint(exp)
+				m.PushValue(res0)
+			},
+		)
+
+		pn.DefineNative("Log10",
+			gno.Flds( // params
+				"x", "bigdec",
+			),
+			gno.Flds( // results
+				"res", "bigdec",
+			),
+			func(m *gno.Machine) {
+				arg0 := m.LastBlock().GetParams1().TV
+				x := arg0.GetBigDec()
+
+				log10 := new(apd.Decimal)
+				apd.BaseContext.Log10(log10, x)
+
+				res0 := typedBigdec(log10)
+				m.PushValue(res0)
+			},
+		)
+
+		pn.DefineNative("Pow",
+			gno.Flds( // params
+				"x", "bigdec",
+				"y", "bigdec",
+			),
+			gno.Flds( // results
+				"res", "bigdec",
+			),
+			func(m *gno.Machine) {
+				arg0, arg1 := m.LastBlock().GetParams2()
+				x, y := arg0.TV.GetBigDec(), arg1.TV.GetBigDec()
+
+				pow := new(apd.Decimal)
+				apd.BaseContext.Pow(pow, x, y)
+
+				res0 := typedBigdec(pow)
+				m.PushValue(res0)
+			},
+		)
+
+		pn.DefineNative("Sqrt",
+			gno.Flds( // params
+				"x", gno.AnyT(),
+			),
+			gno.Flds( // results
+				"res", gno.AnyT(),
+			),
+			func(m *gno.Machine) {
+				arg0 := m.LastBlock().GetParams1().TV
+
+				switch arg0.T {
+				case gno.BigintType:
+					x := arg0.GetBigInt()
+					sqrt := big.NewInt(0).Sqrt(x)
+					res0 := typedBigint(sqrt)
+					m.PushValue(res0)
+				case gno.BigdecType:
+					x := arg0.GetBigDec()
+					sqrt := new(apd.Decimal)
+					apd.BaseContext.Sqrt(sqrt, x)
+					res0 := typedBigdec(sqrt)
+					m.PushValue(res0)
+				default:
+					panic(
+						fmt.Sprintf("Sqrt: invalid type %v", arg0.T),
+					)
+				}
+			},
+		)
 	}
 }
 
@@ -510,6 +628,11 @@ func typedUint64(u64 uint64) gno.TypedValue {
 	return tv
 }
 
+func typedBigint(bi *big.Int) gno.TypedValue {
+	tv := gno.TypedValue{T: gno.BigintType, V: gno.BigintValue{V: bi}}
+	return tv
+}
+
 func typedFloat32(f32 float32) gno.TypedValue {
 	tv := gno.TypedValue{T: gno.Float32Type}
 	tv.SetFloat32(f32)
@@ -519,6 +642,11 @@ func typedFloat32(f32 float32) gno.TypedValue {
 func typedFloat64(f64 float64) gno.TypedValue {
 	tv := gno.TypedValue{T: gno.Float64Type}
 	tv.SetFloat64(f64)
+	return tv
+}
+
+func typedBigdec(ad *apd.Decimal) gno.TypedValue {
+	tv := gno.TypedValue{T: gno.BigdecType, V: gno.BigdecValue{V: ad}}
 	return tv
 }
 
