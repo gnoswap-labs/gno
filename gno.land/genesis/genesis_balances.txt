@@ -4,6 +4,13 @@
 #     https://github.com/gnolang/independence-day
 #
 
+# Gnoswap contract test accounts.
+g12l9splsyngcgefrwa52x5a7scc29e9v086m6p4=10000000000000ugnot # gsa (gnoswap admin)
+g1jqpr8r5akez83kp7ers0sfjyv2kgx45qa9qygd=10000000000000ugnot # lp01 (liquidity provider 01)
+g126yz2f34qdxaqxelmky40dym379q0vw3yzhyrq=10000000000000ugnot # lp02 (liquidity provider 01)
+g1wgdjecn5lylgvujzyspfzvhjm6qn4z8xqyyxdn=10000000000000ugnot # tr01 (gnoswap trader 01)
+
+
 # Test accounts.
 g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5=10000000000000ugnot # test1
 g1us8428u2a5satrlxzagqqa5m6vmuze025anjlj=10000000000000ugnot # test2
