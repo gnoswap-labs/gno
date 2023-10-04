@@ -50,7 +50,7 @@ func DefaultConsensusConfig() *ConsensusConfig {
 		TimeoutPrevoteDelta:         500 * time.Millisecond,
 		TimeoutPrecommit:            1000 * time.Millisecond,
 		TimeoutPrecommitDelta:       500 * time.Millisecond,
-		TimeoutCommit:               5000 * time.Millisecond,
+		TimeoutCommit:               2000 * time.Millisecond, // origin 5000 for 5s
 		SkipTimeoutCommit:           false,
 		CreateEmptyBlocks:           true,
 		CreateEmptyBlocksInterval:   0 * time.Second,
