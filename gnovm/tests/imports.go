@@ -633,6 +633,65 @@ func testPackageInjector(store gno.Store, pn *gno.PackageNode) {
 				m.Context = ctx
 			},
 		)
+		pn.DefineNative("TestSetPrevRealm",
+			gno.Flds( // params
+				"", "string",
+			),
+			gno.Flds( // results
+			),
+			func(m *gno.Machine) {
+				arg0 := m.LastBlock().GetParams1().TV
+				realm := arg0.GetString()
+
+				// set pkgPath
+				for i := m.NumFrames() - 1; i > 0; i-- {
+					fr := m.Frames[i]
+
+					if i != 2 {
+						fr.LastPackage = &gno.PackageValue{
+							PkgPath: realm,
+						}
+						m.Frames[i] = fr
+					}
+				}
+			},
+		)
+		pn.DefineNative("TestSetPrevAddr",
+			gno.Flds( // params
+				"", "Address",
+			),
+			gno.Flds( // results
+			),
+			func(m *gno.Machine) {
+				arg0 := m.LastBlock().GetParams1().TV
+				addr := arg0.GetString()
+
+				// overwrite context // TestSetOrigCaller
+				ctx := m.Context.(stdlibs.ExecContext)
+				ctx.OrigCaller = crypto.Bech32Address(addr)
+				m.Context = ctx
+
+				// Set PkgPath
+				lastPkgPath := ""
+				for i := m.NumFrames() - 1; i > 0; i-- {
+					fr := m.Frames[i]
+					if fr.LastPackage == nil || !fr.LastPackage.IsRealm() {
+						// Ignore non-realm frame
+						continue
+					}
+
+					pkgPath := fr.LastPackage.PkgPath
+					if lastPkgPath == "" {
+						lastPkgPath = pkgPath
+					}
+
+					fr.LastPackage = &gno.PackageValue{
+						PkgPath: "",
+					}
+					m.Frames[i] = fr
+				}
+			},
+		)
 		pn.DefineNative("TestIssueCoins",
 			gno.Flds( // params
 				"addr", "Address",
