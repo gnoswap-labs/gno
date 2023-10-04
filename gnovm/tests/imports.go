@@ -48,6 +48,7 @@ import (
 	"github.com/gnolang/gno/tm2/pkg/store/dbadapter"
 	"github.com/gnolang/gno/tm2/pkg/store/iavl"
 	stypes "github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/tidwall/gjson"
 )
 
 type importMode uint64
@@ -124,6 +125,7 @@ func TestStore(rootDir, filesPath string, stdin io.Reader, stdout, stderr io.Wri
 			pkgPath == "encoding/base64" ||
 			pkgPath == "encoding/binary" ||
 			pkgPath == "encoding/json" ||
+			pkgPath == "encoding/gjson" ||
 			pkgPath == "encoding/xml" ||
 			pkgPath == "internal/os_test" ||
 			pkgPath == "math" ||
@@ -181,6 +183,17 @@ func TestStore(rootDir, filesPath string, stdin io.Reader, stdout, stderr io.Wri
 				pkg := gno.NewPackageNode("json", pkgPath, nil)
 				pkg.DefineGoNativeValue("Unmarshal", json.Unmarshal)
 				pkg.DefineGoNativeValue("Marshal", json.Marshal)
+				return pkg, pkg.NewPackage()
+			case "encoding/gjson":
+				pkg := gno.NewPackageNode("gjson", pkgPath, nil)
+				pkg.DefineGoNativeValue("Get", gjson.Get)
+				pkg.DefineGoNativeValue("GetBytes", gjson.GetBytes)
+				pkg.DefineGoNativeValue("GetMany", gjson.GetMany)
+				pkg.DefineGoNativeValue("GetManyBytes", gjson.GetManyBytes)
+				pkg.DefineGoNativeValue("Parse", gjson.Parse)
+				pkg.DefineGoNativeValue("ParseBytes", gjson.ParseBytes)
+				pkg.DefineGoNativeValue("Valid", gjson.Valid)
+				pkg.DefineGoNativeValue("ValidBytes", gjson.ValidBytes)
 				return pkg, pkg.NewPackage()
 			case "encoding/xml":
 				pkg := gno.NewPackageNode("xml", pkgPath, nil)
