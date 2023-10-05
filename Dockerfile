@@ -33,7 +33,10 @@ COPY        --from=build /opt/build/gnovm/pkg /opt/gno/src/gnovm/pkg
 EXPOSE      26657
 
 FROM        runtime-base AS gnokey-slim
+ENV         PATH="${PATH}:/opt/gno/bin"
+WORKDIR     /opt/gno/src
 COPY        --from=build /opt/build/build/gnokey /opt/gno/bin/
+COPY        --from=build /usr/local/go/bin/gofmt /opt/gno/bin/
 
 FROM        runtime-base AS gno-slim
 COPY        --from=build /opt/build/build/gno /opt/gno/bin/
