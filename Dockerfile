@@ -31,12 +31,14 @@ COPY        --from=build /opt/build/examples /opt/gno/src/examples
 COPY        --from=build /opt/build/gnovm/stdlibs /opt/gno/src/gnovm/stdlibs
 COPY        --from=build /opt/build/gnovm/pkg /opt/gno/src/gnovm/pkg
 EXPOSE      26657
+CMD         ["gnoland", "start"]
 
 FROM        runtime-base AS gnokey-slim
 ENV         PATH="${PATH}:/opt/gno/bin"
 WORKDIR     /opt/gno/src
 COPY        --from=build /opt/build/build/gnokey /opt/gno/bin/
 COPY        --from=build /usr/local/go/bin/gofmt /opt/gno/bin/
+ENTRYPOINT  ["gnokey"]
 
 FROM        runtime-base AS gno-slim
 COPY        --from=build /opt/build/build/gno /opt/gno/bin/
