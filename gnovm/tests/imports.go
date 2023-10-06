@@ -11,7 +11,6 @@ import (
 	"crypto/sha1" //nolint:gosec
 	"encoding/base64"
 	"encoding/binary"
-	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"flag"
@@ -178,11 +177,6 @@ func TestStore(rootDir, filesPath string, stdin io.Reader, stdout, stderr io.Wri
 				pkg.DefineGoNativeValue("LittleEndian", binary.LittleEndian)
 				pkg.DefineGoNativeValue("BigEndian", binary.BigEndian)
 				pkg.DefineGoNativeValue("Write", binary.BigEndian) // warn: use reflection
-				return pkg, pkg.NewPackage()
-			case "encoding/json":
-				pkg := gno.NewPackageNode("json", pkgPath, nil)
-				pkg.DefineGoNativeValue("Unmarshal", json.Unmarshal)
-				pkg.DefineGoNativeValue("Marshal", json.Marshal)
 				return pkg, pkg.NewPackage()
 			case "encoding/gjson":
 				pkg := gno.NewPackageNode("gjson", pkgPath, nil)
