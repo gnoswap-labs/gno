@@ -731,7 +731,7 @@ func testPackageInjector(store gno.Store, pn *gno.PackageNode) {
 
 				ctx := m.Context.(stdlibs.ExecContext)
 				ctx.Height += count
-				ctx.Timestamp += (count * 2) // skip 1 block > skip 2 seconds
+				ctx.Timestamp += (count * 5) // skip 1 block > skip 5 seconds
 				m.Context = ctx
 			},
 		)
