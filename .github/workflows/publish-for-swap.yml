@@ -37,7 +37,9 @@ jobs:
           context: .
           file: ./Dockerfile
           target: gnoland-slim
-          platforms: linux/amd64,linux/arm64
+          platforms: |
+            linux/amd64
+            linux/arm64
           push: true
           tags: |
             gnoswap/gnoland:latest
@@ -71,7 +73,9 @@ jobs:
           context: .
           file: ./Dockerfile
           target: gnokey-slim
-          platforms: linux/amd64,linux/arm64
+          platforms: |
+            linux/amd64
+            linux/arm64
           push: true
           tags: |
             gnoswap/gnokey:latest
