@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$CHAINID" ]; then
-  echo "gnoland start"
+  gnoland start
 else
-  echo "gnoland start -chainid $CHAINID"
+  gnoland start -chainid $CHAINID
 fi
