@@ -30,6 +30,7 @@ COPY        --from=build /opt/build/gno.land/genesis /opt/gno/src/gno.land/genes
 COPY        --from=build /opt/build/examples /opt/gno/src/examples
 COPY        --from=build /opt/build/gnovm/stdlibs /opt/gno/src/gnovm/stdlibs
 COPY        --from=build /opt/build/gnovm/pkg /opt/gno/src/gnovm/pkg
+COPY        --from=build /opt/gno/src/start_gno.sh /opt/gno/bin/
 EXPOSE      26657
 CMD         ["gnoland", "start"]
 
