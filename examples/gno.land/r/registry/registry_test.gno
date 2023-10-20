@@ -13,14 +13,17 @@ import (
 	_ "gno.land/r/wrapper"
 )
 
-var cRealmAddr std.Address
+const (
+	transferTo       string = "g12345"
+	transferFromFrom string = "g12345"
 
-const target string = "g12345"
-const fromTo string = "g54321"
+	transferFromTo string = "g54321"
+)
+
+var cRealmAddr std.Address
 
 func init() {
 	cRealmAddr = std.CurrentRealm().Addr()
-	// println(cRealmAddr) // g1sqt92sa06ugh8nlt98kyghw83qy84paf4csyh6
 
 	std.TestSetOrigCaller(cRealmAddr)
 	foo.Faucet()
@@ -29,91 +32,117 @@ func init() {
 }
 
 func TestTransferByNameFOO(t *testing.T) {
-	if foo.BalanceOf(target) != 0 {
-		t.Fatal("target should have 0 FOO but", foo.BalanceOf(target))
+	if foo.BalanceOf(transferTo) != 0 {
+		t.Fatal("transferTo should have 0 FOO but", foo.BalanceOf(transferTo))
 	}
 
-	TransferByName("foo", target, 12345)
+	TransferByInterfaceName("gno.land/r/foo", transferTo, 12345)
 
-	if foo.BalanceOf(target) != 12345 {
-		t.Fatal("target should have 12345 FOO, but", foo.BalanceOf(target))
+	if foo.BalanceOf(transferTo) != 12345 {
+		t.Fatal("transferTo should have 12345 FOO, but", foo.BalanceOf(transferTo))
 	}
 }
 
 func TestTransferByNameBAR(t *testing.T) {
-	if bar.BalanceOf(target) != 0 {
-		t.Fatal("target should have 0 BAR, but", bar.BalanceOf(target))
+	if bar.BalanceOf(transferTo) != 0 {
+		t.Fatal("transferTo should have 0 BAR, but", bar.BalanceOf(transferTo))
 	}
 
-	TransferByName("bar", target, 12345)
+	TransferByInterfaceName("gno.land/r/bar", transferTo, 12345)
 
-	if bar.BalanceOf(target) != 12345 {
-		t.Fatal("target should have 12345 BAR, but", bar.BalanceOf(target))
+	if bar.BalanceOf(transferTo) != 12345 {
+		t.Fatal("transferTo should have 12345 BAR, but", bar.BalanceOf(transferTo))
 	}
 }
 
 func TestTransferByNameBAZ(t *testing.T) {
-	if baz.BalanceOf(target) != 0 {
-		t.Fatal("target should have 0 BAZ, but", baz.BalanceOf(target))
+	if baz.BalanceOf(transferTo) != 0 {
+		t.Fatal("transferTo should have 0 BAZ, but", baz.BalanceOf(transferTo))
 	}
 
-	TransferByName("baz", target, 12345)
+	TransferByInterfaceName("gno.land/r/baz", transferTo, 12345)
 
-	if baz.BalanceOf(target) != 12345 {
-		t.Fatal("target should have 12345 BAZ, but", baz.BalanceOf(target))
+	if baz.BalanceOf(transferTo) != 12345 {
+		t.Fatal("transferTo should have 12345 BAZ, but", baz.BalanceOf(transferTo))
 	}
 }
 
 func TestTransferFromByNameFOO(t *testing.T) {
-	if foo.BalanceOf(fromTo) != 0 {
-		t.Fatal("fromTo should have 0 FOO, but", foo.BalanceOf(fromTo))
+	if foo.BalanceOf(transferFromTo) != 0 {
+		t.Fatal("transferFromTo should have 0 FOO, but", foo.BalanceOf(transferFromTo))
 	}
 
-	std.TestSetOrigCaller(target)
+	std.TestSetOrigCaller(transferFromFrom)
 	foo.Approve(users.AddressOrName(cRealmAddr), 5)
-	TransferFromByName("foo", target, fromTo, 3)
+	TransferFromByInterfaceName("gno.land/r/foo", transferFromFrom, transferFromTo, 3)
 
-	if foo.BalanceOf(fromTo) != 3 {
-		t.Fatal("fromTo should have 3 FOO, but", foo.BalanceOf(fromTo))
+	if foo.BalanceOf(transferFromTo) != 3 {
+		t.Fatal("transferFromTo should have 3 FOO, but", foo.BalanceOf(transferFromTo))
 	}
 
-	if foo.BalanceOf(target) != 12342 {
-		t.Fatal("target should have 12342 FOO, but", foo.BalanceOf(target))
+	if foo.BalanceOf(transferFromFrom) != 12342 {
+		t.Fatal("transferFromFrom should have 12342 FOO, but", foo.BalanceOf(transferFromFrom))
 	}
 }
 
 func TestTransferFromByNameBAR(t *testing.T) {
-	if bar.BalanceOf(fromTo) != 0 {
-		t.Fatal("fromTo should have 0 BAR, but", bar.BalanceOf(fromTo))
+	if bar.BalanceOf(transferFromTo) != 0 {
+		t.Fatal("transferFromTo should have 0 BAR, but", bar.BalanceOf(transferFromTo))
 	}
 
-	std.TestSetOrigCaller(target)
+	std.TestSetOrigCaller(transferFromFrom)
 	bar.Approve(users.AddressOrName(cRealmAddr), 5)
-	TransferFromByName("bar", target, fromTo, 3)
+	TransferFromByInterfaceName("gno.land/r/bar", transferFromFrom, transferFromTo, 3)
 
-	if bar.BalanceOf(fromTo) != 3 {
-		t.Fatal("fromTo should have 3 BAR, but", bar.BalanceOf(fromTo))
+	if bar.BalanceOf(transferFromTo) != 3 {
+		t.Fatal("transferFromTo should have 3 BAR, but", bar.BalanceOf(transferFromTo))
 	}
 
-	if bar.BalanceOf(target) != 12342 {
-		t.Fatal("target should have 12342 BAR, but", bar.BalanceOf(target))
+	if bar.BalanceOf(transferFromFrom) != 12342 {
+		t.Fatal("transferFromFrom should have 12342 BAR, but", bar.BalanceOf(transferFromFrom))
 	}
 }
 
 func TestTransferFromByNameBAZ(t *testing.T) {
-	if baz.BalanceOf(fromTo) != 0 {
-		t.Fatal("fromTo should have 0 BAZ, but", baz.BalanceOf(fromTo))
+	if baz.BalanceOf(transferFromTo) != 0 {
+		t.Fatal("transferFromTo should have 0 BAZ, but", baz.BalanceOf(transferFromTo))
 	}
 
-	std.TestSetOrigCaller(target)
+	std.TestSetOrigCaller(transferFromFrom)
 	baz.Approve(users.AddressOrName(cRealmAddr), 5)
-	TransferFromByName("baz", target, fromTo, 3)
+	TransferFromByInterfaceName("gno.land/r/baz", transferFromFrom, transferFromTo, 3)
 
-	if baz.BalanceOf(fromTo) != 3 {
-		t.Fatal("fromTo should have 3 BAZ, but", baz.BalanceOf(fromTo))
+	if baz.BalanceOf(transferFromTo) != 3 {
+		t.Fatal("transferFromTo should have 3 BAZ, but", baz.BalanceOf(transferFromTo))
 	}
 
-	if baz.BalanceOf(target) != 12342 {
-		t.Fatal("target should have 12342 BAZ, but", baz.BalanceOf(target))
+	if baz.BalanceOf(transferFromFrom) != 12342 {
+		t.Fatal("transferFromFrom should have 12342 BAZ, but", baz.BalanceOf(transferFromFrom))
 	}
+}
+
+func TestUnregisterUnauthorized(t *testing.T) {
+	shouldPanic(t, func() { UnregisterGRC20Interface("gno.land/r/foo") })
+}
+
+func TestUnregisterAuthorized(t *testing.T) {
+	if len(registered) != 3 {
+		t.Fatal("should have 3 registered interfaces")
+	}
+
+	std.TestSetOrigCaller("g1sqt92sa06ugh8nlt98kyghw83qy84paf4csyh6")
+	UnregisterGRC20Interface("gno.land/r/foo")
+
+	if len(registered) != 2 {
+		t.Fatal("should have 2 registered interfaces")
+	}
+}
+
+func shouldPanic(t *testing.T, f func()) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("expected panic")
+		}
+	}()
+	f()
 }

@@ -3,12 +3,12 @@ package wrapper
 import (
 	"gno.land/r/bar"
 	"gno.land/r/baz"
+	"gno.land/r/demo/users"
 	"gno.land/r/foo"
 	"gno.land/r/registry"
-	"gno.land/r/demo/users"
 )
 
-type FooTokenInterface struct {}
+type FooTokenInterface struct{}
 
 func (FooTokenInterface) Transfer() func(to users.AddressOrName, amount uint64) {
 	return foo.Transfer
@@ -20,7 +20,7 @@ func (FooTokenInterface) TransferFrom() func(from, to users.AddressOrName, amoun
 
 var _ registry.GRC20Interface = FooTokenInterface{}
 
-type BarTokenInterface struct {}
+type BarTokenInterface struct{}
 
 func (BarTokenInterface) Transfer() func(to users.AddressOrName, amount uint64) {
 	return bar.Transfer
@@ -32,7 +32,7 @@ func (BarTokenInterface) TransferFrom() func(from, to users.AddressOrName, amoun
 
 var _ registry.GRC20Interface = BarTokenInterface{}
 
-type BazTokenInterface struct {}
+type BazTokenInterface struct{}
 
 func (BazTokenInterface) Transfer() func(to users.AddressOrName, amount uint64) {
 	return baz.Transfer
@@ -45,7 +45,7 @@ func (BazTokenInterface) TransferFrom() func(from, to users.AddressOrName, amoun
 var _ registry.GRC20Interface = BazTokenInterface{}
 
 func init() {
-	registry.RegisterGRC20Interface("foo", FooTokenInterface{})
-	registry.RegisterGRC20Interface("bar", BarTokenInterface{})
-	registry.RegisterGRC20Interface("baz", BazTokenInterface{})
+	registry.RegisterGRC20Interface("gno.land/r/foo", FooTokenInterface{})
+	registry.RegisterGRC20Interface("gno.land/r/bar", BarTokenInterface{})
+	registry.RegisterGRC20Interface("gno.land/r/baz", BazTokenInterface{})
 }
