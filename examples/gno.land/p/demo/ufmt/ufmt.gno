@@ -64,12 +64,18 @@ func Sprintf(format string, args ...interface{}) string {
 			switch v := arg.(type) {
 			case int:
 				buf += strconv.Itoa(v)
+			case int32:
+				buf += strconv.Itoa(int(v))
 			case int64:
 				buf += strconv.Itoa(int(v))
 			case uint:
 				buf += strconv.FormatUint(uint64(v), 10)
+			case uint32:
+				buf += strconv.FormatUint(uint64(v), 10)
 			case uint64:
 				buf += strconv.FormatUint(v, 10)
+			case bigint:
+				buf += string(v)
 			default:
 				buf += "(unhandled)"
 			}
