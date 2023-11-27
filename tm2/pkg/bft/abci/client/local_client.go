@@ -138,7 +138,11 @@ func (app *localClient) FlushSync() error {
 }
 
 func (app *localClient) EchoSync(msg string) (abci.ResponseEcho, error) {
-	return abci.ResponseEcho{Message: msg}, nil
+	res := abci.ResponseEcho{Message: msg}
+	if res.Error != nil {
+		return res, res.Error
+	}
+	return res, nil
 }
 
 func (app *localClient) InfoSync(req abci.RequestInfo) (abci.ResponseInfo, error) {
@@ -146,6 +150,9 @@ func (app *localClient) InfoSync(req abci.RequestInfo) (abci.ResponseInfo, error
 	defer app.mtx.Unlock()
 
 	res := app.Application.Info(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -154,6 +161,9 @@ func (app *localClient) SetOptionSync(req abci.RequestSetOption) (abci.ResponseS
 	defer app.mtx.Unlock()
 
 	res := app.Application.SetOption(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -162,6 +172,9 @@ func (app *localClient) DeliverTxSync(req abci.RequestDeliverTx) (abci.ResponseD
 	defer app.mtx.Unlock()
 
 	res := app.Application.DeliverTx(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -170,6 +183,9 @@ func (app *localClient) CheckTxSync(req abci.RequestCheckTx) (abci.ResponseCheck
 	defer app.mtx.Unlock()
 
 	res := app.Application.CheckTx(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -178,6 +194,9 @@ func (app *localClient) QuerySync(req abci.RequestQuery) (abci.ResponseQuery, er
 	defer app.mtx.Unlock()
 
 	res := app.Application.Query(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -186,6 +205,9 @@ func (app *localClient) CommitSync() (abci.ResponseCommit, error) {
 	defer app.mtx.Unlock()
 
 	res := app.Application.Commit()
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -194,6 +216,9 @@ func (app *localClient) InitChainSync(req abci.RequestInitChain) (abci.ResponseI
 	defer app.mtx.Unlock()
 
 	res := app.Application.InitChain(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -202,6 +227,9 @@ func (app *localClient) BeginBlockSync(req abci.RequestBeginBlock) (abci.Respons
 	defer app.mtx.Unlock()
 
 	res := app.Application.BeginBlock(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
@@ -210,6 +238,9 @@ func (app *localClient) EndBlockSync(req abci.RequestEndBlock) (abci.ResponseEnd
 	defer app.mtx.Unlock()
 
 	res := app.Application.EndBlock(req)
+	if res.Error != nil {
+		return res, res.Error
+	}
 	return res, nil
 }
 
