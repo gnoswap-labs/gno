@@ -2,6 +2,7 @@ package stdlibs
 
 import (
 	"crypto/sha256"
+	"encoding/json"
 	"math"
 	"reflect"
 	"strconv"
@@ -22,6 +23,9 @@ func InjectNativeMappings(store gno.Store) {
 
 func InjectPackage(store gno.Store, pn *gno.PackageNode) {
 	switch pn.PkgPath {
+	case "encoding/json":
+		pn.DefineGoNativeValue("Marshal", json.Marshal)
+		pn.DefineGoNativeValue("Unmarshal", json.Unmarshal)
 	case "internal/crypto/sha256":
 		pn.DefineNative("Sum256",
 			gno.Flds( // params
