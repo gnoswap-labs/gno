@@ -27,7 +27,10 @@ RUN         apt-get update && apt-get install -y expect ca-certificates && updat
 FROM        runtime-base AS gnoland-slim
 WORKDIR     /opt/gno/src/gno.land/
 COPY        --from=build /opt/build/build/gnoland /opt/gno/bin/
-ENTRYPOINT  ["gnoland"]
+COPY        --from=build /opt/build/gno.land/genesis /opt/gno/src/gno.land/genesis
+COPY        --from=build /opt/build/examples /opt/gno/src/examples
+COPY        --from=build /opt/gno/src/gnovm/stdlibs /opt/gno/src/gnovm/stdlibs
+ENTRYPOINT  ["gnoland", "start"]
 EXPOSE      26657 36657
 
 FROM        runtime-base AS gnokey-slim
