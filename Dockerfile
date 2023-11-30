@@ -30,7 +30,8 @@ COPY        --from=build /opt/build/build/gnoland /opt/gno/bin/
 COPY        --from=build /opt/build/gno.land/genesis /opt/gno/src/gno.land/genesis
 COPY        --from=build /opt/build/examples /opt/gno/src/examples
 COPY        --from=build /opt/gno/src/gnovm/stdlibs /opt/gno/src/gnovm/stdlibs
-ENTRYPOINT  ["gnoland", "start"]
+COPY        --from=build /opt/gno/src/start_gno.sh /opt/gno/bin/
+CMD         ["gnoland", "start"]
 EXPOSE      26657 36657
 
 FROM        runtime-base AS gnokey-slim
