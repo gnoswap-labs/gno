@@ -429,13 +429,22 @@ func InjectPackage(store gno.Store, pn *gno.PackageNode) {
 				arg0 := m.LastBlock().GetParams1().TV
 				bankerType := BankerType(arg0.GetUint8())
 				banker := ctx.Banker
+
+				_origPkgAddr := ctx.OrigPkgAddr
+
+				// origPkgAddr => CurrentRealm
+				if m.Realm != nil {
+					mockOrigPath := m.Realm.Path
+					_origPkgAddr = gno.DerivePkgAddr(mockOrigPath).Bech32()
+				}
+
 				switch bankerType {
 				case BankerTypeReadonly:
 					banker = NewReadonlyBanker(banker)
 				case BankerTypeOrigSend:
-					banker = NewOrigSendBanker(banker, ctx.OrigPkgAddr, ctx.OrigSend, ctx.OrigSendSpent)
+					banker = NewOrigSendBanker(banker, _origPkgAddr, ctx.OrigSend, ctx.OrigSendSpent)
 				case BankerTypeRealmSend:
-					banker = NewRealmSendBanker(banker, ctx.OrigPkgAddr)
+					banker = NewRealmSendBanker(banker, _origPkgAddr)
 				case BankerTypeRealmIssue:
 					banker = banker
 				default:
