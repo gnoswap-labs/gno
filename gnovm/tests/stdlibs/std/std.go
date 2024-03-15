@@ -88,6 +88,21 @@ func GetCallerAt(m *gno.Machine, n int) crypto.Bech32Address {
 	return m.LastCallFrame(n).LastPackage.GetPkgAddr().Bech32()
 }
 
+func TestSetPrevRealm(m *gno.Machine, pkgPath string) {
+	m.Frames[m.NumFrames()-1].LastPackage = &gno.PackageValue{
+		PkgPath: pkgPath,
+	}
+}
+
+func TestSetPrevAddr(m *gno.Machine, addr crypto.Bech32Address) {
+	// clear prev realm in stack frame just in case
+	m.Frames[m.NumFrames()-1].LastPackage = nil
+
+	ctx := m.Context.(stdlibs.ExecContext)
+	ctx.OrigCaller = addr
+	m.Context = ctx
+}
+
 func TestSetOrigCaller(m *gno.Machine, addr crypto.Bech32Address) {
 	ctx := m.Context.(std.ExecContext)
 	ctx.OrigCaller = addr

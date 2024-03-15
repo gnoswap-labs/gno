@@ -134,6 +134,46 @@ var nativeFuncs = [...]nativeFunc{
 	},
 	{
 		"std",
+		"TestSetPrevRealm",
+		[]gno.FieldTypeExpr{
+			{Name: gno.N("p0"), Type: gno.X("string")},
+		},
+		[]gno.FieldTypeExpr{},
+		func(m *gno.Machine) {
+			b := m.LastBlock()
+			var (
+				p0  string // pkgPath to override
+				rp0 = reflect.ValueOf(&p0).Elem()
+			)
+
+			gno.Gno2GoValue(b.GetPointerTo(nil, gno.NewValuePathBlock(1, 0, "")).TV, rp0)
+
+			testlibs_std.TestSetPrevRealm(m, rp0.String())
+		},
+	},
+	{
+		"std",
+		"TestSetPrevAddr",
+		[]gno.FieldTypeExpr{
+			{Name: gno.N("p0"), Type: gno.X("Address")},
+		},
+		[]gno.FieldTypeExpr{},
+		func(m *gno.Machine) {
+			b := m.LastBlock()
+			var (
+				p0  tm2_crypto.Bech32Address
+				rp0 = reflect.ValueOf(&p0).Elem()
+			)
+
+			gno.Gno2GoValue(b.GetPointerTo(nil, gno.NewValuePathBlock(1, 0, "")).TV, rp0)
+
+			testlibs_std.TestSetPrevAddr(
+				m,
+				p0)
+		},
+	},
+	{
+		"std",
 		"TestSetOrigCaller",
 		[]gno.FieldTypeExpr{
 			{Name: gno.N("p0"), Type: gno.X("Address")},
