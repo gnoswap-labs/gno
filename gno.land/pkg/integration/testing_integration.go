@@ -168,7 +168,7 @@ func setupGnolandTestScript(t *testing.T, txtarDir string) testscript.Params {
 						break
 					}
 
-					// get pacakges
+					// get packages
 					pkgs := ts.Value(envKeyPkgsLoader).(*pkgsLoader)                // grab logger
 					creator := crypto.MustAddressFromString(DefaultAccount_Address) // test1
 					defaultFee := std.NewFee(50000, std.MustParseCoin("1000000ugnot"))
@@ -193,7 +193,7 @@ func setupGnolandTestScript(t *testing.T, txtarDir string) testscript.Params {
 					// Register cleanup
 					nodes[sid] = &testNode{Node: n}
 
-					// Add default environements
+					// Add default environments
 					ts.Setenv("RPC_ADDR", remoteAddr)
 
 					fmt.Fprintln(ts.Stdout(), "node started successfully")
@@ -283,6 +283,49 @@ func setupGnolandTestScript(t *testing.T, txtarDir string) testscript.Params {
 				// Add balance to genesis
 				genesis := ts.Value(envKeyGenesis).(*gnoland.GnoGenesisState)
 				genesis.Balances = append(genesis.Balances, balance)
+			},
+			// importwallet commands must be executed before starting the node; it errors out otherwise.
+			"importwallet": func(ts *testscript.TestScript, neg bool, args []string) {
+				if nodeIsRunning(nodes, getNodeSID(ts)) {
+					tsValidateError(ts, "importwallet", neg, errors.New("importwallet must be used before starting node"))
+					return
+				}
+
+				if len(args) < 2 {
+					ts.Fatalf("to import wallet, user name and mnemonic are required")
+				}
+
+				var account, index uint64
+				var err error
+				if len(args) == 3 {
+					index, err = strconv.ParseUint(args[2], 10, 32)
+					if err != nil {
+						ts.Fatalf("invalid account number %s", args[2])
+					}
+				}
+
+				if len(args) == 4 {
+					index, err = strconv.ParseUint(args[3], 10, 32)
+					if err != nil {
+						ts.Fatalf("invalid index number %s", args[3])
+					}
+				}
+
+				kb, err := keys.NewKeyBaseFromDir(gnoHomeDir)
+				if err != nil {
+					ts.Fatalf("unable to get keybase")
+				}
+
+				balance, err := importWallet(ts, kb, args[0], args[1], uint32(account), uint32(index))
+				if err != nil {
+					ts.Fatalf("error importing wallet %s", err)
+				}
+
+				// Add balance to genesis
+				genesis := ts.Value(envKeyGenesis).(*gnoland.GnoGenesisState)
+				genesis.Balances = append(genesis.Balances, balance)
+
+				fmt.Fprintln(ts.Stdout(), fmt.Sprintf("Added %s(%s) to genesis", args[0], balance.Address))
 			},
 			// `loadpkg` load a specific package from the 'examples' or working directory
 			"loadpkg": func(ts *testscript.TestScript, neg bool, args []string) {
@@ -480,6 +523,31 @@ func createAccount(env envSetter, kb keys.Keybase, accountName string) (gnoland.
 
 	var keyInfo keys.Info
 	if keyInfo, err = kb.CreateAccount(accountName, mnemonic, "", "", 0, 0); err != nil {
+		return balance, fmt.Errorf("unable to create account: %w", err)
+	}
+
+	address := keyInfo.GetAddress()
+	env.Setenv("USER_SEED_"+accountName, mnemonic)
+	env.Setenv("USER_ADDR_"+accountName, address.String())
+
+	return gnoland.Balance{
+		Address: address,
+		Amount:  std.Coins{std.NewCoin("ugnot", 10e6)},
+	}, nil
+}
+
+// importWallet imports a new wallet with the given mnemonic and adds it to the keybase.
+func importWallet(env envSetter, kb keys.Keybase, accountName, mnemonic string, account, index uint32) (gnoland.Balance, error) {
+	var balance gnoland.Balance
+
+	// check if mnemonic is valid
+	if !bip39.IsMnemonicValid(mnemonic) {
+		return balance, fmt.Errorf("invalid mnemonic")
+	}
+
+	var keyInfo keys.Info
+	var err error
+	if keyInfo, err = kb.CreateAccount(accountName, mnemonic, "", "", account, index); err != nil {
 		return balance, fmt.Errorf("unable to create account: %w", err)
 	}
 
