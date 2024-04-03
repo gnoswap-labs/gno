@@ -1,4 +1,4 @@
-module github.com/gnolang/gno
+module github.com/gnoswap-labs/gno
 
 go 1.21
 
