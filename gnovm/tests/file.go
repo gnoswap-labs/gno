@@ -13,11 +13,11 @@ import (
 	"strconv"
 	"strings"
 
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/stdlibs"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/stdlibs"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 	"github.com/pmezard/go-difflib/difflib"
 )
 

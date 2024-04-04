@@ -3,12 +3,12 @@ package keys
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/hd"
-	"github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/hd"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/os"
 
-	_ "github.com/gnolang/gno/tm2/pkg/db/goleveldb"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/goleveldb"
 )
 
 const dbBackend = db.GoLevelDBBackend

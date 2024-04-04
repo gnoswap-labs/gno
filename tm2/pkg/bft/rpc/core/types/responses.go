@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"time"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	cnscfg "github.com/gnolang/gno/tm2/pkg/bft/consensus/config"
-	cstypes "github.com/gnolang/gno/tm2/pkg/bft/consensus/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	cnscfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/config"
+	cstypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
 )
 
 // List of blocks

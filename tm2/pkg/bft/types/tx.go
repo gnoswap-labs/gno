@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto/merkle"
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/merkle"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
 )
 
 // Tx is an arbitrary byte array.

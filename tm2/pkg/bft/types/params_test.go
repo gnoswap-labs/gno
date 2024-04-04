@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
 )
 
 var (

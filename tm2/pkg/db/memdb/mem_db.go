@@ -5,9 +5,9 @@ import (
 	"sort"
 	"sync"
 
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/internal"
-	"github.com/gnolang/gno/tm2/pkg/strings"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/internal"
+	"github.com/gnoswap-labs/gno/tm2/pkg/strings"
 )
 
 func init() {

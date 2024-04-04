@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
-	"github.com/gnolang/gno/tm2/pkg/random"
-	"github.com/gnolang/gno/tm2/pkg/testutils"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/testutils"
 )
 
 type testItem []byte

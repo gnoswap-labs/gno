@@ -1,7 +1,7 @@
 syntax = "proto3";
 package tests;
 
-option go_package = "github.com/gnolang/gno/tm2/pkg/amino/tests/pb";
+option go_package = "github.com/gnoswap-labs/gno/tm2/pkg/amino/tests/pb";
 
 // imports
 import "google/protobuf/timestamp.proto";

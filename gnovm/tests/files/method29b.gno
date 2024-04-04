@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gnolang/gno/_test/context"
-	"github.com/gnolang/gno/_test/net"
+	"github.com/gnoswap-labs/gno/_test/context"
+	"github.com/gnoswap-labs/gno/_test/net"
 )
 
 var lookupHost = net.DefaultResolver.LookupHost

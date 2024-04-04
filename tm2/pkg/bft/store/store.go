@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 /*

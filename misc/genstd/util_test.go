@@ -17,11 +17,11 @@ func Test_pkgNameFromPath(t *testing.T) {
 		// consecutive unsupported characters => _
 		{"kebab----------case", "go_kebab_case"},
 
-		{"github.com/gnolang/gno/misc/test", "repo_misc_test"},
-		{"github.com/gnolang/gno/tm2/pkg/crypto", "tm2_crypto"},
-		{"github.com/gnolang/gno/gnovm/test", "vm_test"},
-		{"github.com/gnolang/gno/gnovm/stdlibs/std", "libs_std"},
-		{"github.com/gnolang/gno/gnovm/tests/stdlibs/std", "testlibs_std"},
+		{"github.com/gnoswap-labs/gno/misc/test", "repo_misc_test"},
+		{"github.com/gnoswap-labs/gno/tm2/pkg/crypto", "tm2_crypto"},
+		{"github.com/gnoswap-labs/gno/gnovm/test", "vm_test"},
+		{"github.com/gnoswap-labs/gno/gnovm/stdlibs/std", "libs_std"},
+		{"github.com/gnoswap-labs/gno/gnovm/tests/stdlibs/std", "testlibs_std"},
 	}
 	for i, tv := range tt {
 		t.Run(fmt.Sprintf("n%d", i+1), func(t *testing.T) {

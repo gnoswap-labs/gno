@@ -3,8 +3,8 @@ package db_test
 import (
 	"testing"
 
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
 )
 
 func mockDBWithStuff() dbm.DB {

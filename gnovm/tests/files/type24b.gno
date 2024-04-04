@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/_test/net/http"
-	"github.com/gnolang/gno/_test/net/http/httptest"
+	"github.com/gnoswap-labs/gno/_test/net/http"
+	"github.com/gnoswap-labs/gno/_test/net/http/httptest"
 )
 
 func main() {

@@ -1,11 +1,11 @@
 package core
 
 import (
-	cstypes "github.com/gnolang/gno/tm2/pkg/bft/consensus/types"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	sm "github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	cstypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/types"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	sm "github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 // Get the validator set at the given block height.

@@ -1,8 +1,8 @@
 package mock
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
 )
 
 // StatusMock returns the result specified by the Call

@@ -1,8 +1,8 @@
 package null
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/bft/state/eventstore"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/state/eventstore"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 var _ eventstore.TxEventStore = (*TxEventStore)(nil)

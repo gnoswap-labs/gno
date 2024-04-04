@@ -3,8 +3,8 @@ package std_test
 import (
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 	"github.com/stretchr/testify/require"
 )
 

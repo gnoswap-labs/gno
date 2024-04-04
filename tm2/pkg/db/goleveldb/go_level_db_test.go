@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/internal"
 	"github.com/gnolang/goleveldb/leveldb/opt"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/internal"
 	"github.com/jaekwon/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -8,11 +8,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	cfg "github.com/gnolang/gno/tm2/pkg/bft/mempool/config"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/clist"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	cfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/clist"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
 )
 
 const (

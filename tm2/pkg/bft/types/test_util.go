@@ -1,7 +1,7 @@
 package types
 
 import (
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
 )
 
 func MakeCommit(blockID BlockID, height int64, round int,

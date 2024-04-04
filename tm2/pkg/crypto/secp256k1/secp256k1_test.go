@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/secp256k1"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/secp256k1"
 )
 
 type keyData struct {

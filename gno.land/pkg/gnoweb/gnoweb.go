@@ -15,17 +15,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 	"github.com/gorilla/mux"
 	"github.com/gotuna/gotuna"
 
 	// for static files
-	"github.com/gnolang/gno/gno.land/pkg/gnoweb/static"
-	"github.com/gnolang/gno/gno.land/pkg/sdk/vm" // for error types
-	// "github.com/gnolang/gno/tm2/pkg/sdk" // for baseapp (info, status)
+	"github.com/gnoswap-labs/gno/gno.land/pkg/gnoweb/static"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/sdk/vm" // for error types
+	// "github.com/gnoswap-labs/gno/tm2/pkg/sdk" // for baseapp (info, status)
 )
 
 const (

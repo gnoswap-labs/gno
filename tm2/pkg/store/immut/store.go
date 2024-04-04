@@ -1,8 +1,8 @@
 package immut
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/store/cache"
-	"github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/cache"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 var _ types.Store = immutStore{}

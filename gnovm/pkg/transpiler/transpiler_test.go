@@ -75,7 +75,7 @@ func hello() string {
 //line foo.gno:1:1
 package foo
 
-import "github.com/gnolang/gno/gnovm/stdlibs/stdshim"
+import "github.com/gnoswap-labs/gno/gnovm/stdlibs/stdshim"
 
 func hello() string {
 	_ = std.Foo
@@ -87,7 +87,7 @@ func hello() string {
 					Path: &ast.BasicLit{
 						ValuePos: 21,
 						Kind:     9,
-						Value:    `"github.com/gnolang/gno/gnovm/stdlibs/stdshim"`,
+						Value:    `"github.com/gnoswap-labs/gno/gnovm/stdlibs/stdshim"`,
 					},
 					EndPos: 26,
 				},
@@ -108,7 +108,7 @@ func foo()  { _ = users.Register}
 //line foo.gno:1:1
 package foo
 
-import "github.com/gnolang/gno/examples/gno.land/r/users"
+import "github.com/gnoswap-labs/gno/examples/gno.land/r/users"
 
 func foo() { _ = users.Register }
 `,
@@ -117,7 +117,7 @@ func foo() { _ = users.Register }
 					Path: &ast.BasicLit{
 						ValuePos: 21,
 						Kind:     9,
-						Value:    `"github.com/gnolang/gno/examples/gno.land/r/users"`,
+						Value:    `"github.com/gnoswap-labs/gno/examples/gno.land/r/users"`,
 					},
 					EndPos: 39,
 				},
@@ -138,7 +138,7 @@ func foo()  { _ = avl.Tree }
 //line foo.gno:1:1
 package foo
 
-import "github.com/gnolang/gno/examples/gno.land/p/demo/avl"
+import "github.com/gnoswap-labs/gno/examples/gno.land/p/demo/avl"
 
 func foo() { _ = avl.Tree }
 `,
@@ -147,7 +147,7 @@ func foo() { _ = avl.Tree }
 					Path: &ast.BasicLit{
 						ValuePos: 21,
 						Kind:     9,
-						Value:    `"github.com/gnolang/gno/examples/gno.land/p/demo/avl"`,
+						Value:    `"github.com/gnoswap-labs/gno/examples/gno.land/p/demo/avl"`,
 					},
 					EndPos: 42,
 				},
@@ -171,7 +171,7 @@ func hello() string {
 //line foo.gno:1:1
 package foo
 
-import bar "github.com/gnolang/gno/gnovm/stdlibs/stdshim"
+import bar "github.com/gnoswap-labs/gno/gnovm/stdlibs/stdshim"
 
 func hello() string {
 	_ = bar.Foo
@@ -187,7 +187,7 @@ func hello() string {
 					Path: &ast.BasicLit{
 						ValuePos: 25,
 						Kind:     9,
-						Value:    `"github.com/gnolang/gno/gnovm/stdlibs/stdshim"`,
+						Value:    `"github.com/gnoswap-labs/gno/gnovm/stdlibs/stdshim"`,
 					},
 					EndPos: 30,
 				},
@@ -226,14 +226,14 @@ import "gno.land/p/demo/unknownxyz"
 //line foo.gno:1:1
 package foo
 
-import "github.com/gnolang/gno/examples/gno.land/p/demo/unknownxyz"
+import "github.com/gnoswap-labs/gno/examples/gno.land/p/demo/unknownxyz"
 `,
 			expectedImports: []*ast.ImportSpec{
 				{
 					Path: &ast.BasicLit{
 						ValuePos: 21,
 						Kind:     9,
-						Value:    `"github.com/gnolang/gno/examples/gno.land/p/demo/unknownxyz"`,
+						Value:    `"github.com/gnoswap-labs/gno/examples/gno.land/p/demo/unknownxyz"`,
 					},
 					EndPos: 49,
 				},

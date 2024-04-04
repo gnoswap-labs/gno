@@ -7,13 +7,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/kvstore"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client/mock"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/kvstore"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client/mock"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 func TestABCIMock(t *testing.T) {

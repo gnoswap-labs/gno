@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gnolang/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 // All implementors must be amino-encodable.

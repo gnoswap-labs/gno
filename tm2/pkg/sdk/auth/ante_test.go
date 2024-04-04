@@ -9,17 +9,17 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	"github.com/gnolang/gno/tm2/pkg/crypto/multisig"
-	"github.com/gnolang/gno/tm2/pkg/crypto/secp256k1"
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	tu "github.com/gnolang/gno/tm2/pkg/sdk/testutils"
-	"github.com/gnolang/gno/tm2/pkg/std"
-	"github.com/gnolang/gno/tm2/pkg/store"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/multisig"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/secp256k1"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	tu "github.com/gnoswap-labs/gno/tm2/pkg/sdk/testutils"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store"
 )
 
 // run the tx through the anteHandler and ensure its valid

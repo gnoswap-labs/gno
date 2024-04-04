@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	cfg "github.com/gnolang/gno/tm2/pkg/bft/config"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
+	cfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
 )
 
 var config *cfg.Config // NOTE: must be reset for each _test.go file

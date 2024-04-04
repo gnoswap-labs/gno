@@ -3,7 +3,7 @@ package merkle
 import (
 	"io"
 
-	amino "github.com/gnolang/gno/tm2/pkg/amino"
+	amino "github.com/gnoswap-labs/gno/tm2/pkg/amino"
 )
 
 // Tree is a Merkle tree interface.

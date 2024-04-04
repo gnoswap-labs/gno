@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 	"github.com/jaekwon/testify/assert"
 )
 

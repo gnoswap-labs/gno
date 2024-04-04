@@ -7,8 +7,8 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
 )
 
 const (

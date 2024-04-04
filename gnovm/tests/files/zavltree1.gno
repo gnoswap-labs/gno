@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gnolang/gno/_test/timtadh/data-structures/tree/avl"
-	"github.com/gnolang/gno/_test/timtadh/data-structures/types"
+	"github.com/gnoswap-labs/gno/_test/timtadh/data-structures/tree/avl"
+	"github.com/gnoswap-labs/gno/_test/timtadh/data-structures/types"
 )
 
 func main() {

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/config"
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 )
 
 var errInvalidConfigOutputPath = errors.New("invalid config output path provided")

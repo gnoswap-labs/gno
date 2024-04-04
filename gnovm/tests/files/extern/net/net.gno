@@ -1,7 +1,7 @@
 package net
 
 import (
-	"github.com/gnolang/gno/_test/context"
+	"github.com/gnoswap-labs/gno/_test/context"
 )
 
 // XXX dummy

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/gnolang/gno/gnovm/pkg/integration"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/integration"
 	"github.com/rogpeppe/go-internal/testscript"
 	"github.com/stretchr/testify/require"
 )

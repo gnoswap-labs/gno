@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/docker/docker/client"
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 )

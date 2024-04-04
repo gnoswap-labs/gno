@@ -3,7 +3,7 @@ package tests
 import (
 	"reflect"
 
-	"github.com/gnolang/gno/tm2/pkg/amino/pkg"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/pkg"
 )
 
 // Creates one much like amino.RegisterPackage, but without registration.
@@ -13,7 +13,7 @@ import (
 // NOTE: This package registration is independent of test registration.
 // See tests/common.go StructTypes etc to add to tests.
 var Package = pkg.NewPackage(
-	"github.com/gnolang/gno/tm2/pkg/amino/tests",
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/tests",
 	"tests",
 	pkg.GetCallersDirname(),
 ).WithDependencies().WithTypes(

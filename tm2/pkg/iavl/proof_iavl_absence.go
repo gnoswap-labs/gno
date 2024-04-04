@@ -3,8 +3,8 @@ package iavl
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/merkle"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/merkle"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 const ProofOpIAVLAbsence = "iavl:a"

@@ -7,16 +7,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	cstypes "github.com/gnolang/gno/tm2/pkg/bft/consensus/types"
-	sm "github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	"github.com/gnolang/gno/tm2/pkg/bitarray"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/events"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	cstypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/types"
+	sm "github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bitarray"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/events"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
 )
 
 const (

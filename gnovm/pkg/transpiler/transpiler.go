@@ -19,16 +19,16 @@ import (
 	"go.uber.org/multierr"
 	"golang.org/x/tools/go/ast/astutil"
 
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 const (
 	GnoRealmPkgsPrefixBefore = "gno.land/r/"
-	GnoRealmPkgsPrefixAfter  = "github.com/gnolang/gno/examples/gno.land/r/"
+	GnoRealmPkgsPrefixAfter  = "github.com/gnoswap-labs/gno/examples/gno.land/r/"
 	GnoPackagePrefixBefore   = "gno.land/p/demo/"
-	GnoPackagePrefixAfter    = "github.com/gnolang/gno/examples/gno.land/p/demo/"
+	GnoPackagePrefixAfter    = "github.com/gnoswap-labs/gno/examples/gno.land/p/demo/"
 	GnoStdPkgBefore          = "std"
-	GnoStdPkgAfter           = "github.com/gnolang/gno/gnovm/stdlibs/stdshim"
+	GnoStdPkgAfter           = "github.com/gnoswap-labs/gno/gnovm/stdlibs/stdshim"
 )
 
 var stdlibWhitelist = []string{
@@ -77,10 +77,10 @@ var stdlibWhitelist = []string{
 }
 
 var importPrefixWhitelist = []string{
-	"github.com/gnolang/gno/_test",
+	"github.com/gnoswap-labs/gno/_test",
 }
 
-const ImportPrefix = "github.com/gnolang/gno"
+const ImportPrefix = "github.com/gnoswap-labs/gno"
 
 type transpileResult struct {
 	Imports    []*ast.ImportSpec

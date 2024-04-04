@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	"github.com/gnolang/gno/tm2/pkg/std"
-	"github.com/gnolang/gno/tm2/pkg/store/dbadapter"
-	"github.com/gnolang/gno/tm2/pkg/store/iavl"
-	stypes "github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/dbadapter"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/iavl"
+	stypes "github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 	"github.com/jaekwon/testify/assert"
 )
 

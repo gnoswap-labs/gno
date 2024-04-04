@@ -1,7 +1,7 @@
 package core
 
 import (
-	rpc "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/server"
+	rpc "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/server"
 )
 
 // TODO: better system than "unsafe" prefix

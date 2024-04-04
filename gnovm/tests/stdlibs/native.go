@@ -6,9 +6,9 @@ package stdlibs
 import (
 	"reflect"
 
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	testlibs_std "github.com/gnolang/gno/gnovm/tests/stdlibs/std"
-	testlibs_testing "github.com/gnolang/gno/gnovm/tests/stdlibs/testing"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	testlibs_std "github.com/gnoswap-labs/gno/gnovm/tests/stdlibs/std"
+	testlibs_testing "github.com/gnoswap-labs/gno/gnovm/tests/stdlibs/testing"
 )
 
 type nativeFunc struct {

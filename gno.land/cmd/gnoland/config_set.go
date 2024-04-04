@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/config"
-	"github.com/gnolang/gno/tm2/pkg/bft/state/eventstore/types"
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/state/eventstore/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 )
 
 var errInvalidConfigSetArgs = errors.New("invalid number of config set arguments provided")

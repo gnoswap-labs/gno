@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 func TestParallel(t *testing.T) {

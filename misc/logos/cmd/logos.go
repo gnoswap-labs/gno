@@ -7,7 +7,7 @@ import (
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/gdamore/tcell/v2/encoding"
-	"github.com/gnolang/gno/misc/logos"
+	"github.com/gnoswap-labs/gno/misc/logos"
 )
 
 func main() {

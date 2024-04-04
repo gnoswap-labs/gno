@@ -1,9 +1,9 @@
 package core
 
 import (
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // Get network info.

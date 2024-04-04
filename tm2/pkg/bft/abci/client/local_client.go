@@ -3,8 +3,8 @@ package abcicli
 import (
 	"sync"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 var _ Client = (*localClient)(nil)

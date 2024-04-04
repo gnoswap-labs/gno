@@ -3,11 +3,11 @@ package store
 import (
 	"fmt"
 
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/strings"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/strings"
 
-	"github.com/gnolang/gno/tm2/pkg/store/rootmulti"
-	"github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/rootmulti"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 func NewCommitMultiStore(db dbm.DB) types.CommitMultiStore {

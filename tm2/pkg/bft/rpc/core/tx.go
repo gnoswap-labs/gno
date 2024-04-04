@@ -5,13 +5,13 @@ package core
 import (
 	"fmt"
 
-	cmn "github.com/gnolang/gno/tm2/pkg/common"
+	cmn "github.com/gnoswap-labs/gno/tm2/pkg/common"
 
-	tmquery "github.com/gnolang/gno/tm2/pkg/pubsub/query"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/state/txindex/null"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	tmquery "github.com/gnoswap-labs/gno/tm2/pkg/pubsub/query"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/state/txindex/null"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 // Tx allows you to query the transaction results. `nil` could mean the

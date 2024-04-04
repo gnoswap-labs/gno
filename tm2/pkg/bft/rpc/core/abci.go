@@ -1,9 +1,9 @@
 package core
 
 import (
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
 )
 
 // Query the application for some information.

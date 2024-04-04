@@ -10,8 +10,8 @@ import (
 	secp256k1 "github.com/btcsuite/btcd/btcec/v2"
 	"golang.org/x/crypto/ripemd160"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 //-------------------------------------

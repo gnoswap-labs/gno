@@ -1,7 +1,7 @@
 package p2p
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/p2p/conn"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p/conn"
 )
 
 type (

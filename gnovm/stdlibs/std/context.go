@@ -1,9 +1,9 @@
 package std
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 type ExecContext struct {

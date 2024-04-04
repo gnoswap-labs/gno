@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
 )
 
 func TestGenLoadValidator(t *testing.T) {

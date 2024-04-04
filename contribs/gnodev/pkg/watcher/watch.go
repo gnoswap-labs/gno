@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	emitter "github.com/gnolang/gno/contribs/gnodev/pkg/emitter"
-	events "github.com/gnolang/gno/contribs/gnodev/pkg/events"
+	emitter "github.com/gnoswap-labs/gno/contribs/gnodev/pkg/emitter"
+	events "github.com/gnoswap-labs/gno/contribs/gnodev/pkg/events"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/gnolang/gno/gnovm/pkg/gnomod"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnomod"
 )
 
 type PackageWatcher struct {

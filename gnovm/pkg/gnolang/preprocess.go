@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // In the case of a *FileSet, some declaration steps have to happen

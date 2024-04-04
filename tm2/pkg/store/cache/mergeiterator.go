@@ -3,7 +3,7 @@ package cache
 import (
 	"bytes"
 
-	"github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 // cacheMergeIterator merges a parent Iterator and a cache Iterator.

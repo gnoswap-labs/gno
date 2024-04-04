@@ -9,9 +9,9 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/internal"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/internal"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 const (

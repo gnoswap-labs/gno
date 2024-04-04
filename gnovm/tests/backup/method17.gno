@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/gnolang/gno/_test/time"
+	"github.com/gnoswap-labs/gno/_test/time"
 )
 
 type MyTime struct {

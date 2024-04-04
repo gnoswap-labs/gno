@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 // This file implement fuzz testing by generating programs and then running

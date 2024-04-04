@@ -1,6 +1,6 @@
 package types
 
-import "github.com/gnolang/gno/tm2/pkg/bft/state/eventstore/null"
+import "github.com/gnoswap-labs/gno/tm2/pkg/bft/state/eventstore/null"
 
 // EventStoreParams defines the arbitrary event store config params
 type EventStoreParams map[string]any

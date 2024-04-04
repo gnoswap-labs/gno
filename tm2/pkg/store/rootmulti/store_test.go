@@ -6,13 +6,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto/merkle"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/merkle"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
 
-	"github.com/gnolang/gno/tm2/pkg/store/iavl"
-	"github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/iavl"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 func TestStoreType(t *testing.T) {

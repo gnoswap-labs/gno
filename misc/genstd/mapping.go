@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-const gnoPackagePath = "github.com/gnolang/gno/gnovm/pkg/gnolang"
+const gnoPackagePath = "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
 
 type mapping struct {
 	GnoImportPath string // time
@@ -58,7 +58,7 @@ func linkFunctions(pkgs []*pkgData) []mapping {
 			mp := mapping{
 				GnoImportPath: pkg.importPath,
 				GnoFunc:       gb.Name.Name,
-				GoImportPath:  "github.com/gnolang/gno/" + relPath() + "/" + pkg.importPath,
+				GoImportPath:  "github.com/gnoswap-labs/gno/" + relPath() + "/" + pkg.importPath,
 				GoFunc:        fn.Name.Name,
 
 				gnoImports: gb.imports,

@@ -12,7 +12,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/gnolang/gno/gnovm/pkg/gnomod"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnomod"
 )
 
 // A bfsDir describes a directory holding code by specifying

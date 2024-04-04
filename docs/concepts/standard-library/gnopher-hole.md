@@ -63,7 +63,7 @@ bindings, which are the following:
   For example, if a package is in `foo/bar`, but declares `package xyz`, when importing
   foo/bar the generator will assume the name to be `bar` instead of `xyz`.
   You can add an identifier to the import to fix this and use the identifier
-  you want/need, such as `import gno "github.com/gnolang/gno/gnovm/pkg/gnolang"`.
+  you want/need, such as `import gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"`.
 
 ## Adding new standard libraries
 

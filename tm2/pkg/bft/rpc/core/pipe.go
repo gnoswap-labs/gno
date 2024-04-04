@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/appconn"
-	cnscfg "github.com/gnolang/gno/tm2/pkg/bft/consensus/config"
-	cstypes "github.com/gnolang/gno/tm2/pkg/bft/consensus/types"
-	mempl "github.com/gnolang/gno/tm2/pkg/bft/mempool"
-	cfg "github.com/gnolang/gno/tm2/pkg/bft/rpc/config"
-	sm "github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/events"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/appconn"
+	cnscfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/config"
+	cstypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/types"
+	mempl "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool"
+	cfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/config"
+	sm "github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/events"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
 )
 
 const (

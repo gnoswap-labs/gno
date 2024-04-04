@@ -1,7 +1,7 @@
 package state
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 //------------------------------------------------------

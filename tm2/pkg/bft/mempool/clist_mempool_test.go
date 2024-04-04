@@ -13,14 +13,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/counter"
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/kvstore"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	cfg "github.com/gnolang/gno/tm2/pkg/bft/mempool/config"
-	"github.com/gnolang/gno/tm2/pkg/bft/proxy"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/counter"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/kvstore"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	cfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/proxy"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 // A cleanupFunc cleans up any config / test files created for a particular

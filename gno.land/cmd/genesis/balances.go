@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 )
 
 type balancesCfg struct {

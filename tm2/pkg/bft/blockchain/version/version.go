@@ -1,7 +1,7 @@
 package bcver
 
 import (
-	types "github.com/gnolang/gno/tm2/pkg/bft/types/version"
+	types "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/version"
 )
 
 const Version = "v1.0.0-rc.0"

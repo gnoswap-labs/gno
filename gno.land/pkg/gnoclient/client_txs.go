@@ -1,14 +1,14 @@
 package gnoclient
 
 import (
-	"github.com/gnolang/gno/gno.land/pkg/sdk/vm"
-	"github.com/gnolang/gno/gnovm/pkg/transpiler"
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/sdk/bank"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/sdk/vm"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/transpiler"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk/bank"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 var (

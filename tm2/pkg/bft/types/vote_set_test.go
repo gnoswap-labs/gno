@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 // NOTE: privValidators are in order

@@ -5,16 +5,16 @@ package vm
 import (
 	"path/filepath"
 
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	authm "github.com/gnolang/gno/tm2/pkg/sdk/auth"
-	bankm "github.com/gnolang/gno/tm2/pkg/sdk/bank"
-	"github.com/gnolang/gno/tm2/pkg/std"
-	"github.com/gnolang/gno/tm2/pkg/store"
-	"github.com/gnolang/gno/tm2/pkg/store/dbadapter"
-	"github.com/gnolang/gno/tm2/pkg/store/iavl"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	authm "github.com/gnoswap-labs/gno/tm2/pkg/sdk/auth"
+	bankm "github.com/gnoswap-labs/gno/tm2/pkg/sdk/bank"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/dbadapter"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/iavl"
 )
 
 type testEnv struct {

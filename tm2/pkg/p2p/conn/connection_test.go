@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
 )
 
 const maxPingPongPacketSize = 1024 // bytes

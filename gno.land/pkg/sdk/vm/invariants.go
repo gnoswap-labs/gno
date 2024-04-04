@@ -1,7 +1,7 @@
 package vm
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/sdk"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
 )
 
 // RegisterInvariants registers the vm module invariants

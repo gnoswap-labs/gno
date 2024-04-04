@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
-	types "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/random"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	types "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 	"github.com/gorilla/websocket"
 )
 

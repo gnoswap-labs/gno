@@ -6,13 +6,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	tiavl "github.com/gnolang/gno/tm2/pkg/iavl"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	tiavl "github.com/gnoswap-labs/gno/tm2/pkg/iavl"
 
-	"github.com/gnolang/gno/tm2/pkg/store/dbadapter"
-	"github.com/gnolang/gno/tm2/pkg/store/gas"
-	"github.com/gnolang/gno/tm2/pkg/store/iavl"
-	"github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/dbadapter"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/gas"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/iavl"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 // copied from iavl/store_test.go

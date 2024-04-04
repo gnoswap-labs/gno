@@ -5,15 +5,15 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/gnolang/gno/gno.land/pkg/sdk/vm"
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/pkg/transpiler"
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys/client"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/sdk/vm"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/transpiler"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 type MakeAddPkgCfg struct {

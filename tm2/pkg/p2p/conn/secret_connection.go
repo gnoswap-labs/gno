@@ -19,11 +19,11 @@ import (
 	"golang.org/x/crypto/hkdf"
 	"golang.org/x/crypto/nacl/box"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/async"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/async"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // 4 + 1024 == 1028 total frame size

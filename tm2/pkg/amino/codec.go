@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gnolang/gno/tm2/pkg/amino/pkg"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/pkg"
 )
 
 // Useful for debugging.

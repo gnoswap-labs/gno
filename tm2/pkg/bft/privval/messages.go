@@ -1,8 +1,8 @@
 package privval
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 // SignerMessage is sent between Signer Clients and Servers.

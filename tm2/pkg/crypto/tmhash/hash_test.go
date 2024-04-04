@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
 	"github.com/stretchr/testify/assert"
 )
 

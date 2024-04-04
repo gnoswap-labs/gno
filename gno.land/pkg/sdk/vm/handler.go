@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	"github.com/gnolang/gno/tm2/pkg/sdk/auth"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk/auth"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 type vmHandler struct {

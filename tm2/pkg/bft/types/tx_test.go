@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/random"
-	"github.com/gnolang/gno/tm2/pkg/testutils"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/testutils"
 )
 
 func makeTxs(cnt, size int) Txs {

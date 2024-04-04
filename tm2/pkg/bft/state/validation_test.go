@@ -6,14 +6,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/mempool/mock"
-	sm "github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
-	"github.com/gnolang/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool/mock"
+	sm "github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
 )
 
 const validationTestsStopHeight int64 = 10

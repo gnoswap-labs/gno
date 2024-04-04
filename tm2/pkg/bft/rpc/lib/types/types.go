@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // a wrapper to emulate a sum type: jsonrpcid = string | int

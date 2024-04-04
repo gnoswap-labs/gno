@@ -14,11 +14,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/p2p/config"
-	"github.com/gnolang/gno/tm2/pkg/p2p/conn"
-	"github.com/gnolang/gno/tm2/pkg/testutils"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p/conn"
+	"github.com/gnoswap-labs/gno/tm2/pkg/testutils"
 )
 
 var cfg *config.P2PConfig

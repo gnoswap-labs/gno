@@ -13,7 +13,7 @@ import (
 	"github.com/jaekwon/testify/require"
 )
 
-const testdataDir = "github.com/gnolang/gno/misc/genstd/testdata/"
+const testdataDir = "github.com/gnoswap-labs/gno/misc/genstd/testdata/"
 
 var initWD = func() string {
 	d, err := os.Getwd()
@@ -178,15 +178,15 @@ func Test_linkFunctions_noMatchSig(t *testing.T) {
 var typesEqualMapping = &mapping{
 	GnoImportPath: "std",
 	GnoFunc:       "Fn",
-	GoImportPath:  "github.com/gnolang/gno/gnovm/stdlibs/std",
+	GoImportPath:  "github.com/gnoswap-labs/gno/gnovm/stdlibs/std",
 	GoFunc:        "Fn",
 	goImports: []*ast.ImportSpec{
 		{
 			Name: &ast.Ident{Name: "gno"},
-			Path: &ast.BasicLit{Value: `"github.com/gnolang/gno/gnovm/pkg/gnolang"`},
+			Path: &ast.BasicLit{Value: `"github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"`},
 		},
 		{
-			Path: &ast.BasicLit{Value: `"github.com/gnolang/gno/tm2/pkg/crypto"`},
+			Path: &ast.BasicLit{Value: `"github.com/gnoswap-labs/gno/tm2/pkg/crypto"`},
 		},
 	},
 	gnoImports: []*ast.ImportSpec{

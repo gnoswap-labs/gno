@@ -3,8 +3,8 @@ package bank
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	"github.com/gnolang/gno/tm2/pkg/sdk/auth"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk/auth"
 )
 
 // RegisterInvariants registers the bank module invariants

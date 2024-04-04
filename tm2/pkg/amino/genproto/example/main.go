@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/amino/genproto"
-	"github.com/gnolang/gno/tm2/pkg/amino/genproto/example/submodule"
-	"github.com/gnolang/gno/tm2/pkg/amino/genproto/example/submodule2"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/genproto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/genproto/example/submodule"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/genproto/example/submodule2"
 )
 
 // amino

@@ -12,10 +12,10 @@ import (
 	tm2Client "github.com/gnolang/faucet/client/http"
 	"github.com/gnolang/faucet/config"
 	"github.com/gnolang/faucet/estimate/static"
-	"github.com/gnolang/gno/gno.land/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 	"go.uber.org/zap/zapcore"
 )
 

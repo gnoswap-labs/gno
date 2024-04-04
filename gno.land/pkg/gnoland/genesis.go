@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	vmm "github.com/gnolang/gno/gno.land/pkg/sdk/vm"
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/pkg/gnomod"
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	vmm "github.com/gnoswap-labs/gno/gno.land/pkg/sdk/vm"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnomod"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 // LoadGenesisBalancesFile loads genesis balances from the provided file path.

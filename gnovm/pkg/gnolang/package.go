@@ -1,11 +1,11 @@
 package gnolang
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
 )
 
 var Package = amino.RegisterPackage(amino.NewPackage(
-	"github.com/gnolang/gno/gnovm/pkg/gnolang",
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnolang",
 	"gno",
 	amino.GetCallersDirname(),
 ).WithDependencies().WithTypes(

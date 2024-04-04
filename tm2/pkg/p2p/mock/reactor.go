@@ -1,9 +1,9 @@
 package mock
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
-	"github.com/gnolang/gno/tm2/pkg/p2p/conn"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p/conn"
 )
 
 type Reactor struct {

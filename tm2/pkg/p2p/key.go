@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
 )
 
 // ------------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/amino/genproto"
-	"github.com/gnolang/gno/tm2/pkg/amino/tests"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/genproto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/tests"
 )
 
 func main() {

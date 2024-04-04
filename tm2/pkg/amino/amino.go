@@ -11,8 +11,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino/pkg"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/pkg"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/timestamppb"

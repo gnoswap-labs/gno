@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/bech32"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bech32"
 )
 
 func AddressToBech32(addr Address) string {

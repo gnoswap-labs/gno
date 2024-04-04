@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/appconn"
-	"github.com/gnolang/gno/tm2/pkg/bft/fail"
-	mempl "github.com/gnolang/gno/tm2/pkg/bft/mempool"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	typesver "github.com/gnolang/gno/tm2/pkg/bft/types/version"
-	tmver "github.com/gnolang/gno/tm2/pkg/bft/version"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/events"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/appconn"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/fail"
+	mempl "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	typesver "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/version"
+	tmver "github.com/gnoswap-labs/gno/tm2/pkg/bft/version"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/events"
 )
 
 // -----------------------------------------------------------------------------

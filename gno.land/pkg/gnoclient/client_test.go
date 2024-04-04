@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 func TestRender(t *testing.T) {

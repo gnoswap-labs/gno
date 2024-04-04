@@ -7,15 +7,15 @@ import (
 	"strings"
 	"time"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	cfg "github.com/gnolang/gno/tm2/pkg/bft/config"
-	nm "github.com/gnolang/gno/tm2/pkg/bft/node"
-	"github.com/gnolang/gno/tm2/pkg/bft/privval"
-	"github.com/gnolang/gno/tm2/pkg/bft/proxy"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpcclient "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/client"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	cfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	nm "github.com/gnoswap-labs/gno/tm2/pkg/bft/node"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/privval"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/proxy"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpcclient "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
 )
 
 // Options helps with specifying some parameters for our RPC testing for greater

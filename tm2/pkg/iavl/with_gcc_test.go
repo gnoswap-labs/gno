@@ -9,8 +9,8 @@ package iavl
 import (
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/db"
-	_ "github.com/gnolang/gno/tm2/pkg/db/cleveldb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/cleveldb"
 )
 
 func BenchmarkImmutableAvlTreeCLevelDB(b *testing.B) {

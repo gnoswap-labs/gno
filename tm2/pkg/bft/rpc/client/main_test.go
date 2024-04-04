@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/kvstore"
-	nm "github.com/gnolang/gno/tm2/pkg/bft/node"
-	rpctest "github.com/gnolang/gno/tm2/pkg/bft/rpc/test"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/kvstore"
+	nm "github.com/gnoswap-labs/gno/tm2/pkg/bft/node"
+	rpctest "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/test"
 )
 
 var node *nm.Node

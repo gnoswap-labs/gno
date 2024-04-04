@@ -4,7 +4,7 @@ package client
 import (
 	"flag"
 
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 
 	"github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/fftoml"

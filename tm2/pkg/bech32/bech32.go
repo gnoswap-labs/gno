@@ -2,7 +2,7 @@ package bech32
 
 import (
 	"github.com/btcsuite/btcd/btcutil/bech32"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // ConvertAndEncode encodes []byte to bech32.

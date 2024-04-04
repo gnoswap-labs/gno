@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	osm "github.com/gnolang/gno/tm2/pkg/os"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 func createTestGroupWithHeadSizeLimit(t *testing.T, headSizeLimit int64) *Group {

@@ -12,10 +12,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/goleveldb"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/goleveldb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 var (

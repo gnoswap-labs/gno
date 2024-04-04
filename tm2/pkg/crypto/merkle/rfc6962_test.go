@@ -20,7 +20,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
 )
 
 func TestRFC6962Hasher(t *testing.T) {

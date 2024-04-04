@@ -87,7 +87,7 @@ func findDirs() (gitRoot string, relPath string, err error) {
 // "Unsafe" characters are removed (ie. invalid for go identifiers).
 func pkgNameFromPath(path string) string {
 	const (
-		repoPrefix     = "github.com/gnolang/gno/"
+		repoPrefix     = "github.com/gnoswap-labs/gno/"
 		vmPrefix       = repoPrefix + "gnovm/"
 		tm2Prefix      = repoPrefix + "tm2/pkg/"
 		libsPrefix     = vmPrefix + "stdlibs/"

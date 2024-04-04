@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 var tickBufferSize = 10

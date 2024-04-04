@@ -38,14 +38,14 @@ import (
 	"time"
 	"unicode/utf8"
 
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/stdlibs"
-	teststdlibs "github.com/gnolang/gno/gnovm/tests/stdlibs"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
-	"github.com/gnolang/gno/tm2/pkg/store/dbadapter"
-	"github.com/gnolang/gno/tm2/pkg/store/iavl"
-	stypes "github.com/gnolang/gno/tm2/pkg/store/types"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/stdlibs"
+	teststdlibs "github.com/gnoswap-labs/gno/gnovm/tests/stdlibs"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/dbadapter"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/iavl"
+	stypes "github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 type importMode uint64
@@ -74,7 +74,7 @@ func TestStore(rootDir, filesPath string, stdin io.Reader, stdout, stderr io.Wri
 
 		if filesPath != "" {
 			// if _test package...
-			const testPath = "github.com/gnolang/gno/_test/"
+			const testPath = "github.com/gnoswap-labs/gno/_test/"
 			if strings.HasPrefix(pkgPath, testPath) {
 				baseDir := filepath.Join(filesPath, "extern", pkgPath[len(testPath):])
 				memPkg := gno.ReadMemPackage(baseDir, pkgPath)

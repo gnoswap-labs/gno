@@ -5,23 +5,23 @@ import (
 	"log/slog"
 	"path/filepath"
 
-	"github.com/gnolang/gno/gno.land/pkg/sdk/vm"
-	"github.com/gnolang/gno/gnovm/pkg/gnoenv"
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	"github.com/gnolang/gno/tm2/pkg/sdk/auth"
-	"github.com/gnolang/gno/tm2/pkg/sdk/bank"
-	"github.com/gnolang/gno/tm2/pkg/std"
-	"github.com/gnolang/gno/tm2/pkg/store"
-	"github.com/gnolang/gno/tm2/pkg/store/dbadapter"
-	"github.com/gnolang/gno/tm2/pkg/store/iavl"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/sdk/vm"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnoenv"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk/auth"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk/bank"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/dbadapter"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/iavl"
 
 	// Only goleveldb is supported for now.
-	_ "github.com/gnolang/gno/tm2/pkg/db/goleveldb"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/goleveldb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
 )
 
 type AppOptions struct {

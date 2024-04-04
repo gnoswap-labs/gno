@@ -7,7 +7,7 @@ import (
 
 	"github.com/jaekwon/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
 )
 
 // Tries to reproduce the bug #1036 on all registered types

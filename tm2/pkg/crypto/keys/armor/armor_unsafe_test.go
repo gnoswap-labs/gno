@@ -3,7 +3,7 @@ package armor
 import (
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/secp256k1"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/secp256k1"
 	"github.com/stretchr/testify/assert"
 )
 

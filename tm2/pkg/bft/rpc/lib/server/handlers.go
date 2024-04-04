@@ -18,11 +18,11 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	types "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	types "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 // RegisterRPCFuncs adds a route for each function in the funcMap, as well as general jsonrpc and websocket handlers for all functions.

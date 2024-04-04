@@ -3,9 +3,9 @@ package p2p
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/state/eventstore"
-	"github.com/gnolang/gno/tm2/pkg/strings"
-	"github.com/gnolang/gno/tm2/pkg/versionset"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/state/eventstore"
+	"github.com/gnoswap-labs/gno/tm2/pkg/strings"
+	"github.com/gnoswap-labs/gno/tm2/pkg/versionset"
 )
 
 const (

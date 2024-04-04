@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
 )
 
 // ValidateTime does a basic time validation ensuring time does not drift too

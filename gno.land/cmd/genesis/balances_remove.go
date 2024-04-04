@@ -6,10 +6,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/gnolang/gno/gno.land/pkg/gnoland"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/gnoland"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 var (

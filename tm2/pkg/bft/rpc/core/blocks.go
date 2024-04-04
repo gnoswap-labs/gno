@@ -3,10 +3,10 @@ package core
 import (
 	"fmt"
 
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	sm "github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	sm "github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 // Get block headers for minHeight <= height <= maxHeight.

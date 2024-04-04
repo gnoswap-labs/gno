@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
 )
 
 // -----------------------------------------------------

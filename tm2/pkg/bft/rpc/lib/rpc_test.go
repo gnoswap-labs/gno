@@ -15,12 +15,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 
-	client "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/client"
-	server "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/server"
-	types "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
+	client "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/client"
+	server "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/server"
+	types "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
 )
 
 // Client and Server should work over tcp or unix sockets

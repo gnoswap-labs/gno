@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 // The code in this file is adapted from agl/ed25519.

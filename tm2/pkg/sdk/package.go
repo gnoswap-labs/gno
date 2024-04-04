@@ -1,12 +1,12 @@
 package sdk
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
 )
 
 var Package = amino.RegisterPackage(amino.NewPackage(
-	"github.com/gnolang/gno/tm2/pkg/sdk",
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk",
 	"tm",
 	amino.GetCallersDirname(),
 ).

@@ -3,10 +3,10 @@ package client
 import (
 	"net/http"
 
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpcclient "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/client"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpcclient "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 /*

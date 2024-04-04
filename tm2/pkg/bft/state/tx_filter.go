@@ -1,8 +1,8 @@
 package state
 
 import (
-	mempl "github.com/gnolang/gno/tm2/pkg/bft/mempool"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	mempl "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 // TxPreCheck returns a function to filter transactions before processing.

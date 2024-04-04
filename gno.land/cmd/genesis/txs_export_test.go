@@ -5,11 +5,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/gnolang/gno/gno.land/pkg/gnoland"
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/std"
-	"github.com/gnolang/gno/tm2/pkg/testutils"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/gnoland"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

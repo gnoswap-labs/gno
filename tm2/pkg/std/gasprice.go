@@ -3,7 +3,7 @@ package std
 import (
 	"strings"
 
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // minimum gas price is Price/Gas per gas unit.

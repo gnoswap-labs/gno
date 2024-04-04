@@ -10,9 +10,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gnolang/gno/gnovm/pkg/gnoenv"
-	"github.com/gnolang/gno/gnovm/pkg/repl"
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnoenv"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/repl"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 )
 
 type replCfg struct {

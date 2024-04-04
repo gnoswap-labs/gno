@@ -82,7 +82,7 @@ func inferRootFromGoMod() (string, error) {
 		return "", fmt.Errorf("unable to find `go` binary: %w", err)
 	}
 
-	cmd := exec.Command(gobin, "list", "-m", "-mod=mod", "-f", "{{.Dir}}", "github.com/gnolang/gno")
+	cmd := exec.Command(gobin, "list", "-m", "-mod=mod", "-f", "{{.Dir}}", "github.com/gnoswap-labs/gno")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return "", fmt.Errorf("unable to infer GnoRoot from go.mod: %w", err)

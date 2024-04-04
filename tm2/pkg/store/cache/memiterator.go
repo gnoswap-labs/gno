@@ -3,8 +3,8 @@ package cache
 import (
 	"container/list"
 
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 // Iterates over iterKVCache items.

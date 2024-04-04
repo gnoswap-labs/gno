@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
 )
 
 // ImmutableTree is a container for an immutable AVL+ ImmutableTree. Changes are performed by

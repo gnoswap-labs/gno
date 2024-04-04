@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
 )
 
 // bytesOrNil returns nil if the input is nil, otherwise returns

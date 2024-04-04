@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/bech32"
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bech32"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
 )
 
 // ----------------------------------------

@@ -1,12 +1,12 @@
 syntax = "proto3";
 package tm;
 
-option go_package = "github.com/gnolang/gno/tm2/pkg/bft/types/pb";
+option go_package = "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/pb";
 
 // imports
-import "github.com/gnolang/gno/tm2/pkg/bft/abci/types/abci.proto";
-import "github.com/gnolang/gno/tm2/pkg/crypto/merkle/merkle.proto";
-import "github.com/gnolang/gno/tm2/pkg/bitarray/bitarray.proto";
+import "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types/abci.proto";
+import "github.com/gnoswap-labs/gno/tm2/pkg/crypto/merkle/merkle.proto";
+import "github.com/gnoswap-labs/gno/tm2/pkg/bitarray/bitarray.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 

@@ -3,10 +3,10 @@ package mock
 import (
 	"net"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
-	"github.com/gnolang/gno/tm2/pkg/p2p/conn"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p/conn"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 type Peer struct {

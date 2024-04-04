@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/config"
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 )
 
 var errInvalidConfigGetArgs = errors.New("invalid number of config get arguments provided")

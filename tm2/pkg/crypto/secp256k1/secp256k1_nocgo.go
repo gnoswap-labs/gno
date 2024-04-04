@@ -7,7 +7,7 @@ import (
 	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 // Sign creates an ECDSA signature on curve Secp256k1, using SHA256 on the msg.

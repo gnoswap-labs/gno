@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/_test/ct1"
+	"github.com/gnoswap-labs/gno/_test/ct1"
 )
 
 type T struct {

@@ -2,8 +2,8 @@
 package keyscli
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys/client"
 
 	"github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/fftoml"

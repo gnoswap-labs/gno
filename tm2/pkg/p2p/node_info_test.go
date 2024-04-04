@@ -5,8 +5,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	"github.com/gnolang/gno/tm2/pkg/versionset"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/versionset"
 	"github.com/stretchr/testify/assert"
 )
 

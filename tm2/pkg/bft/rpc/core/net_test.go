@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
-	p2pcfg "github.com/gnolang/gno/tm2/pkg/p2p/config"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
+	p2pcfg "github.com/gnoswap-labs/gno/tm2/pkg/p2p/config"
 )
 
 func TestUnsafeDialSeeds(t *testing.T) {

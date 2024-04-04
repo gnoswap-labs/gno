@@ -5,9 +5,9 @@ import (
 	"log/slog"
 	"net"
 
-	"github.com/gnolang/gno/tm2/pkg/cmap"
-	connm "github.com/gnolang/gno/tm2/pkg/p2p/conn"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/cmap"
+	connm "github.com/gnoswap-labs/gno/tm2/pkg/p2p/conn"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 // Peer is an interface representing a peer connected on a reactor.

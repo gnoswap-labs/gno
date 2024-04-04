@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gnolang/gno/_test/tata" // pkg name is actually tutu
-	"github.com/gnolang/gno/_test/toto" // pkg name is actually titi
+	"github.com/gnoswap-labs/gno/_test/tata" // pkg name is actually tutu
+	"github.com/gnoswap-labs/gno/_test/toto" // pkg name is actually titi
 )
 
 func main() {

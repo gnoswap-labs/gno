@@ -17,7 +17,7 @@ package crypto_test
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 func ExampleSha256() {

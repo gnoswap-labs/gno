@@ -1,9 +1,9 @@
 package state
 
 import (
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
 )
 
 //

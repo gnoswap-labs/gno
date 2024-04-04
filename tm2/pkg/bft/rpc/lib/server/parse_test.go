@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	types "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
+	types "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
 )
 
 func TestParseJSONMap(t *testing.T) {

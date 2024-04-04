@@ -1,10 +1,10 @@
 package dbadapter
 
 import (
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
 
-	"github.com/gnolang/gno/tm2/pkg/store/cache"
-	"github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/cache"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 // Implements CommitStoreConstructor.

@@ -3,8 +3,8 @@ package stdlibs
 //go:generate go run github.com/gnolang/gno/misc/genstd
 
 import (
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	libsstd "github.com/gnolang/gno/gnovm/stdlibs/std"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	libsstd "github.com/gnoswap-labs/gno/gnovm/stdlibs/std"
 )
 
 type ExecContext = libsstd.ExecContext

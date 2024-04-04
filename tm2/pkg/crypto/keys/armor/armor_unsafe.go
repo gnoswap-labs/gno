@@ -3,9 +3,9 @@ package armor
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/armor"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/armor"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 var emptyArmorHeader = map[string]string{}

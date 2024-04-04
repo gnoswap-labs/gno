@@ -3,7 +3,7 @@ package main
 import (
 	"strings"
 
-	"github.com/gnolang/gno/_test/net"
+	"github.com/gnoswap-labs/gno/_test/net"
 )
 
 type ipNetValue net.IPNet

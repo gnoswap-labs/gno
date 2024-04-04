@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
 )
 
 func TestWriteDOTGraph(t *testing.T) {

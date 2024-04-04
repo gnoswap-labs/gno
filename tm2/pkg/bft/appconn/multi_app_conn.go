@@ -1,9 +1,9 @@
 package appconn
 
 import (
-	abcicli "github.com/gnolang/gno/tm2/pkg/bft/abci/client"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	abcicli "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 //-----------------------------

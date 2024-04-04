@@ -4,12 +4,12 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/armor"
-	"github.com/gnolang/gno/tm2/pkg/crypto/bcrypt"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys/keyerror"
-	"github.com/gnolang/gno/tm2/pkg/crypto/xsalsa20symmetric"
-	"github.com/gnolang/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/armor"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/bcrypt"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys/keyerror"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/xsalsa20symmetric"
+	"github.com/gnoswap-labs/gno/tm2/pkg/os"
 )
 
 const (

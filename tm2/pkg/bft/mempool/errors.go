@@ -3,7 +3,7 @@ package mempool
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // ErrTxInCache is returned to the client if we saw tx earlier

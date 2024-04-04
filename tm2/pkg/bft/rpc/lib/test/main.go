@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gnolang/gno/tm2/pkg/log"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
 
-	rpcserver "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/server"
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
+	rpcserver "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/server"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
 )
 
 var routes = map[string]*rpcserver.RPCFunc{

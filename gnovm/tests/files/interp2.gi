@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/gnolang/gno/interp"
+	"github.com/gnoswap-labs/gno/interp"
 )
 
 func main() {
 	i := interp.New(interp.Opt{})
 	i.Use(interp.ExportValue, interp.ExportType)
-	i.Eval(`import "github.com/gnolang/gno/interp"`)
+	i.Eval(`import "github.com/gnoswap-labs/gno/interp"`)
 	i.Eval(`i := interp.New(interp.Opt{})`)
 	i.Eval(`i.Eval("println(42)")`)
 }

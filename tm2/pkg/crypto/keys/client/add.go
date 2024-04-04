@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/bip39"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys"
-	"github.com/gnolang/gno/tm2/pkg/crypto/multisig"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/bip39"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/multisig"
 )
 
 type AddCfg struct {

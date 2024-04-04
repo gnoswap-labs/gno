@@ -1,6 +1,6 @@
 package tools
 
 import (
-	_ "github.com/gnolang/gno/gno.land/cmd/gnoland"
 	_ "github.com/gnolang/tx-archive/cmd"
+	_ "github.com/gnoswap-labs/gno/gno.land/cmd/gnoland"
 )

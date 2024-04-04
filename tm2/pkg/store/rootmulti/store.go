@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto/merkle"
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/merkle"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 
-	"github.com/gnolang/gno/tm2/pkg/store/cachemulti"
-	serrors "github.com/gnolang/gno/tm2/pkg/store/errors"
-	"github.com/gnolang/gno/tm2/pkg/store/immut"
-	"github.com/gnolang/gno/tm2/pkg/store/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/cachemulti"
+	serrors "github.com/gnoswap-labs/gno/tm2/pkg/store/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/immut"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/types"
 )
 
 const (

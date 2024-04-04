@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gnolang/gno/_test/net/http"
+	"github.com/gnoswap-labs/gno/_test/net/http"
 )
 
 type extendedRequest struct {

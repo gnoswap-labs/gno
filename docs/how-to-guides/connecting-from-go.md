@@ -80,8 +80,8 @@ For this example, we will initialize the `Signer` from a local keybase:
 package main
 
 import (
-	"github.com/gnolang/gno/gno.land/pkg/gnoclient"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/gnoclient"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys"
 )
 
 func main() {
@@ -121,8 +121,8 @@ With this, we can initialize the `gnoclient.Client` struct:
 package main
 
 import (
-	"github.com/gnolang/gno/gno.land/pkg/gnoclient"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/gnoclient"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys"
 )
 
 func main() {

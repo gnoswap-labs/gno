@@ -14,11 +14,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/flow"
-	"github.com/gnolang/gno/tm2/pkg/service"
-	"github.com/gnolang/gno/tm2/pkg/timer"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/flow"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/timer"
 )
 
 const (

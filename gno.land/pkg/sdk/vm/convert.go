@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/cockroachdb/apd/v3"
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
 )
 
 func assertCharNotPlus(b byte) {

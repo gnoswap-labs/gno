@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	tu "github.com/gnolang/gno/tm2/pkg/sdk/testutils"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	tu "github.com/gnoswap-labs/gno/tm2/pkg/sdk/testutils"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 func TestInvalidMsg(t *testing.T) {

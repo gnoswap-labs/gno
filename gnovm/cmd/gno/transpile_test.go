@@ -6,7 +6,7 @@ import (
 	"github.com/rogpeppe/go-internal/testscript"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/gnovm/pkg/integration"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/integration"
 )
 
 func Test_ScriptsTranspile(t *testing.T) {

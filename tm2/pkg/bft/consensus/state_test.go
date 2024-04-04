@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	cstypes "github.com/gnolang/gno/tm2/pkg/bft/consensus/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/events"
-	p2pmock "github.com/gnolang/gno/tm2/pkg/p2p/mock"
-	"github.com/gnolang/gno/tm2/pkg/random"
-	"github.com/gnolang/gno/tm2/pkg/testutils"
+	cstypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/events"
+	p2pmock "github.com/gnoswap-labs/gno/tm2/pkg/p2p/mock"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/testutils"
 )
 
 /*

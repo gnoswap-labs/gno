@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/amino/genproto/stringutil"
-	"github.com/gnolang/gno/tm2/pkg/amino/pkg"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/genproto/stringutil"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/pkg"
 )
 
 // TODO sort

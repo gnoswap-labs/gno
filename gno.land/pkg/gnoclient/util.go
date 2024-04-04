@@ -1,6 +1,6 @@
 package gnoclient
 
-import "github.com/gnolang/gno/tm2/pkg/std"
+import "github.com/gnoswap-labs/gno/tm2/pkg/std"
 
 func (cfg BaseTxCfg) validateBaseTxConfig() error {
 	if cfg.GasWanted <= 0 {

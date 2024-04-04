@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
 )
 
 // PrivValidator defines the functionality of a local Tendermint validator

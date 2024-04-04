@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // ErrVersionDoesNotExist is returned if a requested version does not exist.

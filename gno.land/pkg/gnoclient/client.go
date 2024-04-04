@@ -1,7 +1,7 @@
 package gnoclient
 
 import (
-	rpcclient "github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
+	rpcclient "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
 )
 
 // Client provides an interface for interacting with the blockchain.

@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/store"
-	"github.com/gnolang/gno/tm2/pkg/store/gas"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/gas"
 )
 
 /*

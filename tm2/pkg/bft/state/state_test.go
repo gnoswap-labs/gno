@@ -10,16 +10,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	cfg "github.com/gnolang/gno/tm2/pkg/bft/config"
-	sm "github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	_ "github.com/gnolang/gno/tm2/pkg/db/_tags"
-	_ "github.com/gnolang/gno/tm2/pkg/db/goleveldb"
-	_ "github.com/gnolang/gno/tm2/pkg/db/memdb"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	cfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	sm "github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/_tags"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/goleveldb"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 // setupTestCase does setup common to all test cases.

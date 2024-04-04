@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/config"
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

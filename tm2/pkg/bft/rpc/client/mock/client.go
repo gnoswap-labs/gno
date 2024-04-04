@@ -17,12 +17,12 @@ want to directly call a tendermint node in process, you can use the
 import (
 	"reflect"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/core"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 // Client wraps arbitrary implementations of the various interfaces.

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/gnolang/gno/_test/foo"
+import "github.com/gnoswap-labs/gno/_test/foo"
 
 func main() { println(foo.Bar, foo.Boo) }
 

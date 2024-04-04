@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/amino/libs/press"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/libs/press"
 )
 
 type SampleStruct struct {

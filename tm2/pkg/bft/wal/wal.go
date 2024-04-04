@@ -12,12 +12,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	auto "github.com/gnolang/gno/tm2/pkg/autofile"
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
-	"github.com/gnolang/gno/tm2/pkg/service"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	auto "github.com/gnoswap-labs/gno/tm2/pkg/autofile"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/tm2/pkg/service"
 )
 
 const (

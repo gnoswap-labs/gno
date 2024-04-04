@@ -1,6 +1,6 @@
 package vm
 
-import "github.com/gnolang/gno/tm2/pkg/errors"
+import "github.com/gnoswap-labs/gno/tm2/pkg/errors"
 
 // for convenience:
 type abciError struct{}

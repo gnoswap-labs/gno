@@ -44,7 +44,7 @@ func TestFullNameForType(t *testing.T) {
 	t.Parallel()
 
 	// The Go package depends on how this test is invoked.
-	// Sometimes it is "github.com/gnolang/gno/tm2/pkg/amino/packagepkg_test".
+	// Sometimes it is "github.com/gnoswap-labs/gno/tm2/pkg/amino/packagepkg_test".
 	// Sometimes it is "command-line-arguments"
 	// Sometimes it is "command-line-arguments_test"
 	gopkg := reflect.TypeOf(Foo{}).PkgPath()

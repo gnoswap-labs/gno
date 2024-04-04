@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/gnolang/gno/gnovm/pkg/gnoenv"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnoenv"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
 	"github.com/rogpeppe/go-internal/testscript"
 )
 

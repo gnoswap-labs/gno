@@ -9,16 +9,16 @@ import (
 	"github.com/fortytw2/leaktest"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/kvstore"
-	memcfg "github.com/gnolang/gno/tm2/pkg/bft/mempool/config"
-	"github.com/gnolang/gno/tm2/pkg/bft/proxy"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
-	p2pcfg "github.com/gnolang/gno/tm2/pkg/p2p/config"
-	"github.com/gnolang/gno/tm2/pkg/p2p/mock"
-	"github.com/gnolang/gno/tm2/pkg/testutils"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/kvstore"
+	memcfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/proxy"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
+	p2pcfg "github.com/gnoswap-labs/gno/tm2/pkg/p2p/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p/mock"
+	"github.com/gnoswap-labs/gno/tm2/pkg/testutils"
 )
 
 type peerState struct {

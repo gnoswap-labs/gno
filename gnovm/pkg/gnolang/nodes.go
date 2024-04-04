@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 // ----------------------------------------

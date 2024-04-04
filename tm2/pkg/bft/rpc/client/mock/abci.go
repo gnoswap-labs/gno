@@ -1,10 +1,10 @@
 package mock
 
 import (
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 // ABCIApp will send all abci related request to the named app,

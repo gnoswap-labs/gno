@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/kvstore"
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	rpctest "github.com/gnolang/gno/tm2/pkg/bft/rpc/test"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/kvstore"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	rpctest "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/test"
 )
 
 func ExampleHTTP_simple() {

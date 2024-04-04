@@ -7,11 +7,11 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	sm "github.com/gnolang/gno/tm2/pkg/bft/state"
-	"github.com/gnolang/gno/tm2/pkg/bft/store"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/p2p"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	sm "github.com/gnoswap-labs/gno/tm2/pkg/bft/state"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/store"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
 )
 
 const (

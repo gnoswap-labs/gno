@@ -10,11 +10,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gnolang/gno/gnovm/pkg/gnoenv"
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/tests"
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnoenv"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/tests"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
 )
 
 type lintCfg struct {

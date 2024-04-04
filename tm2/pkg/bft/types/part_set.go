@@ -6,10 +6,10 @@ import (
 	"io"
 	"sync"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/bitarray"
-	"github.com/gnolang/gno/tm2/pkg/crypto/merkle"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bitarray"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/merkle"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 var (

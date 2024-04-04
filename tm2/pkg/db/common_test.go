@@ -6,8 +6,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/internal"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/internal"
 	"github.com/jaekwon/testify/assert"
 	"github.com/jaekwon/testify/require"
 )

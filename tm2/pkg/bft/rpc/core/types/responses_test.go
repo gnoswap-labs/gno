@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/gnolang/gno/tm2/pkg/p2p"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p"
 )
 
 func TestStatusIndexer(t *testing.T) {

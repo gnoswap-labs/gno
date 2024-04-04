@@ -3,12 +3,12 @@ package gnoclient
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	rpcclient "github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	rpcclient "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 // QueryCfg contains configuration options for performing ABCI queries.

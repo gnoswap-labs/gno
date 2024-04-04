@@ -10,8 +10,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gnolang/gno/gnovm/pkg/transpiler"
-	"github.com/gnolang/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/transpiler"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
 )
 
 type importPath string

@@ -3,8 +3,8 @@ package gnomod
 import (
 	"fmt"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/rpc/client"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/client"
 )
 
 func queryChain(remote string, qpath string, data []byte) (res *abci.ResponseQuery, err error) {

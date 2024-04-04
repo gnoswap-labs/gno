@@ -3,10 +3,10 @@ package gnoclient
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/gno.land/pkg/sdk/vm"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/sdk/vm"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 // Signer provides an interface for signing transactions.

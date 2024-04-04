@@ -1,8 +1,8 @@
 package fuzzbinary
 
 import (
-	amino "github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/amino/tests"
+	amino "github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/tests"
 )
 
 //-------------------------------------

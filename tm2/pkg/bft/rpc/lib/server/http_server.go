@@ -14,8 +14,8 @@ import (
 
 	"golang.org/x/net/netutil"
 
-	types "github.com/gnolang/gno/tm2/pkg/bft/rpc/lib/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	types "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/lib/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // Config is a RPC server configuration.

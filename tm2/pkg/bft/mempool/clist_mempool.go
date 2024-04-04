@@ -10,15 +10,15 @@ import (
 	"sync/atomic"
 	"time"
 
-	auto "github.com/gnolang/gno/tm2/pkg/autofile"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/appconn"
-	cfg "github.com/gnolang/gno/tm2/pkg/bft/mempool/config"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/clist"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
+	auto "github.com/gnoswap-labs/gno/tm2/pkg/autofile"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/appconn"
+	cfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/clist"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
 )
 
 // --------------------------------------------------------------------------------

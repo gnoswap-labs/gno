@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/gnolang/gno/contribs/gnodev/pkg/events"
+	"github.com/gnoswap-labs/gno/contribs/gnodev/pkg/events"
 	"github.com/gorilla/websocket"
 )
 

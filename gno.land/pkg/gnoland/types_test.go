@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 	"github.com/jaekwon/testify/assert"
 	"github.com/jaekwon/testify/require"
 )

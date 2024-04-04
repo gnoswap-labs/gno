@@ -7,8 +7,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
-	p2pconn "github.com/gnolang/gno/tm2/pkg/p2p/conn"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ed25519"
+	p2pconn "github.com/gnoswap-labs/gno/tm2/pkg/p2p/conn"
 )
 
 var (

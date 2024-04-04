@@ -1,13 +1,13 @@
 package consensus
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	cstypes "github.com/gnolang/gno/tm2/pkg/bft/consensus/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	cstypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 var Package = amino.RegisterPackage(amino.NewPackage(
-	"github.com/gnolang/gno/tm2/pkg/bft/consensus",
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus",
 	"tm",
 	amino.GetCallersDirname(),
 ).

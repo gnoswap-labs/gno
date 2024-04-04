@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/errors"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/db"
-	_ "github.com/gnolang/gno/tm2/pkg/db/goleveldb"
-	"github.com/gnolang/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/errors"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/goleveldb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
 )
 
 const (

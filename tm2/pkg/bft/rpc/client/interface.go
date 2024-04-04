@@ -21,8 +21,8 @@ implementation.
 */
 
 import (
-	ctypes "github.com/gnolang/gno/tm2/pkg/bft/rpc/core/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
+	ctypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/core/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 // Client wraps most important rpc calls a client would make.

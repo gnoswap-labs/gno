@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/p2p/config"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/p2p/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 // FuzzedConnection wraps any net.Conn and depending on the mode either delays

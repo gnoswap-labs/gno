@@ -6,8 +6,8 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/crypto/bip39"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/bip39"
 )
 
 type GenerateCfg struct {

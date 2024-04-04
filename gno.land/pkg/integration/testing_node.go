@@ -5,13 +5,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/gnolang/gno/gno.land/pkg/gnoland"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	tmcfg "github.com/gnolang/gno/tm2/pkg/bft/config"
-	"github.com/gnolang/gno/tm2/pkg/bft/node"
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/gnoland"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	tmcfg "github.com/gnoswap-labs/gno/tm2/pkg/bft/config"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/node"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 	"github.com/jaekwon/testify/require"
 )
 

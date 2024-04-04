@@ -6,13 +6,13 @@ package stdlibs
 import (
 	"reflect"
 
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	libs_crypto_sha256 "github.com/gnolang/gno/gnovm/stdlibs/crypto/sha256"
-	libs_math "github.com/gnolang/gno/gnovm/stdlibs/math"
-	libs_std "github.com/gnolang/gno/gnovm/stdlibs/std"
-	libs_strconv "github.com/gnolang/gno/gnovm/stdlibs/strconv"
-	libs_testing "github.com/gnolang/gno/gnovm/stdlibs/testing"
-	libs_time "github.com/gnolang/gno/gnovm/stdlibs/time"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	libs_crypto_sha256 "github.com/gnoswap-labs/gno/gnovm/stdlibs/crypto/sha256"
+	libs_math "github.com/gnoswap-labs/gno/gnovm/stdlibs/math"
+	libs_std "github.com/gnoswap-labs/gno/gnovm/stdlibs/std"
+	libs_strconv "github.com/gnoswap-labs/gno/gnovm/stdlibs/strconv"
+	libs_testing "github.com/gnoswap-labs/gno/gnovm/stdlibs/testing"
+	libs_time "github.com/gnoswap-labs/gno/gnovm/stdlibs/time"
 )
 
 type nativeFunc struct {

@@ -12,8 +12,8 @@ import (
 	"io"
 	"text/template"
 
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/tests"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/tests"
 )
 
 const (

@@ -1,6 +1,6 @@
 package eventstore
 
-import "github.com/gnolang/gno/tm2/pkg/bft/types"
+import "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 
 const (
 	StatusOn  = "on"

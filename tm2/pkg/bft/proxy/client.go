@@ -3,10 +3,10 @@ package proxy
 import (
 	"sync"
 
-	abcicli "github.com/gnolang/gno/tm2/pkg/bft/abci/client"
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/counter"
-	"github.com/gnolang/gno/tm2/pkg/bft/abci/example/kvstore"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
+	abcicli "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/client"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/counter"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/example/kvstore"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
 )
 
 // NewABCIClient returns newly connected client

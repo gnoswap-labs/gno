@@ -1,13 +1,13 @@
 package cstypes
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	btypes "github.com/gnolang/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	btypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
 )
 
 var Package = amino.RegisterPackage(amino.NewPackage(
-	"github.com/gnolang/gno/tm2/pkg/bft/consensus/types",
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/types",
 	"tm",
 	amino.GetCallersDirname(),
 ).

@@ -1,6 +1,6 @@
 package config
 
-import "github.com/gnolang/gno/tm2/pkg/errors"
+import "github.com/gnoswap-labs/gno/tm2/pkg/errors"
 
 // -----------------------------------------------------------------------------
 // MempoolConfig

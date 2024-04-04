@@ -7,15 +7,15 @@ import (
 	"regexp"
 
 	"dario.cat/mergo"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	cns "github.com/gnolang/gno/tm2/pkg/bft/consensus/config"
-	mem "github.com/gnolang/gno/tm2/pkg/bft/mempool/config"
-	rpc "github.com/gnolang/gno/tm2/pkg/bft/rpc/config"
-	eventstore "github.com/gnolang/gno/tm2/pkg/bft/state/eventstore/types"
-	"github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
-	p2p "github.com/gnolang/gno/tm2/pkg/p2p/config"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	cns "github.com/gnoswap-labs/gno/tm2/pkg/bft/consensus/config"
+	mem "github.com/gnoswap-labs/gno/tm2/pkg/bft/mempool/config"
+	rpc "github.com/gnoswap-labs/gno/tm2/pkg/bft/rpc/config"
+	eventstore "github.com/gnoswap-labs/gno/tm2/pkg/bft/state/eventstore/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
+	p2p "github.com/gnoswap-labs/gno/tm2/pkg/p2p/config"
 )
 
 var (

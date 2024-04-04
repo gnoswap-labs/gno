@@ -4,8 +4,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/internal/benchmarking"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/internal/benchmarking"
 )
 
 func BenchmarkKeyGeneration(b *testing.B) {

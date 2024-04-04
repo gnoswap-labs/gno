@@ -1,7 +1,7 @@
 package std
 
 import (
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
 )
 
 func TVParam(p gno.TypedValue) {

@@ -3,11 +3,11 @@ package file
 import (
 	"fmt"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/autofile"
-	storetypes "github.com/gnolang/gno/tm2/pkg/bft/state/eventstore/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/autofile"
+	storetypes "github.com/gnoswap-labs/gno/tm2/pkg/bft/state/eventstore/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 const (

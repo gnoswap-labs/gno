@@ -1,6 +1,6 @@
 package internal
 
-import "github.com/gnolang/gno/tm2/pkg/db"
+import "github.com/gnoswap-labs/gno/tm2/pkg/db"
 
 // We need a copy of all of the keys.
 // Not the best, but probably not a bottleneck depending.

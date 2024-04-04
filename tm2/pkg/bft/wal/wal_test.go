@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	auto "github.com/gnolang/gno/tm2/pkg/autofile"
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	"github.com/gnolang/gno/tm2/pkg/log"
-	"github.com/gnolang/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	auto "github.com/gnoswap-labs/gno/tm2/pkg/autofile"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
 )
 
 const (
@@ -30,7 +30,7 @@ type TestMessage struct {
 func (TestMessage) AssertWALMessage() {}
 
 var _ = amino.RegisterPackage(amino.NewPackage(
-	"github.com/gnolang/gno/tm2/pkg/bft/wal",
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/wal",
 	"wal",
 	amino.GetCallersDirname(),
 ).

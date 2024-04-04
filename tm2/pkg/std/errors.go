@@ -1,7 +1,7 @@
 package std
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 // for convenience:

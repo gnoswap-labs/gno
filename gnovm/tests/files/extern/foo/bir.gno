@@ -1,5 +1,5 @@
 package foo
 
-import "github.com/gnolang/gno/_test/foo/boo"
+import "github.com/gnoswap-labs/gno/_test/foo/boo"
 
 var Bir = boo.Boo + "22"

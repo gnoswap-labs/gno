@@ -1,16 +1,16 @@
 package auth
 
 import (
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	"github.com/gnolang/gno/tm2/pkg/log"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/log"
 
-	"github.com/gnolang/gno/tm2/pkg/sdk"
-	"github.com/gnolang/gno/tm2/pkg/std"
-	"github.com/gnolang/gno/tm2/pkg/store"
-	"github.com/gnolang/gno/tm2/pkg/store/iavl"
+	"github.com/gnoswap-labs/gno/tm2/pkg/sdk"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store/iavl"
 )
 
 type testEnv struct {

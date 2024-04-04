@@ -1,7 +1,7 @@
 package merkle
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/crypto/tmhash"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/tmhash"
 )
 
 // TODO: make these have a large predefined capacity

@@ -3,8 +3,8 @@ package sdk
 import (
 	"fmt"
 
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/store"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/store"
 )
 
 // File for storing in-package BaseApp optional functions,

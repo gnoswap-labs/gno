@@ -66,8 +66,8 @@ which should look like the following:
 package main
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	"github.com/gnolang/gno/tm2/pkg/amino/genproto/example/submodule"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino/genproto/example/submodule"
 )
 
 var Package = amino.RegisterPackage(

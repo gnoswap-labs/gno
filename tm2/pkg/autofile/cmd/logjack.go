@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	auto "github.com/gnolang/gno/tm2/pkg/autofile"
-	"github.com/gnolang/gno/tm2/pkg/flow"
-	osm "github.com/gnolang/gno/tm2/pkg/os"
+	auto "github.com/gnoswap-labs/gno/tm2/pkg/autofile"
+	"github.com/gnoswap-labs/gno/tm2/pkg/flow"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gnolang/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
 )
 
 // Empty iterator for empty db.

@@ -17,16 +17,16 @@ import (
 
 	"go.uber.org/multierr"
 
-	"github.com/gnolang/gno/gnovm/pkg/gnoenv"
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/pkg/gnomod"
-	"github.com/gnolang/gno/gnovm/pkg/transpiler"
-	"github.com/gnolang/gno/gnovm/tests"
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/errors"
-	"github.com/gnolang/gno/tm2/pkg/random"
-	"github.com/gnolang/gno/tm2/pkg/std"
-	"github.com/gnolang/gno/tm2/pkg/testutils"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnoenv"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnomod"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/transpiler"
+	"github.com/gnoswap-labs/gno/gnovm/tests"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/random"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/testutils"
 )
 
 type testCfg struct {

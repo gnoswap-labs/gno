@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/internal"
 	"github.com/gnolang/goleveldb/leveldb"
 	"github.com/gnolang/goleveldb/leveldb/errors"
 	"github.com/gnolang/goleveldb/leveldb/iterator"
 	"github.com/gnolang/goleveldb/leveldb/opt"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/internal"
 )
 
 func init() {

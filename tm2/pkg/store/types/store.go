@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	std "github.com/gnolang/gno/tm2/pkg/std"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	std "github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 type Store interface {

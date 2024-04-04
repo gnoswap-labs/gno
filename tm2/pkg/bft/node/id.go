@@ -3,7 +3,7 @@ package node
 import (
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 type NodeID struct {

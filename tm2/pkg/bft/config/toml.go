@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	osm "github.com/gnolang/gno/tm2/pkg/os"
+	osm "github.com/gnoswap-labs/gno/tm2/pkg/os"
 	"github.com/pelletier/go-toml"
 )
 

@@ -3,11 +3,11 @@ package dev
 import (
 	"fmt"
 
-	vmm "github.com/gnolang/gno/gno.land/pkg/sdk/vm"
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/pkg/gnomod"
-	bft "github.com/gnolang/gno/tm2/pkg/bft/types"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	vmm "github.com/gnoswap-labs/gno/gno.land/pkg/sdk/vm"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnomod"
+	bft "github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 type PkgsMap map[string]gnomod.Pkg

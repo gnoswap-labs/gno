@@ -8,11 +8,11 @@ import (
 	"time"
 
 	// for static files
-	"github.com/gnolang/gno/gno.land/pkg/gnoweb"
-	"github.com/gnolang/gno/gno.land/pkg/log"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/gnoweb"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/log"
 	"go.uber.org/zap/zapcore"
 	// for error types
-	// "github.com/gnolang/gno/tm2/pkg/sdk"               // for baseapp (info, status)
+	// "github.com/gnoswap-labs/gno/tm2/pkg/sdk"               // for baseapp (info, status)
 )
 
 func main() {

@@ -10,8 +10,8 @@ import (
 
 	"github.com/jaekwon/testify/assert"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 )
 
 func TestVMKeeperAddPackage(t *testing.T) {

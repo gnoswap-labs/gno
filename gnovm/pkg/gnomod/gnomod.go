@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gnolang/gno/gnovm/pkg/gnoenv"
-	"github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/pkg/transpiler"
-	"github.com/gnolang/gno/tm2/pkg/std"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnoenv"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/transpiler"
+	"github.com/gnoswap-labs/gno/tm2/pkg/std"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
 )

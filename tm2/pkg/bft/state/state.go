@@ -6,13 +6,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/gnolang/gno/tm2/pkg/amino"
-	abci "github.com/gnolang/gno/tm2/pkg/bft/abci/types"
-	"github.com/gnolang/gno/tm2/pkg/bft/types"
-	tmtime "github.com/gnolang/gno/tm2/pkg/bft/types/time"
-	typesver "github.com/gnolang/gno/tm2/pkg/bft/types/version"
-	tmver "github.com/gnolang/gno/tm2/pkg/bft/version"
-	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/amino"
+	abci "github.com/gnoswap-labs/gno/tm2/pkg/bft/abci/types"
+	"github.com/gnoswap-labs/gno/tm2/pkg/bft/types"
+	tmtime "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/time"
+	typesver "github.com/gnoswap-labs/gno/tm2/pkg/bft/types/version"
+	tmver "github.com/gnoswap-labs/gno/tm2/pkg/bft/version"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
 )
 
 // database keys

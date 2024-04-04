@@ -2,8 +2,8 @@
 package stdlibs
 
 import (
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/stdlibs"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/stdlibs"
 )
 
 //go:generate go run github.com/gnolang/gno/misc/genstd

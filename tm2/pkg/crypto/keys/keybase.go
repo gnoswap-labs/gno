@@ -5,16 +5,16 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/bip39"
-	"github.com/gnolang/gno/tm2/pkg/crypto/hd"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys/armor"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys/keyerror"
-	"github.com/gnolang/gno/tm2/pkg/crypto/ledger"
-	"github.com/gnolang/gno/tm2/pkg/crypto/secp256k1"
-	dbm "github.com/gnolang/gno/tm2/pkg/db"
-	"github.com/gnolang/gno/tm2/pkg/db/memdb"
-	"github.com/gnolang/gno/tm2/pkg/errors"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/bip39"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/hd"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys/armor"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys/keyerror"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/ledger"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/secp256k1"
+	dbm "github.com/gnoswap-labs/gno/tm2/pkg/db"
+	"github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
+	"github.com/gnoswap-labs/gno/tm2/pkg/errors"
 )
 
 var _ Keybase = dbKeybase{}

@@ -3,8 +3,8 @@ package time
 import (
 	"time"
 
-	gno "github.com/gnolang/gno/gnovm/pkg/gnolang"
-	"github.com/gnolang/gno/gnovm/stdlibs/std"
+	gno "github.com/gnoswap-labs/gno/gnovm/pkg/gnolang"
+	"github.com/gnoswap-labs/gno/gnovm/stdlibs/std"
 )
 
 func X_now(m *gno.Machine) (sec int64, nsec int32, mono int64) {

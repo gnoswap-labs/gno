@@ -3,8 +3,8 @@
 package secp256k1
 
 import (
-	"github.com/gnolang/gno/tm2/pkg/crypto"
-	"github.com/gnolang/gno/tm2/pkg/crypto/secp256k1/internal/secp256k1"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/secp256k1/internal/secp256k1"
 )
 
 // Sign creates an ECDSA signature on curve Secp256k1, using SHA256 on the msg.

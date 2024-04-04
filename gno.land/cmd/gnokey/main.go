@@ -4,10 +4,10 @@ import (
 	"context"
 	"os"
 
-	"github.com/gnolang/gno/gno.land/pkg/keyscli"
-	"github.com/gnolang/gno/gnovm/pkg/gnoenv"
-	"github.com/gnolang/gno/tm2/pkg/commands"
-	"github.com/gnolang/gno/tm2/pkg/crypto/keys/client"
+	"github.com/gnoswap-labs/gno/gno.land/pkg/keyscli"
+	"github.com/gnoswap-labs/gno/gnovm/pkg/gnoenv"
+	"github.com/gnoswap-labs/gno/tm2/pkg/commands"
+	"github.com/gnoswap-labs/gno/tm2/pkg/crypto/keys/client"
 )
 
 func main() {

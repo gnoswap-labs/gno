@@ -1,6 +1,6 @@
 package client
 
-import "github.com/gnolang/gno/tm2/pkg/crypto/bip39"
+import "github.com/gnoswap-labs/gno/tm2/pkg/crypto/bip39"
 
 // GenerateMnemonic generates a new BIP39 mnemonic using the
 // provided entropy size

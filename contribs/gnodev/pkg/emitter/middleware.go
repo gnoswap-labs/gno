@@ -10,7 +10,7 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/gnolang/gno/contribs/gnodev/pkg/events"
+	"github.com/gnoswap-labs/gno/contribs/gnodev/pkg/events"
 )
 
 //go:embed static/hotreload.js

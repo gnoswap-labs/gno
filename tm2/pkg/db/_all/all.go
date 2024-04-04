@@ -6,8 +6,8 @@ package all
 import (
 	// Keep in sync with list of non-cgo backends.
 	// Add cgo backends in all_cgo.go.
-	_ "github.com/gnolang/gno/tm2/pkg/db/boltdb"
-	_ "github.com/gnolang/gno/tm2/pkg/db/fsdb"
-	_ "github.com/gnolang/gno/tm2/pkg/db/goleveldb"
-	_ "github.com/gnolang/gno/tm2/pkg/db/memdb"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/boltdb"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/fsdb"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/goleveldb"
+	_ "github.com/gnoswap-labs/gno/tm2/pkg/db/memdb"
 )
