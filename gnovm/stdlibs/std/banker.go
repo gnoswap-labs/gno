@@ -44,25 +44,17 @@ func X_bankerSendCoins(m *gno.Machine, bt uint8, fromS, toS string, denoms []str
 	amt := CompactCoins(denoms, amounts)
 	from, to := crypto.Bech32Address(fromS), crypto.Bech32Address(toS)
 
-	pkgAddr := ctx.OrigPkgAddr
-	if m.Realm != nil {
-		pkgPath := m.Realm.Path
-		pkgAddr = gno.DerivePkgAddr(pkgPath).Bech32()
-	}
-
-	if bt == btOrigSend || bt == btRealmSend {
+	switch bt {
+	case btOrigSend:
+		pkgAddr := ctx.OrigPkgAddr
 		if from != pkgAddr {
 			m.Panic(typedString(
 				fmt.Sprintf(
-					"can only send from the realm package address %q, but got %q",
+					"can only send from the origin package address %q, but got %q",
 					pkgAddr, from),
 			))
 			return
 		}
-	}
-
-	switch bt {
-	case btOrigSend:
 		// indirection allows us to "commit" in a second phase
 		spent := (*ctx.OrigSendSpent).Add(amt)
 		if !ctx.OrigSend.IsAllGTE(spent) {
@@ -76,6 +68,17 @@ func X_bankerSendCoins(m *gno.Machine, bt uint8, fromS, toS string, denoms []str
 		ctx.Banker.SendCoins(from, to, amt)
 		*ctx.OrigSendSpent = spent
 	case btRealmSend, btRealmIssue:
+		pkgAddr := ctx.OrigPkgAddr
+		if m.Realm != nil {
+			pkgAddr = gno.DerivePkgAddr(m.Realm.Path).Bech32()
+		}
+		if from != pkgAddr {
+			m.Panic(typedString(
+				fmt.Sprintf(
+					"can only send from the realm package address %q, but got %q",
+					pkgAddr, from),
+			))
+		}
 		ctx.Banker.SendCoins(from, to, amt)
 	default:
 		panic(fmt.Sprintf("invalid banker type %d in bankerSendCoins", bt))
