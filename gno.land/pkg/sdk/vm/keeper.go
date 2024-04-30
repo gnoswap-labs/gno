@@ -20,7 +20,7 @@ import (
 
 const (
 	maxAllocTx    = 500 * 1000 * 1000
-	maxAllocQuery = 1500 * 1000 * 1000 // higher limit for queries
+	maxAllocQuery = 1500 * 1000 * 1000 * 100 // higher limit for queries
 )
 
 // vm.VMKeeperI defines a module interface that supports Gno
