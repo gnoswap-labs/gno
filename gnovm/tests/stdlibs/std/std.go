@@ -43,6 +43,7 @@ func IsOriginCall(m *gno.Machine) bool {
 
 func TestSkipHeights(m *gno.Machine, count int64) {
 	ctx := m.Context.(std.ExecContext)
+	ctx.Timestamp += (count * 5)
 	ctx.Height += count
 	m.Context = ctx
 }
