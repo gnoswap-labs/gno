@@ -993,7 +993,7 @@ func (m *Machine) incrCPU(cycles int64) {
 
 	m.Cycles += cycles
 	if m.MaxCycles != 0 && m.Cycles > m.MaxCycles {
-		panic("CPU cycle overrun")
+		panic(fmt.Sprintf("CPU cycle overrun %d %d", m.Cycles, m.MaxCycles))
 	}
 }
 

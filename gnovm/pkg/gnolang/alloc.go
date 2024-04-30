@@ -1,6 +1,9 @@
 package gnolang
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 // Keeps track of in-memory allocations.
 // In the future, allocations within realm boundaries will be
@@ -103,7 +106,7 @@ func (alloc *Allocator) Allocate(size int64) {
 
 	alloc.bytes += size
 	if alloc.bytes > alloc.maxBytes {
-		panic("allocation limit exceeded")
+		panic(fmt.Sprintf("allocation limit exceeded %d %d", alloc.bytes, alloc.maxBytes))
 	}
 }
 
