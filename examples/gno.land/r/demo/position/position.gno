@@ -131,6 +131,18 @@ func Mint(
 		}
 	}
 
+	// poolPath
+	std.Emit(
+		"GNOSWAP",
+		"p_poolPath", poolPath,
+		"p_tickLower", int32ToStr(tickLower),
+		"p_tickUpper", int32ToStr(tickUpper),
+		"tokenId", uint64ToStr(tokenId),
+		"liquidity", liquidity.ToString(),
+		"amount0", amount0.ToString(),
+		"amount1", amount1.ToString(),
+	)
+
 	return tokenId, liquidity.ToString(), amount0.ToString(), amount1.ToString()
 }
 
@@ -205,6 +217,16 @@ func IncreaseLiquidity(
 	}
 
 	tokneId, liquidity, amount0, amount1, poolPath := increaseLiquidity(increaseLiquidityParams)
+
+	std.Emit(
+		"GNOSWAP",
+		"p_tokenId", uint64ToStr(tokenId),
+		"poolPath", poolPath,
+		"liquidity", liquidity.ToString(),
+		"amount0", amount0.ToString(),
+		"amount1", amount1.ToString(),
+	)
+
 	return tokenId, liquidity.ToString(), amount0.ToString(), amount1.ToString(), poolPath
 }
 
@@ -298,6 +320,18 @@ func DecreaseLiquidity(
 	}
 
 	tokenId, liquidity, fee0, fee1, amount0, amount1, poolPath := decreaseLiquidity(decreaseLiquidityParams)
+
+	std.Emit(
+		"GNOSWAP",
+		"p_tokenId", uint64ToStr(tokenId),
+		"p_liquidityRatio", uint64ToStr(liquidityRatio),
+		"poolPath", poolPath,
+		"liquidity", liquidity.ToString(),
+		"fee0", fee0.ToString(),
+		"fee1", fee1.ToString(),
+		"amount0", amount0.ToString(),
+		"amount1", amount1.ToString(),
+	)
 
 	return tokenId, liquidity.ToString(), fee0.ToString(), fee1.ToString(), amount0.ToString(), amount1.ToString(), poolPath
 }
@@ -498,6 +532,14 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, t
 	// handle withdrawal fee
 	withoutFee0, withoutFee1 := pl.HandleWithdrawalFee(tokenId, token0, amount0, token1, amount1)
 
+	std.Emit(
+		"GNOSWAP",
+		"p_tokenId", uint64ToStr(tokenId),
+		"fee0", tokensOwed0.ToString(),
+		"fee1", tokensOwed1.ToString(),
+		"poolPath", position.poolKey,
+	)
+
 	return tokenId, withoutFee0, withoutFee1, position.poolKey
 }
 
@@ -527,5 +569,4 @@ func isAuthorizedForToken(tokenId uint64) {
 	if !(isApprovedOrOwner(std.PrevRealm().Addr(), tokenId)) {
 		panic(ufmt.Sprintf("[POSITION] position.gno__isAuthorizedForToken() || caller(%s) is not approved or owner of tokenId(%d)", std.PrevRealm().Addr(), tokenId))
 	}
-
 }

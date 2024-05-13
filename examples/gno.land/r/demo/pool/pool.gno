@@ -53,6 +53,18 @@ func Mint(
 		pool.transferFromAndVerify(std.GetOrigCaller(), consts.POOL_ADDR, pool.token1Path, amount1, false)
 	}
 
+	/*
+		std.Emit(
+			"GNOSWAP",
+			"p_poolPath", GetPoolPath(token0Path, token1Path, fee),
+			"p_tickLower", int32ToStr(tickLower),
+			"p_tickUpper", int32ToStr(tickUpper),
+			"p_liquidityAmount", _liquidityAmount,
+			"amount0", amount0.ToString(),
+			"amount1", amount1.ToString(),
+		)
+	*/
+
 	return amount0.ToString(), amount1.ToString()
 }
 
@@ -95,6 +107,18 @@ func Burn(
 
 	positionKey := positionGetKey(std.PrevRealm().Addr(), tickLower, tickUpper)
 	pool.positions[positionKey] = position
+
+	/*
+		std.Emit(
+			"GNOSWAP",
+			"p_poolPath", GetPoolPath(token0Path, token1Path, fee),
+			"p_tickLower", int32ToStr(tickLower),
+			"p_tickUpper", int32ToStr(tickUpper),
+			"p_liquidityAmount", _liquidityAmount,
+			"r_amount0", amount0.ToString(),
+			"r_amount1", amount1.ToString(),
+		)
+	*/
 
 	// actual token transfer happens in Collect()
 	return amount0.ToString(), amount1.ToString()
@@ -383,6 +407,20 @@ func Swap(
 
 	}
 
+	std.Emit(
+		"GNOSWAP",
+		"p_poolPath", GetPoolPath(token0Path, token1Path, fee),
+		"p_zeroForOne", boolToStr(zeroForOne),
+		"p_amountSpecified", _amountSpecified,
+		"p_sqrtPriceLimitX96", _sqrtPriceLimitX96,
+		"p_payer", _payer,
+		"p_recipient", _recipient,
+		"amount0", amount0.ToString(),
+		"amount1", amount1.ToString(),
+		"protocol_fee0", pool.protocolFees.token0.ToString(),
+		"protocol_fee1", pool.protocolFees.token1.ToString(),
+	)
+
 	pool.slot0.unlocked = true
 	return amount0.ToString(), amount1.ToString()
 }
@@ -411,6 +449,8 @@ func SetFeeProtocol(
 
 	// update governance value
 	gv.SetGovParameter("protocoL_fees", feeProtocol0+(feeProtocol1<<4))
+
+	std.Emit("<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>POOL")
 }
 
 // CollectProtocol collects protocol fees from the pool
@@ -452,6 +492,8 @@ func CollectProtocol(
 	if !ok {
 		panic(ufmt.Sprintf("[POOL] pool.gno__CollectProtocol() || transferByRegisterCall(pool.token1Path(%s), recipient(%s), uAmount1)(%d) failed", pool.token1Path, recipient.String(), uAmount1))
 	}
+
+	std.Emit("<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>POOL")
 
 	return amount0.ToString(), amount1.ToString()
 }

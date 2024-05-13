@@ -2,6 +2,7 @@ package pool
 
 import (
 	"std"
+	"strconv"
 
 	pusers "gno.land/p/demo/users"
 
@@ -18,4 +19,16 @@ func u256Min(num1, num2 *u256.Uint) *u256.Uint {
 	}
 
 	return num2
+}
+
+func int32ToStr(i int32) string {
+	return strconv.FormatInt(int64(i), 10)
+}
+
+func boolToStr(b bool) string {
+	if b {
+		return "true"
+	}
+
+	return "false"
 }

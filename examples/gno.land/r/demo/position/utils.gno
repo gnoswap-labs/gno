@@ -32,3 +32,11 @@ func poolKeyDivide(poolKey string) (string, string, uint32) {
 	pFee, _ := strconv.Atoi(pFeeStr)
 	return pToken0, pToken1, uint32(pFee)
 }
+
+func int32ToStr(i int32) string {
+	return strconv.FormatInt(int64(i), 10)
+}
+
+func uint64ToStr(i uint64) string {
+	return strconv.FormatInt(int64(i), 10)
+}

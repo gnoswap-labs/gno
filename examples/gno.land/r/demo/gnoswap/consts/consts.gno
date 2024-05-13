@@ -11,7 +11,7 @@ var (
 
 // GNOSWAP SERVICE
 const (
-	// r3v4_xxx: for txtar testing, change below address
+	// r3v4_xxx: for txtar testing, change below address to default test1 ( g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5 )
 	GNOSWAP_ADMIN std.Address = "g13f63ua8uhmuf9mgc0x8zfz04yrsaqh7j78vcgq" // GSA
 	FEE_COLLECTOR std.Address = "g18sp3hq6zqfxw88ffgz773gvaqgzjhxy62l9906" // FCL
 

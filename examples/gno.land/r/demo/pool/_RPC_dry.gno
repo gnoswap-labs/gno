@@ -66,13 +66,6 @@ func DrySwap(
 
 	// continue swapping as long as we haven't used the entire input/output and haven't reached the price limit
 	for !(state.amountSpecifiedRemaining.IsZero()) && !(state.sqrtPriceX96.Eq(sqrtPriceLimitX96)) {
-		// println("state.amountSpecifiedRemaining:", state.amountSpecifiedRemaining.ToString())
-		// println("state.sqrtPriceX96:", state.sqrtPriceX96.ToString())
-		/*
-			state.amountSpecifiedRemaining: -16000
-			state.sqrtPriceX96: 48055510970269007215549348797
-		*/
-
 		var step StepComputations
 		step.sqrtPriceStartX96 = state.sqrtPriceX96
 
