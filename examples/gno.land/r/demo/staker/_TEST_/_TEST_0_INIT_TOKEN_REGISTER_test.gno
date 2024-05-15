@@ -1,10 +1,7 @@
-package pool
+package staker
 
 import (
 	"std"
-	"testing"
-
-	"gno.land/p/demo/testutils"
 
 	"gno.land/r/demo/foo"
 
@@ -23,6 +20,8 @@ import (
 	"gno.land/r/demo/gnoswap/consts"
 
 	pusers "gno.land/p/demo/users"
+
+	pl "gno.land/r/demo/pool"
 )
 
 type FooToken struct{}
@@ -136,6 +135,16 @@ func (GNSToken) Approve() func(spender pusers.AddressOrName, amount uint64) {
 func init() {
 	std.TestSetOrigCaller(consts.GNOSWAP_ADMIN)
 
+	// POOL
+	pl.RegisterGRC20Interface("gno.land/r/demo/bar", BarToken{})
+	pl.RegisterGRC20Interface("gno.land/r/demo/foo", FooToken{})
+	pl.RegisterGRC20Interface("gno.land/r/demo/baz", BazToken{})
+	pl.RegisterGRC20Interface("gno.land/r/demo/qux", QuxToken{})
+	pl.RegisterGRC20Interface("gno.land/r/demo/wugnot", WugnotToken{})
+	pl.RegisterGRC20Interface("gno.land/r/demo/obl", OBLToken{})
+	pl.RegisterGRC20Interface("gno.land/r/demo/gns", GNSToken{})
+
+	// STAKER
 	RegisterGRC20Interface("gno.land/r/demo/bar", BarToken{})
 	RegisterGRC20Interface("gno.land/r/demo/foo", FooToken{})
 	RegisterGRC20Interface("gno.land/r/demo/baz", BazToken{})
@@ -143,36 +152,4 @@ func init() {
 	RegisterGRC20Interface("gno.land/r/demo/wugnot", WugnotToken{})
 	RegisterGRC20Interface("gno.land/r/demo/obl", OBLToken{})
 	RegisterGRC20Interface("gno.land/r/demo/gns", GNSToken{})
-}
-
-func TestGetRegisteredTokens(t *testing.T) {
-	shouldEQ(t, len(GetRegisteredTokens()), 7)
-}
-
-func TestRegisterGRC20Interface(t *testing.T) {
-	shouldPanic(t,
-		func() {
-			RegisterGRC20Interface("gno.land/r/demo/bar", BarToken{})
-		},
-	)
-}
-
-func TestUnregisterGRC20Interface(t *testing.T) {
-	dummy := testutils.TestAddress("dummy")
-	std.TestSetOrigCaller(dummy)
-
-	shouldPanic(t,
-		func() {
-			UnregisterGRC20Interface("gno.land/r/demo/bar")
-		},
-	)
-
-	shouldEQ(t, len(GetRegisteredTokens()), 7)
-
-	std.TestSetOrigCaller(consts.GNOSWAP_ADMIN)
-	UnregisterGRC20Interface("gno.land/r/demo/bar")
-	shouldEQ(t, len(GetRegisteredTokens()), 6)
-
-	// re-register to avoid panic in other tests
-	RegisterGRC20Interface("gno.land/r/demo/bar", BarToken{})
 }

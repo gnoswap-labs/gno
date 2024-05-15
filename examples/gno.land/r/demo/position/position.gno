@@ -131,9 +131,10 @@ func Mint(
 		}
 	}
 
-	// poolPath
 	std.Emit(
 		"GNOSWAP",
+		"m_origCaller", origCaller(),
+		"m_prevRealm", prevRealm(),
 		"p_poolPath", poolPath,
 		"p_tickLower", int32ToStr(tickLower),
 		"p_tickUpper", int32ToStr(tickUpper),
@@ -220,6 +221,8 @@ func IncreaseLiquidity(
 
 	std.Emit(
 		"GNOSWAP",
+		"m_origCaller", origCaller(),
+		"m_prevRealm", prevRealm(),
 		"p_tokenId", uint64ToStr(tokenId),
 		"poolPath", poolPath,
 		"liquidity", liquidity.ToString(),
@@ -323,6 +326,8 @@ func DecreaseLiquidity(
 
 	std.Emit(
 		"GNOSWAP",
+		"m_origCaller", origCaller(),
+		"m_prevRealm", prevRealm(),
 		"p_tokenId", uint64ToStr(tokenId),
 		"p_liquidityRatio", uint64ToStr(liquidityRatio),
 		"poolPath", poolPath,
@@ -534,6 +539,8 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, t
 
 	std.Emit(
 		"GNOSWAP",
+		"m_origCaller", origCaller(),
+		"m_prevRealm", prevRealm(),
 		"p_tokenId", uint64ToStr(tokenId),
 		"fee0", tokensOwed0.ToString(),
 		"fee1", tokensOwed1.ToString(),

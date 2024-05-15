@@ -40,3 +40,11 @@ func int32ToStr(i int32) string {
 func uint64ToStr(i uint64) string {
 	return strconv.FormatInt(int64(i), 10)
 }
+
+func origCaller() string {
+	return std.GetOrigCaller().String()
+}
+
+func prevRealm() string {
+	return std.PrevRealm().PkgPath()
+}

@@ -1,4 +1,4 @@
-package pool
+package staker
 
 import (
 	"std"
@@ -8,8 +8,7 @@ import (
 )
 
 var (
-	gsa   std.Address = consts.GNOSWAP_ADMIN
-	test1 std.Address = std.Address("g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5")
+	gsa std.Address = consts.GNOSWAP_ADMIN
 
 	fooPath string = "gno.land/r/demo/foo"
 	barPath string = "gno.land/r/demo/bar"
@@ -24,7 +23,7 @@ var (
 	fee500  uint32 = 500
 	fee3000 uint32 = 3000
 
-	maxApprove uint64 = 18446744073709551615
+	max_timeout int64 = 9999999999
 )
 
 /* HELPER */
@@ -61,13 +60,15 @@ func shouldPanic(t *testing.T, f func()) {
 	f()
 }
 
-func ugnotBalanceOf(addr std.Address) uint64 {
-	testBanker := std.GetBanker(std.BankerTypeRealmIssue)
-
-	coins := testBanker.GetCoins(addr)
-	if len(coins) == 0 {
-		return 0
-	}
-
-	return uint64(testBanker.GetCoins(addr)[0].Amount)
+func shouldPanicWithMsg(t *testing.T, f func(), msg string) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		} else {
+			if r != msg {
+				t.Errorf("excepted panic(%v), got(%v)", msg, r)
+			}
+		}
+	}()
+	f()
 }

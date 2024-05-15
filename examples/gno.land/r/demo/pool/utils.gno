@@ -21,7 +21,15 @@ func u256Min(num1, num2 *u256.Uint) *u256.Uint {
 	return num2
 }
 
+func uint8ToStr(i uint8) string {
+	return strconv.FormatInt(int64(i), 10)
+}
+
 func int32ToStr(i int32) string {
+	return strconv.FormatInt(int64(i), 10)
+}
+
+func uint64ToStr(i uint64) string {
 	return strconv.FormatInt(int64(i), 10)
 }
 
@@ -31,4 +39,12 @@ func boolToStr(b bool) string {
 	}
 
 	return "false"
+}
+
+func origCaller() string {
+	return std.GetOrigCaller().String()
+}
+
+func prevRealm() string {
+	return std.PrevRealm().PkgPath()
 }
