@@ -89,7 +89,7 @@ func TotalSupply() uint64 {
 func BalanceOf(owner pusers.AddressOrName) uint64 {
 	balance, err := wugnot.BalanceOf(users.Resolve(owner))
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 	return balance
 }
@@ -97,7 +97,7 @@ func BalanceOf(owner pusers.AddressOrName) uint64 {
 func Allowance(owner, spender pusers.AddressOrName) uint64 {
 	allowance, err := wugnot.Allowance(users.Resolve(owner), users.Resolve(spender))
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 	return allowance
 }
@@ -109,7 +109,7 @@ func Transfer(to pusers.AddressOrName, amount uint64) {
 	caller := std.PrevRealm().Addr()
 	err := wugnot.Transfer(caller, users.Resolve(to), amount)
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 }
 
@@ -117,7 +117,7 @@ func Approve(spender pusers.AddressOrName, amount uint64) {
 	caller := std.PrevRealm().Addr()
 	err := wugnot.Approve(caller, users.Resolve(spender), amount)
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 }
 
@@ -125,6 +125,6 @@ func TransferFrom(from, to pusers.AddressOrName, amount uint64) {
 	caller := std.PrevRealm().Addr()
 	err := wugnot.TransferFrom(caller, users.Resolve(from), users.Resolve(to), amount)
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 }
