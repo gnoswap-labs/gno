@@ -25,15 +25,11 @@ func MintAndStake(
 	deadline int64,
 ) (uint64, string, string, string, string) { // tokenId, liquidity, amount0, amount1, poolPath ( *u256.Uint x3)
 
-	isToken0Native := token0 == consts.GNOT
-	isToken1Native := token1 == consts.GNOT
-
-	ugnotSent := uint64(0)
-
-	if isToken0Native || isToken1Native {
+	// if one click native
+	if token0 == consts.GNOT || token1 == consts.GNOT {
 		// check sent ugnot
 		sent := std.GetOrigSend()
-		ugnotSent = uint64(sent.AmountOf("ugnot"))
+		ugnotSent := uint64(sent.AmountOf("ugnot"))
 
 		// not enough ugnot sent
 		if ugnotSent < consts.UGNOT_MINT_DEPOSIT_TO_WRAP {

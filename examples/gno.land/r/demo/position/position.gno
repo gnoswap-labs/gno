@@ -232,7 +232,7 @@ func IncreaseLiquidity(
 	}
 
 	// INCREASE
-	tokneId, liquidity, amount0, amount1, poolPath := increaseLiquidity(increaseLiquidityParams)
+	_, liquidity, amount0, amount1, poolPath := increaseLiquidity(increaseLiquidityParams)
 
 	// unwrap left
 	if isToken0Wugnot || isToken1Wugnot {
