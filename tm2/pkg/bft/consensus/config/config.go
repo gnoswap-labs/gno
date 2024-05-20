@@ -44,17 +44,18 @@ type ConsensusConfig struct {
 // DefaultConsensusConfig returns a default configuration for the consensus service
 func DefaultConsensusConfig() *ConsensusConfig {
 	return &ConsensusConfig{
-		WALPath:                     filepath.Join(defaultWALDir, "cs.wal", "wal"),
-		TimeoutPropose:              3000 * time.Millisecond,
-		TimeoutProposeDelta:         500 * time.Millisecond,
-		TimeoutPrevote:              1000 * time.Millisecond,
-		TimeoutPrevoteDelta:         500 * time.Millisecond,
-		TimeoutPrecommit:            1000 * time.Millisecond,
-		TimeoutPrecommitDelta:       500 * time.Millisecond,
-		TimeoutCommit:               500 * time.Millisecond, // 0.5 seconds for block gen (default: 5s)
-		SkipTimeoutCommit:           false,
-		CreateEmptyBlocks:           true,
-		CreateEmptyBlocksInterval:   5 * time.Second, // wait 5s for empty block (default: 0s)
+		WALPath:               filepath.Join(defaultWALDir, "cs.wal", "wal"),
+		TimeoutPropose:        3000 * time.Millisecond,
+		TimeoutProposeDelta:   500 * time.Millisecond,
+		TimeoutPrevote:        1000 * time.Millisecond,
+		TimeoutPrevoteDelta:   500 * time.Millisecond,
+		TimeoutPrecommit:      1000 * time.Millisecond,
+		TimeoutPrecommitDelta: 500 * time.Millisecond,
+		TimeoutCommit:         500 * time.Millisecond, // 0.5 seconds for block gen (default: 5s)
+		SkipTimeoutCommit:     false,
+		CreateEmptyBlocks:     true,
+		// CreateEmptyBlocksInterval:   5 * time.Second, // wait 5s for empty block (default: 0s)
+		CreateEmptyBlocksInterval:   1 * time.Hour, // wait 1 hour for empty block (default: 0s)
 		PeerGossipSleepDuration:     100 * time.Millisecond,
 		PeerQueryMaj23SleepDuration: 2000 * time.Millisecond,
 	}
