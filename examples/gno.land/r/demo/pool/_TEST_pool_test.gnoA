@@ -23,26 +23,35 @@ var (
 
 // 1. Create Foo:Bar Pool
 func TestCreateFooBarPool(t *testing.T) {
+	// call gns faucet to get creation fee
 	std.TestSetPrevAddr(gsa)
+
+	std.TestSkipHeights(5)
 
 	gns.Approve(a2u(consts.POOL_ADDR), consts.POOL_CREATION_FEE)
 	std.TestSkipHeights(1)
 
 	CreatePool(fooPath, barPath, fee500, "130621891405341611593710811006") // tick 10000
-	// event: {GNOSWAP gno.land/r/demo/pool CreatePool [{m_origCaller g13f63ua8uhmuf9mgc0x8zfz04yrsaqh7j78vcgq} {m_prevRealm } {p_poolPath gno.land/r/demo/bar:gno.land/r/demo/foo:500}]}
+	// ---       event: {GNOSWAP gno.land/r/demo/pool CreatePool [{m_callType DIRECT} {m_origCaller g13f63ua8uhmuf9mgc0x8zfz04yrsaqh7j78vcgq} {m_prevRealm } {p_poolPath gno.land/r/demo/bar:gno.land/r/demo/foo:500}]}
+
 	shouldEQ(t, len(pools), 1)
 	std.TestSkipHeights(1)
 }
 
 // 2. Create Bar:Baz Pool
 func TestCreateBarBazPool(t *testing.T) {
+	// call gns faucet to get creation fee
 	std.TestSetPrevAddr(gsa)
+	std.TestSetPrevAddr(gsa)
+
+	std.TestSkipHeights(5)
 
 	gns.Approve(a2u(consts.POOL_ADDR), consts.POOL_CREATION_FEE)
 	std.TestSkipHeights(1)
 
 	CreatePool(barPath, bazPath, fee500, "130621891405341611593710811006") // tick 10000
-	// event: {GNOSWAP gno.land/r/demo/pool CreatePool [{m_origCaller g13f63ua8uhmuf9mgc0x8zfz04yrsaqh7j78vcgq} {m_prevRealm } {p_poolPath gno.land/r/demo/bar:gno.land/r/demo/baz:500}]}
+	// ---       event: {GNOSWAP gno.land/r/demo/pool CreatePool [{m_callType DIRECT} {m_origCaller g13f63ua8uhmuf9mgc0x8zfz04yrsaqh7j78vcgq} {m_prevRealm } {p_poolPath gno.land/r/demo/bar:gno.land/r/demo/baz:500}]}
+
 	shouldEQ(t, len(pools), 2)
 	std.TestSkipHeights(1)
 }
