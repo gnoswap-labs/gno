@@ -164,10 +164,14 @@ func ApiGetPositionsByPoolPath(poolPath string) string {
 	return string(b)
 }
 
-/* TODO
-func ApiGetPositionsByAddress() string {
+func ApiGetPositionsByAddress(address string) string {
 	rpcPositions := []RpcPosition{}
-	for lpTokenId, _ := range positions {
+	for lpTokenId, position := range positions {
+
+		if position.operator.String() != address {
+			continue
+		}
+
 		rpcPosition := rpcMakePosition(lpTokenId)
 		rpcPositions = append(rpcPositions, rpcPosition)
 	}
@@ -221,7 +225,6 @@ func ApiGetPositionsByAddress() string {
 
 	return string(b)
 }
-*/
 
 func rpcMakePosition(lpTokenId uint64) RpcPosition {
 	position, exist := positions[lpTokenId]
