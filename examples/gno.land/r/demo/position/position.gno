@@ -338,6 +338,8 @@ func DecreaseLiquidity(
 		panic(ufmt.Sprintf("[POSITION] position.gno__decreaseLiquidity() || liquidityRatio(%d) should be in range 1 ~ 100", liquidityRatio))
 	}
 
+	// check if position is burned (cleared)
+
 	amount0Min := u256.MustFromDecimal(_amount0Min)
 	amount1Min := u256.MustFromDecimal(_amount1Min)
 	decreaseLiquidityParams := DecreaseLiquidityParams{
@@ -375,6 +377,13 @@ func decreaseLiquidity(params DecreaseLiquidityParams) (uint64, *u256.Uint, *u25
 		panic(ufmt.Sprintf("[POSITION] position.gno__decreaseLiquidity() || tokenId(%d) doesn't exist", params.tokenId))
 	}
 
+	position := positions[params.tokenId]
+
+	// if position is burned, panic
+	if position.isClear() {
+		panic(ufmt.Sprintf("[POSITION] position.gno__decreaseLiquidity() || position(tokenId:%d) is already burned", params.tokenId))
+	}
+
 	// MUST BE OWNER TO DECREASE LIQUIDITY ( can not be approved address )
 	owner := gnft.OwnerOf(tid(params.tokenId))
 	if owner != std.GetOrigCaller() {
@@ -387,8 +396,6 @@ func decreaseLiquidity(params DecreaseLiquidityParams) (uint64, *u256.Uint, *u25
 	_, fee0Str, fee1Str, _ := CollectFee(params.tokenId)
 	fee0 := u256.MustFromDecimal(fee0Str)
 	fee1 := u256.MustFromDecimal(fee1Str)
-
-	position := positions[params.tokenId]
 
 	positionLiquidity := position.liquidity
 	liquidityToRemove := new(u256.Uint).Mul(positionLiquidity, u256.NewUint(params.liquidityRatio))
@@ -505,6 +512,11 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, t
 	position, exist := positions[tokenId]
 	if !exist {
 		panic(ufmt.Sprintf("[POSITION] position.gno__CollectFee() || position(tokenId:%d) doesn't exist", tokenId))
+	}
+
+	// if position is burned, panic
+	if position.isClear() {
+		panic(ufmt.Sprintf("[POSITION] position.gno__CollectFee() || position(tokenId:%d) is already burned", tokenId))
 	}
 
 	token0, token1, fee := poolKeyDivide(position.poolKey)
