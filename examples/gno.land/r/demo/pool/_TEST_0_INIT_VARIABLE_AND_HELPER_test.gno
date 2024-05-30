@@ -19,9 +19,18 @@ var (
 	// wugnotPath string = "gno.land/r/demo/wugnot" // from consts
 	// gnsPath string = "gno.land/r/demo/gns" // from consts
 
-	fee100  uint32 = 100
-	fee500  uint32 = 500
-	fee3000 uint32 = 3000
+	test01Path string = "gno.land/r/demo/test01"
+	test02Path string = "gno.land/r/demo/test02"
+	test03Path string = "gno.land/r/demo/test03"
+	test04Path string = "gno.land/r/demo/test04"
+	test05Path string = "gno.land/r/demo/test05"
+	test06Path string = "gno.land/r/demo/test06"
+	test07Path string = "gno.land/r/demo/test07"
+
+	fee100   uint32 = 100
+	fee500   uint32 = 500
+	fee3000  uint32 = 3000
+	fee10000 uint32 = 10000
 
 	maxApprove uint64 = 18446744073709551615
 )
