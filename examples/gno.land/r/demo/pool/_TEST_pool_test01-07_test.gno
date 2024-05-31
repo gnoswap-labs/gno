@@ -341,3 +341,69 @@ func TestPositionMintTest06(t *testing.T) {
 	pn.Mint(test06Path, test07Path, fee10000, -67200, 7800, "998", "998", "0", "0", max_timeout, gsa.String())
 	pn.Mint(test06Path, test07Path, fee10000, -887200, 887200, "123447", "123447", "0", "0", max_timeout, gsa.String())
 }
+
+/*
+func TestSwapTest01_Test02(t *testing.T) {
+	std.TestSetPrevAddr(gsa)
+
+	poolIn := ""
+	poolOut := ""
+	ok := false
+
+	poolIn, poolOut, ok = DrySwap(test01Path, test02Path, fee100, true, "10000", consts.MIN_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
+
+	poolIn, poolOut, ok = DrySwap(test01Path, test02Path, fee100, false, "10000", consts.MAX_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
+
+	poolIn, poolOut, ok = DrySwap(test01Path, test02Path, fee100, true, "-10000", consts.MIN_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
+
+	poolIn, poolOut, ok = DrySwap(test01Path, test02Path, fee100, false, "-10000", consts.MAX_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
+}
+*/
+
+func TestSwapTest06_Test07(t *testing.T) {
+	std.TestSetPrevAddr(gsa)
+
+	poolIn := ""
+	poolOut := ""
+	ok := false
+
+	poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, true, "10000", consts.MIN_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
+
+	// poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, false, "10000", consts.MAX_PRICE)
+	// println("poolIn: ", poolIn)
+	// println("poolOut: ", poolOut)
+	// println("ok: ", ok)
+	// println()
+
+	// poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, true, "-10000", consts.MIN_PRICE)
+	// println("poolIn: ", poolIn)
+	// println("poolOut: ", poolOut)
+	// println("ok: ", ok)
+	// println()
+
+	// poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, false, "-10000", consts.MAX_PRICE)
+	// println("poolIn: ", poolIn)
+	// println("poolOut: ", poolOut)
+	// println("ok: ", ok)
+	// println()
+}
