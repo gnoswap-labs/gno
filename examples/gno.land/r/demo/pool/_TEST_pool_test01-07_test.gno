@@ -376,6 +376,7 @@ func TestSwapTest01_Test02(t *testing.T) {
 }
 */
 
+/*
 func TestSwapTest06_Test07(t *testing.T) {
 	std.TestSetPrevAddr(gsa)
 
@@ -389,21 +390,39 @@ func TestSwapTest06_Test07(t *testing.T) {
 	println("ok: ", ok)
 	println()
 
-	// poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, false, "10000", consts.MAX_PRICE)
-	// println("poolIn: ", poolIn)
-	// println("poolOut: ", poolOut)
-	// println("ok: ", ok)
-	// println()
+	poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, false, "10000", consts.MAX_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
 
-	// poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, true, "-10000", consts.MIN_PRICE)
-	// println("poolIn: ", poolIn)
-	// println("poolOut: ", poolOut)
-	// println("ok: ", ok)
-	// println()
+	poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, true, "-10000", consts.MIN_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
 
-	// poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, false, "-10000", consts.MAX_PRICE)
-	// println("poolIn: ", poolIn)
-	// println("poolOut: ", poolOut)
-	// println("ok: ", ok)
-	// println()
+	poolIn, poolOut, ok = DrySwap(test06Path, test07Path, fee10000, false, "-10000", consts.MAX_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
+}
+*/
+
+func TestSwapTest0xTest0x(t *testing.T) {
+	std.TestSetPrevAddr(gsa)
+
+	poolIn := ""
+	poolOut := ""
+	ok := false
+
+	poolIn, poolOut, ok = DrySwap(test01Path, test02Path, fee100, true, "1000000", consts.MIN_PRICE)
+	println("poolIn: ", poolIn)
+	println("poolOut: ", poolOut)
+	println("ok: ", ok)
+	println()
+
+	poolIn, poolOut = Swap(test01Path, test02Path, fee100, gsa.String(), true, "1000000", consts.MIN_PRICE, gsa.String())
+
 }
