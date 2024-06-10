@@ -13,7 +13,7 @@ import (
 
 // withdrawalFee is the fee that is charged when a user withdraws their collected fees
 var (
-	withdrawalFee = uint64(1)
+	withdrawalFee = uint64(1) // currently 1%
 )
 
 // HandleWithdrawalFee withdraws the fee from the user and returns the amount after the fee
@@ -84,7 +84,7 @@ func SetWithdrawalFee(fee uint64) {
 
 	common.MustCallFromAdmin()
 
-	if fee > 100 {
+	if fee < 0 || fee > 100 {
 		panic(ufmt.Sprintf("[POOL] withdrawal_fee.gno__SetFeeProtocol() || fee(%d) must be in range 0 ~ 100", fee))
 	}
 

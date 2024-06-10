@@ -93,7 +93,7 @@ func Burn(
 
 	position, amount0Int, amount1Int := pool.modifyPosition( // in256 x2
 		ModifyPositionParams{
-			std.PrevRealm().Addr(), // msg.sender
+			std.PrevRealm().Addr(),
 			tickLower,
 			tickUpper,
 			i256.Zero().Neg(i256.FromUint256(liquidityAmount)),
@@ -164,15 +164,19 @@ func Collect(
 	// Smallest of three: amount0Requested, position.tokensOwed0, pool.balances.token0
 	amount0 := u256Min(amount0Requested, position.tokensOwed0)
 	amount0 = u256Min(amount0, pool.balances.token0)
+	// println("amount0Requested", amount0Requested.ToString())
+	// println("position.tokensOwed0", position.tokensOwed0.ToString())
+	// println()
 
 	// Update state first then transfer
 	position.tokensOwed0 = new(u256.Uint).Sub(position.tokensOwed0, amount0)
-	pool.balances.token0 = new(u256.Uint).Sub(pool.balances.token0, amount0)
 	transferByRegisterCall(pool.token0Path, recipient, amount0.Uint64())
 
 	// Smallest of three: amount0Requested, position.tokensOwed0, pool.balances.token0
 	amount1 := u256Min(amount1Requested, position.tokensOwed1)
-	amount1 = u256Min(amount1, pool.balances.token1)
+	// println("amount1Requested", amount1Requested.ToString())
+	// println("position.tokensOwed1", position.tokensOwed1.ToString())
+	// println()
 
 	// Update state first then transfer
 	position.tokensOwed1 = new(u256.Uint).Sub(position.tokensOwed1, amount1)

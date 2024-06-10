@@ -20,7 +20,7 @@ var (
 	nextId    uint64              = 1                         // lp token id
 )
 
-// Mint creates a new position and mints liquidity tokens then return minted info
+// Mint creates a new position and mints liquidi  tokens then return minted info
 //
 // Panics if any of the following conditions are met:
 // - caller is not user or staker
@@ -553,9 +553,6 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, t
 
 	amount0Uint := u256.MustFromDecimal(amount0)
 	amount1Uint := u256.MustFromDecimal(amount1)
-
-	position.tokensOwed0 = new(u256.Uint).Sub(tokensOwed0, amount0Uint)
-	position.tokensOwed1 = new(u256.Uint).Sub(tokensOwed1, amount1Uint)
 
 	positions[tokenId] = position
 
