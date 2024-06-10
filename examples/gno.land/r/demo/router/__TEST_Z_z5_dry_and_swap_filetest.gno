@@ -291,8 +291,8 @@ func drySwapBarBazExactIn() {
 		"gno.land/r/demo/bar:gno.land/r/demo/baz:100", // strRouteArr
 		"100", // quoteArr
 	)
-	if dryResult != "2714276" {
-		panic("router_z6_drySwapBarBazExactIn() || dryResult should be 2714276")
+	if dryResult != "2714272" {
+		panic("router_z6_drySwapBarBazExactIn() || dryResult should be 2714272")
 	}
 }
 
@@ -315,8 +315,8 @@ func swapBarBazExactIn() {
 	if amountIn != "1000000" {
 		panic("router_z6_swapBarBazExactIn() || amountIn should be 1000000")
 	}
-	if amountOut != "-2710205" {
-		panic("router_z6_swapBarBazExactIn() || amountIn should be -2710205")
+	if amountOut != "-2710201" {
+		panic("router_z6_swapBarBazExactIn() || amountIn should be -2710201")
 	}
 }
 
@@ -332,8 +332,8 @@ func drySwapBazBarExactIn() {
 		"gno.land/r/demo/baz:gno.land/r/demo/bar:100", // strRouteArr
 		"100", // quoteArr
 	)
-	if dryResult != "999799" {
-		panic("router_z6_drySwapBazBarExactIn() || dryResult should be 999799")
+	if dryResult != "999798" {
+		panic("router_z6_drySwapBazBarExactIn() || dryResult should be 999798")
 	}
 }
 
@@ -356,8 +356,8 @@ func swapBazBarExactIn() {
 	if amountIn != "2714276" {
 		panic("router_z6_swapBazBarExactIn() || amountIn should be 2714276")
 	}
-	if amountOut != "-998300" {
-		panic("router_z6_swapBazBarExactIn() || amountIn should be -998300")
+	if amountOut != "-998299" {
+		panic("router_z6_swapBazBarExactIn() || amountIn should be -998299")
 	}
 }
 
@@ -373,8 +373,8 @@ func drySwapBarBazExactOut() {
 		"gno.land/r/demo/bar:gno.land/r/demo/baz:100", // strRouteArr
 		"100", // quoteArr
 	)
-	if dryResult != "1000002" {
-		panic("router_z6_drySwapBarBazExactOut() || dryResult should be 1000002") //
+	if dryResult != "1000003" {
+		panic("router_z6_drySwapBarBazExactOut() || dryResult should be 1000003") //
 	}
 }
 
@@ -392,13 +392,13 @@ func swapBarBazExactOut() {
 		"EXACT_OUT", // swapType
 		"gno.land/r/demo/bar:gno.land/r/demo/baz:100", // strRouteArr
 		"100",     // quoteArr
-		"1000002", // tokenAmountLimit
+		"1000003", // tokenAmountLimit
 	)
-	if amountIn != "1000002" {
-		panic("router_z6_swapBarBazExactOut() || amountIn should be 1000002")
+	if amountIn != "1000003" {
+		panic("router_z6_swapBarBazExactOut() || amountIn should be 1000003")
 	}
 	if amountOut != "-2710205" {
-		panic("router_z6_swapBarBazExactOut() || amountIn should be 1000002")
+		panic("router_z6_swapBarBazExactOut() || amountIn should be 1000003")
 	}
 }
 
@@ -414,8 +414,8 @@ func drySwapBarQuxExactIn() {
 		"gno.land/r/demo/bar:gno.land/r/demo/baz:100*POOL*gno.land/r/demo/baz:gno.land/r/demo/foo:100*POOL*gno.land/r/demo/foo:gno.land/r/demo/qux:100", // strRouteArr
 		"100", // quoteArr
 	)
-	if dryResult != "19733647" {
-		panic("router_z6_drySwapBarQuxExactIn() || amountIn should be 19733647")
+	if dryResult != "19733638" {
+		panic("router_z6_drySwapBarQuxExactIn() || amountIn should be 19733638")
 	}
 }
 
@@ -439,8 +439,8 @@ func swapBarQuxExactIn() {
 	if amountIn != "1000000" {
 		panic("router_z6_swapBarQuxExactIn() || amountIn should be 1000000")
 	}
-	if amountOut != "-19704047" {
-		panic("router_z6_swapBarQuxExactIn() || amountIn should be -19704047")
+	if amountOut != "-19704038" {
+		panic("router_z6_swapBarQuxExactIn() || amountIn should be -19704038")
 	}
 }
 
@@ -456,8 +456,8 @@ func drySwapQuxBarExactOut() {
 		"gno.land/r/demo/qux:gno.land/r/demo/foo:100*POOL*gno.land/r/demo/foo:gno.land/r/demo/baz:100*POOL*gno.land/r/demo/baz:gno.land/r/demo/bar:100", // strRouteArr
 		"100", // quoteArr
 	)
-	if dryResult != "40079942" {
-		panic("router_z6_drySwapQuxBarExactOut() || amountIn should be 40079942")
+	if dryResult != "40079976" {
+		panic("router_z6_drySwapQuxBarExactOut() || amountIn should be 40079976")
 	}
 }
 
@@ -475,11 +475,11 @@ func swapQuxBarExactOut() {
 		"EXACT_OUT", // swapType
 		"gno.land/r/demo/qux:gno.land/r/demo/foo:100*POOL*gno.land/r/demo/foo:gno.land/r/demo/baz:100*POOL*gno.land/r/demo/baz:gno.land/r/demo/bar:100", // strRouteArr
 		"100",      // quoteArr
-		"40079942", // tokenAmountLimit
+		"40079976", // tokenAmountLimit
 	)
 
-	if amountIn != "40079942" {
-		panic("router_z6_swapQuxBarExactOut() || amountIn should be 40079942")
+	if amountIn != "40079976" {
+		panic("router_z6_swapQuxBarExactOut() || amountIn should be 40079976")
 	}
 	if amountOut != "-1997000" {
 		panic("router_z6_swapQuxBarExactOut() || amountIn should be -1997000")

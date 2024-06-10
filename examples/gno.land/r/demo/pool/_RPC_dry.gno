@@ -61,7 +61,6 @@ func DrySwap(
 	pool.slot0.unlocked = false
 	cache := newSwapCache(feeProtocol, pool.liquidity)
 	state := pool.newSwapState(amountSpecified, feeGrowthGlobalX128, cache.liquidityStart) // TODO: feeGrowthGlobalX128.Clone() or NOT
-	println("state.liquidity", state.liquidity.ToString())
 
 	exactInput := amountSpecified.Gt(i256.Zero())
 
@@ -107,18 +106,6 @@ func DrySwap(
 		step.amountIn = u256.MustFromDecimal(_amountInStr)
 		step.amountOut = u256.MustFromDecimal(_amountOutStr)
 		step.feeAmount = u256.MustFromDecimal(_feeAmountStr)
-
-		println("state.sqrtPriceX96", state.sqrtPriceX96.ToString())
-		println("sqrtRatioTargetX96", sqrtRatioTargetX96.ToString())
-		println("state.liquidity", state.liquidity.ToString())
-		println("state.amountSpecifiedRemaining", state.amountSpecifiedRemaining.ToString())
-		println("pool.fee", pool.fee)
-		println("====")
-		println("step.amountIn", step.amountIn.ToString())
-		println("step.amountOut", step.amountOut.ToString())
-		println("step.feeAmount", step.feeAmount.ToString())
-		println("state.sqrtPriceX96", state.sqrtPriceX96.ToString())
-		println()
 
 		amountInWithFee := i256.FromUint256(new(u256.Uint).Add(step.amountIn, step.feeAmount))
 		if exactInput {
