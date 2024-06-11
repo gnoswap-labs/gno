@@ -20,7 +20,7 @@ var (
 	nextId    uint64              = 1                         // lp token id
 )
 
-// Mint creates a new position and mints liquidi  tokens then return minted info
+// Mint creates a new position and mints liquidity tokens then return minted info
 //
 // Panics if any of the following conditions are met:
 // - caller is not user or staker
