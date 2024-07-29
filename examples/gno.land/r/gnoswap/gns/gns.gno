@@ -104,13 +104,13 @@ func Mint(address pusers.AddressOrName) {
 	nowHeight := std.GetHeight()
 	amountToMint := uint64(0)
 
-	println("GNS_lastMintedHeight", lastMintedHeight)
-	println("GNS_lastMintedHeight + 1", lastMintedHeight+1)
-	println("GNS_nowHeight", nowHeight)
-	println("GNS_now-lastMint", nowHeight-lastMintedHeight)
+	// println("GNS_lastMintedHeight", lastMintedHeight)
+	// println("GNS_lastMintedHeight + 1", lastMintedHeight+1)
+	// println("GNS_nowHeight", nowHeight)
+	// println("GNS_now-lastMint", nowHeight-lastMintedHeight)
 
 	if lastMintedHeight >= nowHeight {
-		println("GNS_only one mint for each block")
+		// println("GNS_only one mint for each block")
 		return
 	}
 
@@ -124,8 +124,8 @@ func Mint(address pusers.AddressOrName) {
 	}
 
 	lastMintedHeight = nowHeight
-	println("GNS_lastMintedHeight:", lastMintedHeight)
-	println("GNS_amountToMint:", amountToMint)
+	// println("GNS_lastMintedHeight:", lastMintedHeight)
+	// println("GNS_amountToMint:", amountToMint)
 }
 
 func GetLastMintedHeight() int64 {
