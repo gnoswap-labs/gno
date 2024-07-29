@@ -173,7 +173,7 @@ func StakerPoolTier(poolPath string) uint64 {
 	return internal.tier
 }
 
-// DEBUG
+// DEBUG INTERNAL (GNS EMISSION)
 type currentInfo struct {
 	height           int64
 	time             int64
@@ -235,7 +235,7 @@ func printInfo(prev currentInfo) currentInfo {
 
 	println("GNS POSITION")
 	for k, v := range positionGns {
-		posWarmCalc := positionsWarmUpAmount[k]
+		posWarmCalc := positionsInternalWarmUpAmount[k]
 		println("> tokenId:", k, "amount:", v, "warmUp:", getRewardRatio(curr.height-deposits[k].stakeHeight))
 		println("> 100%", "full", posWarmCalc.full100, "give", posWarmCalc.give100)
 		println("> 70%", "full", posWarmCalc.full70, "give", posWarmCalc.give70)
@@ -388,7 +388,7 @@ func makePositionsNode(poolPath string) []*json.Node {
 			ratio := getRewardRatio(stakedDuration)
 			fullAmount, warmUpAmount := rewardMathComputeInternalRewardAmount(lpTokenId)
 
-			posCalcWarm := positionsWarmUpAmount[lpTokenId]
+			posCalcWarm := positionsInternalWarmUpAmount[lpTokenId]
 
 			positions = append(positions, json.ObjectNode("", map[string]*json.Node{
 				"lpTokenId":       json.NumberNode("lpTokenId", float64(lpTokenId)),
@@ -411,4 +411,38 @@ func makePositionsNode(poolPath string) []*json.Node {
 	}
 
 	return positions
+}
+
+type currentExternalInfo struct {
+	height             int64
+	time               int64
+	externalIncentives []ExternalIncentive
+}
+
+func printExternalInfo() {
+	println("***********************")
+	println("> height:", std.GetHeight())
+	println("> time:", time.Now().Unix())
+	println()
+	println("[ START ] GET_EXTERNAL INCENTIVE")
+	for poolPath, externalIds := range poolIncentives {
+		println(" > poolPath:", poolPath)
+
+		for _, externalId := range externalIds {
+			incentive := incentives[externalId]
+			// println("  > incentiveId:", externalId)
+			// println("  > targetPoolPath:", incentive.targetPoolPath)
+			println("  > rewardToken:", incentive.rewardToken)
+			println("  > rewardAmount:", incentive.rewardAmount.ToString())
+			println("  > rewardLeft:", incentive.rewardLeft.ToString())
+			println("  > startTimestamp:", incentive.startTimestamp)
+			println("  > endTimestamp:", incentive.endTimestamp)
+			println("  > rewardPerBlockX96:", incentive.rewardPerBlockX96.ToString())
+			println("  > refundee:", incentive.refundee)
+			println()
+		}
+		println()
+	}
+
+	println("[ END ] GET_EXTERNAL INCENTIVE")
 }

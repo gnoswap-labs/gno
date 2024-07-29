@@ -92,7 +92,7 @@ func ApiGetRewards() string {
 			duration := now - stakedOrCreatedAt
 			durationRatio := getRewardRatio(duration)
 
-			externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId, durationRatio)
+			externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId)
 			if externalReward >= 0 {
 				rewards = append(rewards, Reward{
 					IncentiveType:     "EXTERNAL",
@@ -195,7 +195,7 @@ func ApiGetRewardsByLpTokenId(targetLpTokenId uint64) string {
 			duration := now - stakedOrCreatedAt
 			durationRatio := getRewardRatio(duration)
 
-			externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId, durationRatio)
+			externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId)
 			if externalReward > 0 {
 				rewards = append(rewards, Reward{
 					IncentiveType:     "EXTERNAL",
@@ -296,7 +296,7 @@ func ApiGetRewardsByAddress(targetAddress string) string {
 			duration := now - stakedOrCreatedAt
 			durationRatio := getRewardRatio(duration)
 
-			externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId, durationRatio)
+			externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId)
 
 			rewards = append(rewards, Reward{
 				IncentiveType:     "EXTERNAL",
