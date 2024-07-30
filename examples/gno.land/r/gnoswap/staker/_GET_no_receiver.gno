@@ -446,3 +446,125 @@ func printExternalInfo() {
 
 	println("[ END ] GET_EXTERNAL INCENTIVE")
 }
+
+func GetPrintExternalInfo() string {
+	// TODO: LIMIT ONLY ABCI_QUERY CAN CALL THIS
+	en.MintAndDistributeGns()
+	CalcPoolPosition()
+
+	externalDebug := ApiExternalDebugInfo{}
+	externalDebug.Height = std.GetHeight()
+	externalDebug.Time = time.Now().Unix()
+
+	externalPositions := []ApiExternalDebugPosition{}
+	for lpTokenId, externals := range positionExternal {
+		externalPosition := ApiExternalDebugPosition{}
+		externalPosition.LpTokenId = lpTokenId
+		externalPosition.StakedHeight = deposits[lpTokenId].stakeHeight
+		externalPosition.StakedTimestamp = deposits[lpTokenId].stakeTimestamp
+
+		externalIncentives := []ApiExternalDebugIncentive{}
+		for incentiveId, external := range externals {
+			externalIncentive := ApiExternalDebugIncentive{}
+
+			externalIncentive.PoolPath = external.poolPath
+			externalIncentive.RewardToken = external.tokenPath
+
+			incentive := incentives[incentiveId]
+			externalIncentive.RewardAmount = incentive.rewardAmount.ToString()
+			externalIncentive.StartTimestamp = incentive.startTimestamp
+			externalIncentive.EndTimestamp = incentive.endTimestamp
+			externalIncentive.RewardPerBlockX96 = incentive.rewardPerBlockX96.ToString()
+			externalIncentive.RewardPerBlock = new(u256.Uint).Div(incentive.rewardPerBlockX96, u256.MustFromDecimal(consts.Q96)).ToString()
+			externalIncentive.Refundee = incentive.refundee
+
+			externalIncentive.tokenAmount = external.tokenAmount
+
+			fullAmount, toGive := rewardMathComputeExternalRewardAmount(lpTokenId, incentiveId)
+			externalIncentive.tokenAmountFull += fullAmount
+			externalIncentive.tokenAmountActualFull += toGive
+
+			externalIncentives = append(externalIncentives, externalIncentive)
+		}
+		externalPosition.Incentive = externalIncentives
+
+		externalPositions = append(externalPositions, externalPosition)
+	}
+
+	externalDebug.Position = externalPositions
+
+	// MARSHAL
+	node := json.ObjectNode("", map[string]*json.Node{
+		"height":   json.NumberNode("", float64(externalDebug.Height)),
+		"time":     json.NumberNode("", float64(externalDebug.Time)),
+		"position": json.ArrayNode("", makeExternalPositionsNode(externalDebug.Position)),
+	})
+
+	b, err := json.Marshal(node)
+	if err != nil {
+		return "JSON MARSHAL ERROR"
+	}
+
+	return string(b)
+}
+
+func makeExternalPositionsNode(positions []ApiExternalDebugPosition) []*json.Node {
+	externalPositions := make([]*json.Node, 0)
+
+	for _, externalPosition := range positions {
+		incentives := make([]*json.Node, 0)
+		for _, incentive := range externalPosition.Incentive {
+			incentives = append(incentives, json.ObjectNode("", map[string]*json.Node{
+				"poolPath":              json.StringNode("poolPath", incentive.PoolPath),
+				"rewardToken":           json.StringNode("rewardToken", incentive.RewardToken),
+				"rewardAmount":          json.StringNode("rewardAmount", incentive.RewardAmount),
+				"startTimestamp":        json.NumberNode("startTimestamp", float64(incentive.StartTimestamp)),
+				"endTimestamp":          json.NumberNode("endTimestamp", float64(incentive.EndTimestamp)),
+				"rewardPerBlockX96":     json.StringNode("rewardPerBlockX96", incentive.RewardPerBlockX96),
+				"rewardPerBlock":        json.StringNode("rewardPerBlock", incentive.RewardPerBlock),
+				"refundee":              json.StringNode("refundee", incentive.Refundee.String()),
+				"tokenAmount":           json.NumberNode("tokenAmount", float64(incentive.tokenAmount)),
+				"tokenAmountFull":       json.NumberNode("tokenAmountFull", float64(incentive.tokenAmountFull)),
+				"tokenAmountActualFull": json.NumberNode("tokenAmountActualFull", float64(incentive.tokenAmountActualFull)),
+			}))
+		}
+
+		externalPositions = append(externalPositions, json.ObjectNode("", map[string]*json.Node{
+			"lpTokenId":       json.NumberNode("lpTokenId", float64(externalPosition.LpTokenId)),
+			"stakedHeight":    json.NumberNode("stakedHeight", float64(externalPosition.StakedHeight)),
+			"stakedTimestamp": json.NumberNode("stakedTimestamp", float64(externalPosition.StakedTimestamp)),
+			"incentive":       json.ArrayNode("", incentives),
+		}))
+	}
+
+	return externalPositions
+}
+
+type ApiExternalDebugInfo struct {
+	Height   int64                      `json:"height"`
+	Time     int64                      `json:"time"`
+	Position []ApiExternalDebugPosition `json:"pool"`
+}
+
+type ApiExternalDebugPosition struct {
+	LpTokenId       uint64                      `json:"lpTokenId"`
+	StakedHeight    int64                       `json:"stakedHeight"`
+	StakedTimestamp int64                       `json:"stakedTimestamp"`
+	Incentive       []ApiExternalDebugIncentive `json:"incentive"`
+}
+
+type ApiExternalDebugIncentive struct {
+	PoolPath          string      `json:"poolPath"`
+	RewardToken       string      `json:"rewardToken"`
+	RewardAmount      string      `json:"rewardAmount"`
+	StartTimestamp    int64       `json:"startTimestamp"`
+	EndTimestamp      int64       `json:"endTimestamp"`
+	RewardPerBlockX96 string      `json:"rewardPerBlockX96"`
+	RewardPerBlock    string      `json:"rewardPerBlock"`
+	Refundee          std.Address `json:"refundee"`
+
+	// FROM externalRewards
+	tokenAmount           uint64 `json:"tokenAmount"`
+	tokenAmountFull       uint64 `json:"tokenAmountFull"`
+	tokenAmountActualFull uint64 `json:"tokenAmountActualFull"`
+}
