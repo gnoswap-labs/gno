@@ -348,7 +348,7 @@ func gnoTestPkg(
 
 			startedAt := time.Now()
 			if verbose {
-				io.ErrPrintfln("=== RUN   %s", testName)
+				io.ErrPrintfln("==================================================================================== RUN   %s", testName)
 			}
 
 			var closer func() (string, error)
@@ -375,7 +375,7 @@ func gnoTestPkg(
 			}
 
 			if verbose {
-				io.ErrPrintfln("--- PASS: %s (%s)", testName, dstr)
+				io.ErrPrintfln("------------------------------------------------------------------------------------ PASS: %s (%s)", testName, dstr)
 			}
 			// XXX: add per-test metrics
 		}
