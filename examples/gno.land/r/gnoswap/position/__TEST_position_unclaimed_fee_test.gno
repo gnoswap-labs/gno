@@ -199,15 +199,15 @@ func TestSwap3(t *testing.T) {
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/pool Swap [{m_callType INDIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm gno.land/r/gnoswap/router} {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_zeroForOne false} {p_amountSpecified 20000000} {p_sqrtPriceLimitX96 1461446703485210103287273052203988822378723970341} {p_payer g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {p_recipient g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {amount0 -8692001} {amount1 20000000} {protocol_fee0 0} {protocol_fee1 0} {swap_fee 10001}]}
 
-	shouldEQ(t, amount0, "-8692001")
+	shouldEQ(t, amount0, "-8600748")
 	shouldEQ(t, amount1, "20000000")
 }
 
 func TestUnclaimedFee3(t *testing.T) {
 	amount0, amount1 := unclaimedFee(1)
 
-	shouldEQ(t, amount0.ToString(), "10170")
-	shouldEQ(t, amount1.ToString(), "9009")
+	shouldEQ(t, amount0.ToString(), "593")
+	shouldEQ(t, amount1.ToString(), "13245")
 }
 
 func TestCollectFeeAfterSwap(t *testing.T) {
@@ -220,8 +220,8 @@ func TestCollectFeeAfterSwap(t *testing.T) {
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/position CollectFee [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_tokenId 1} {fee0 10069} {fee1 8919} {poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500}]}
 
 	shouldEQ(t, tokenId, uint64(1))
-	shouldEQ(t, fee0, "10069") // this is input token
-	shouldEQ(t, fee1, "8919")  // this it output token
+	shouldEQ(t, fee0, "588")   // this is input token
+	shouldEQ(t, fee1, "13113") // this it output token
 	shouldEQ(t, poolPath, "gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500")
 }
 
