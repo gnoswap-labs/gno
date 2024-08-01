@@ -629,25 +629,11 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, t
 		"0", // burn '0' liquidity to collect fee
 	)
 
-	tokensOwed0, tokensOwed1 := position.tokensOwed0, position.tokensOwed1
-
 	positionKey := positionKeyCompute(GetOrigPkgAddr(), position.tickLower, position.tickUpper)
 	pool := pl.GetPoolFromPoolPath(position.poolKey)
 	_feeGrowthInside0LastX128, _feeGrowthInside1LastX128 := pool.PoolGetPositionFeeGrowthInside0LastX128(positionKey), pool.PoolGetPositionFeeGrowthInside1LastX128(positionKey)
 	feeGrowthInside0LastX128 := u256.MustFromDecimal(_feeGrowthInside0LastX128.ToString())
 	feeGrowthInside1LastX128 := u256.MustFromDecimal(_feeGrowthInside1LastX128.ToString())
-
-	tokensOwed0 = calculateTokensOwed(
-		feeGrowthInside0LastX128,
-		position.feeGrowthInside0LastX128,
-		position.liquidity,
-	)
-
-	tokensOwed1 = calculateTokensOwed(
-		feeGrowthInside1LastX128,
-		position.feeGrowthInside1LastX128,
-		position.liquidity,
-	)
 
 	position.feeGrowthInside0LastX128 = feeGrowthInside0LastX128
 	position.feeGrowthInside1LastX128 = feeGrowthInside1LastX128
