@@ -2,6 +2,7 @@ package pool
 
 import (
 	"std"
+	"strconv"
 
 	"gno.land/p/demo/ufmt"
 
@@ -16,9 +17,9 @@ import (
 
 // Mint creates a new position and mints liquidity tokens then return amount0, amount1 in string
 //
-// Panics if any of the following conditions are met:
-// - The caller is user
-// - Caller does not have enough token0 or token1
+// Panics:
+//   - The caller is user
+//   - Caller does not have enough token0 or token1
 func Mint(
 	token0Path string,
 	token1Path string,
@@ -72,8 +73,8 @@ func Mint(
 // Burn removes liquidity from the caller and account tokens owed for the liquidity to the position
 // If liquidity of 0 is burned, it recalculates fees owed to a position
 //
-// Panics if any of the following conditions are met:
-// - The caller is not the position contract
+// Panics:
+//   - The caller is not the position contract
 func Burn(
 	token0Path string,
 	token1Path string,
@@ -130,7 +131,7 @@ func Burn(
 
 // Collect collects tokens owed to a position
 //
-// Panics if any of the following conditions are met:
+// Panics:
 // - The caller is not the position contract
 // - The position does not exist
 func Collect(
@@ -199,11 +200,11 @@ func Collect(
 
 // Swap swaps token0 for token1, or token1 for token0
 //
-// Panics if any of the following conditions are met:
-// - The caller is not the router contract
-// - Target pool is being used by another transaction
-// - The amountSpecified is 0
-// - The SqrtPriceLimit is not within the range
+// Panics:
+//   - The caller is not the router contract
+//   - Target pool is being used by another transaction
+//   - The amountSpecified is 0
+//   - The SqrtPriceLimit is not within the range
 func Swap(
 	token0Path string,
 	token1Path string,
@@ -452,7 +453,7 @@ func Swap(
 
 // SetFeeProtocol sets the denominator of the protocol fee
 //
-// Panics if any of the following conditions are met:
+// Panics:
 // - The caller is not an admin
 // - The feeProtocol0 or feeProtocol1 is not in the range of 0 or 4-10
 func SetFeeProtocol(
@@ -497,7 +498,7 @@ func SetFeeProtocol(
 
 // CollectProtocol collects protocol fees from the pool
 //
-// Panics if any of the following conditions are met:
+// Panics:
 // - The caller is not an admin
 // - The recipient is the zero address
 // - The amount0Requested or amount1Requested is greater than the protocol fees
@@ -539,11 +540,23 @@ func CollectProtocol(
 	if !ok {
 		panic(ufmt.Sprintf("[POOL] pool.gno__CollectProtocol() || transferByRegisterCall(pool.token0Path(%s), recipient(%s), uAmount0)(%d) failed", pool.token0Path, recipient.String(), uAmount0))
 	}
+	std.Emit(
+		"GNOSWAP_PROTOCOL_FEE",
+		"reason", "pool_protocol_fee",
+		"token", pool.token0Path,
+		"amount", strconv.FormatUint(uAmount0, 10),
+	)
 
 	ok = transferByRegisterCall(pool.token1Path, recipient, uAmount1)
 	if !ok {
 		panic(ufmt.Sprintf("[POOL] pool.gno__CollectProtocol() || transferByRegisterCall(pool.token1Path(%s), recipient(%s), uAmount1)(%d) failed", pool.token1Path, recipient.String(), uAmount1))
 	}
+	std.Emit(
+		"GNOSWAP_PROTOCOL_FEE",
+		"reason", "pool_protocol_fee",
+		"token", pool.token1Path,
+		"amount", strconv.FormatUint(uAmount1, 10),
+	)
 
 	std.Emit(
 		"GNOSWAP",

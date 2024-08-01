@@ -31,8 +31,8 @@ func MintAndDistributeGns() {
 	distributeToTarget(emissionGnsBalance)
 
 	// XXX TODO: REMOVE AFTER EMISSION QA
-	// println("EM_emissionGnsBalance:\t\t\t", emissionGnsBalance)
-	// println("EM_emissionGnsBalance(75%):\t\t", emissionGnsBalance*75/100)
+	println("EM_emissionGnsBalance:\t\t\t", emissionGnsBalance)
+	println("EM_emissionGnsBalance(75%):\t\t", emissionGnsBalance*75/100)
 
 	lastExecutedHeight = height
 }
