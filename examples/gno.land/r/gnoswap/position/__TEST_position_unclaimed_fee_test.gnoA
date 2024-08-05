@@ -244,6 +244,36 @@ func TestDecreaseLiquidityUpperPosition(t *testing.T) {
 	shouldEQ(t, ownerOfPosition, std.GetOrigCaller())
 }
 
+func TestMintPositionAfterSwap(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	foo.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+
+	tokenId, liquidity, amount0, amount1 := Mint(
+		barPath,
+		fooPath,
+		fee500,
+		8000,
+		12000,
+		"50000000",
+		"50000000",
+		"0",
+		"0",
+		max_timeout,
+		gsa.String(),
+	)
+
+	shouldEQ(t, tokenId, 4)
+	shouldEQ(t, getNextId(), 5)
+	shouldEQ(t, amount0, "50000000")
+	shouldEQ(t, amount1, "41821997")
+
+	fee0, fee1 := unclaimedFee(1)
+
+	shouldEQ(t, fee0.ToString(), "0")
+	shouldEQ(t, fee1.ToString(), "0")
+}
+
 func TestSubIn256(t *testing.T) {
 	a := i256.Zero()
 	b := i256.One()
