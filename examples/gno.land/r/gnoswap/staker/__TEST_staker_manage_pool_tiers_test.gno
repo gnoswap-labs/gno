@@ -31,8 +31,8 @@ func TestSetPoolTier(t *testing.T) {
 	}
 }
 
-func TestGetPoolWithTiers(t *testing.T) {
-	poolTiers := GetPoolWithTiers()
+func TestGetPoolsWithTierStruct(t *testing.T) {
+	poolTiers := GetPoolsWithTierStruct()
 	if len(poolTiers) != 2 {
 		t.Error("Expected 2 pools")
 	}
@@ -47,6 +47,13 @@ func TestChangePoolTier(t *testing.T) {
 	}
 }
 
+func TestGetPoolsWithTier(t *testing.T) {
+	poolTiers := GetPoolsWithTier()
+	shouldEQ(t, len(poolTiers), 2)
+	shouldEQ(t, poolTiers[0], "gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000_1")
+	shouldEQ(t, poolTiers[1], "gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500_3")
+}
+
 func TestRemovePoolTier(t *testing.T) {
 	std.TestSetOrigCaller(consts.GNOSWAP_ADMIN)
 	RemovePoolTier("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500")
@@ -54,4 +61,10 @@ func TestRemovePoolTier(t *testing.T) {
 	if len(poolTiers) != 1 {
 		t.Error("Expected 1 pool")
 	}
+}
+
+func TestGetPoolsWithTierAfterRemove(t *testing.T) {
+	poolTiers := GetPoolsWithTier()
+	shouldEQ(t, len(poolTiers), 1)
+	shouldEQ(t, poolTiers[0], "gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000_1")
 }
