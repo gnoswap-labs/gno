@@ -57,9 +57,7 @@ func TestGetPoolsWithTier(t *testing.T) {
 
 func TestGetPoolsWithEmissionGnsAmount(t *testing.T) {
 	poolTiers := GetPoolsWithEmissionGnsAmount()
-	shouldEQ(t, len(poolTiers), 2)
-	shouldEQ(t, poolTiers[0], "gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000_1_540000000000000")
-	shouldEQ(t, poolTiers[1], "gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500_3_135000000000000")
+	shouldEQ(t, poolTiers, `{"stat":{"height":125,"timestamp":1234567894},"response":[{"poolPath":"gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000","rewardToken":"gno.land/r/gnoswap/gns","startTimestamp":1234567890,"tier":1,"amount":540000000000000},{"poolPath":"gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500","rewardToken":"gno.land/r/gnoswap/gns","startTimestamp":1234567894,"tier":3,"amount":135000000000000}]}`)
 }
 
 func TestSetAnotherPoolTier3(t *testing.T) {
@@ -71,10 +69,7 @@ func TestSetAnotherPoolTier3(t *testing.T) {
 	}
 
 	poolTiers := GetPoolsWithEmissionGnsAmount()
-	shouldEQ(t, len(poolTiers), 3)
-	shouldEQ(t, poolTiers[0], "gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000_1_540000000000000")
-	shouldEQ(t, poolTiers[1], "gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500_3_67500000000000")
-	shouldEQ(t, poolTiers[2], "gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:100_3_67500000000000")
+	shouldEQ(t, poolTiers, `{"stat":{"height":125,"timestamp":1234567894},"response":[{"poolPath":"gno.land/r/demo/wugnot:gno.land/r/gnoswap/gns:3000","rewardToken":"gno.land/r/gnoswap/gns","startTimestamp":1234567890,"tier":1,"amount":540000000000000},{"poolPath":"gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500","rewardToken":"gno.land/r/gnoswap/gns","startTimestamp":1234567894,"tier":3,"amount":67500000000000},{"poolPath":"gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:100","rewardToken":"gno.land/r/gnoswap/gns","startTimestamp":1234567894,"tier":3,"amount":67500000000000}]}`)
 }
 
 func TestRemovePoolTier(t *testing.T) {
