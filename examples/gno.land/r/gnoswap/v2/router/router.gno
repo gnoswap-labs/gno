@@ -184,7 +184,7 @@ func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOu
 		spend := totalBefore - userNewWugnotBalance
 
 		if spend > userWrappedWugnot {
-			// too much wugnot spent
+			// used existing wugnot
 			panic(ufmt.Sprintf("[ROUTER] Too much wugnot spent (wrapped: %d, spend: %d)", userWrappedWugnot, spend))
 		}
 
