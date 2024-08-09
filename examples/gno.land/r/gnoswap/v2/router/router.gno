@@ -7,7 +7,6 @@ import (
 
 	"gno.land/p/demo/ufmt"
 
-	"gno.land/r/gnoswap/v2/common"
 	"gno.land/r/gnoswap/v2/consts"
 
 	i256 "gno.land/p/gnoswap/int256"
@@ -44,9 +43,9 @@ func SwapRoute(
 		panic("[ROUTER] Unknown swapType")
 	}
 
-	if common.GetLimitCaller() && std.PrevRealm().PkgPath() != "" {
-		panic("[ROUTER] router.gno__SwapRoute() || only user can call this function")
-	}
+	// if common.GetLimitCaller() && std.PrevRealm().PkgPath() != "" {
+	// 	panic("[ROUTER] router.gno__SwapRoute() || only user can call this function")
+	// }
 
 	en.MintAndDistributeGns()
 	sr.CalcPoolPosition()
