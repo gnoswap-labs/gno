@@ -408,12 +408,16 @@ func decreaseLiquidity(params DecreaseLiquidityParams) (uint64, *u256.Uint, *u25
 	}
 
 	liquidityToRemove := calculateLiquidityToRemove(positionLiquidity, params.liquidityRatio)
+	println("positionLiquidity:\t", positionLiquidity.ToString())
+	println("liquidityToRemove:\t", liquidityToRemove.ToString())
 
 	pToken0, pToken1, pFee := poolKeyDivide(position.poolKey)
 	pool := pl.GetPoolFromPoolPath(position.poolKey)
 
 	// BURN HERE
 	_burnedAmount0, _burnedAmount1 := pl.Burn(pToken0, pToken1, pFee, position.tickLower, position.tickUpper, liquidityToRemove.ToString())
+	println("_burnedAmount0:", _burnedAmount0)
+	println("_burnedAmount1:", _burnedAmount1)
 
 	burnedAmount0 := u256.MustFromDecimal(_burnedAmount0)
 	burnedAmount1 := u256.MustFromDecimal(_burnedAmount1)
