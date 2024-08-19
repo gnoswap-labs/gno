@@ -1,11 +1,3 @@
-// ---       runtime: cycle=129.7k imports=7 allocs=3.8M(0.76%)
-// ---       runtime: cycle=573.1k imports=7 allocs=13.5M(2.70%)
-// ---       runtime: cycle=1.0M imports=7 allocs=23.3M(4.66%)
-// ---       runtime: cycle=1.5M imports=7 allocs=33.4M(6.67%)
-// ---       runtime: cycle=1.7M imports=7 allocs=38.4M(7.67%)
-// ---       runtime: cycle=1.9M imports=7 allocs=43.4M(8.67%)
-// ok      ./examples/gno.land/r/gnoswap/v2/position 	1.72s
-
 package position
 
 import (

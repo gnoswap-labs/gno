@@ -1,11 +1,3 @@
-// ---       runtime: cycle=2.2k imports=-1 allocs=98.6k(0.02%)
-// ---       runtime: cycle=3.4k imports=-1 allocs=187.7k(0.04%)
-// ---       runtime: cycle=6.6k imports=-1 allocs=413.0k(0.08%)
-// ---       runtime: cycle=8.0k imports=-1 allocs=515.7k(0.10%)
-// ---       runtime: cycle=9.5k imports=-1 allocs=625.4k(0.13%)
-// ---       runtime: cycle=10.9k imports=-1 allocs=736.7k(0.15%)
-// ok      ./examples/gno.land/r/gnoswap/v2/gns 	1.04s
-
 package gns
 
 import (

@@ -1,20 +1,3 @@
-// ---       runtime: cycle=1.7k imports=6 allocs=112.7k(0.02%)
-// ---       runtime: cycle=6.0k imports=6 allocs=214.1k(0.04%)
-// ---       runtime: cycle=11.2k imports=6 allocs=363.3k(0.07%)
-// ---       runtime: cycle=250.4k imports=6 allocs=6.9M(1.37%)
-// ---       runtime: cycle=371.5k imports=6 allocs=10.1M(2.02%)
-// ---       runtime: cycle=578.7k imports=6 allocs=14.8M(2.96%)
-// ---       runtime: cycle=824.7k imports=6 allocs=20.4M(4.08%)
-// ---       runtime: cycle=1.2M imports=6 allocs=29.6M(5.91%)
-// ---       runtime: cycle=1.7M imports=6 allocs=38.9M(7.79%)
-// ---       runtime: cycle=1.8M imports=6 allocs=41.2M(8.24%)
-// ---       runtime: cycle=1.9M imports=6 allocs=43.4M(8.69%)
-// ---       runtime: cycle=2.0M imports=6 allocs=47.2M(9.45%)
-// ---       runtime: cycle=2.2M imports=6 allocs=51.9M(10.37%)
-// ---       runtime: cycle=2.2M imports=6 allocs=52.4M(10.48%)
-// ---       runtime: cycle=2.3M imports=6 allocs=53.0M(10.59%)
-// ok      ./examples/gno.land/r/gnoswap/v2/pool 	1.54s
-
 package pool
 
 import (

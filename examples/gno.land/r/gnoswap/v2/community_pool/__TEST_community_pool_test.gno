@@ -1,7 +1,3 @@
-// ---       runtime: cycle=7.1k imports=14 allocs=170.3k(0.03%)
-// ---       runtime: cycle=10.7k imports=14 allocs=426.7k(0.09%)
-// ok      ./examples/gno.land/r/gnoswap/v2/community_pool 	1.07s
-
 package community_pool
 
 import (

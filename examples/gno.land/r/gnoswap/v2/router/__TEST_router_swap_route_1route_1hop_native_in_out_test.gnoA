@@ -1,17 +1,3 @@
-// ---       runtime: cycle=903.4k imports=5 allocs=31.1M(6.21%)
-// ---       runtime: cycle=1.3M imports=5 allocs=40.7M(8.14%)
-// ---       runtime: cycle=1.8M imports=5 allocs=50.4M(10.08%)
-// ---       runtime: cycle=2.2M imports=5 allocs=59.0M(11.80%)
-// ---       runtime: cycle=3.4M imports=5 allocs=87.0M(17.39%)
-// ---       runtime: cycle=4.9M imports=5 allocs=121.6M(24.31%)
-// ---       runtime: cycle=6.1M imports=5 allocs=149.2M(29.83%)
-// ---       runtime: cycle=7.6M imports=5 allocs=182.9M(36.58%)
-// ---       runtime: cycle=7.6M imports=5 allocs=182.9M(36.59%)
-// ---       runtime: cycle=7.6M imports=5 allocs=183.1M(36.62%)
-// ---       runtime: cycle=7.6M imports=5 allocs=183.2M(36.64%)
-// ---       runtime: cycle=7.6M imports=5 allocs=183.2M(36.65%)
-// ok      ./examples/gno.land/r/gnoswap/v2/router 	1.95s
-
 package router
 
 import (

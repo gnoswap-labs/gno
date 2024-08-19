@@ -1,6 +1,3 @@
-// ---       runtime: cycle=152.9k imports=-1 allocs=2.7M(0.54%)
-// ok      ./examples/gno.land/r/gnoswap/v2/gnft 	0.99s
-
 package gnft
 
 import (

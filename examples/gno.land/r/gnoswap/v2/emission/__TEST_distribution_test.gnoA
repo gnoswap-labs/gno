@@ -1,9 +1,3 @@
-// ---       runtime: cycle=1.9k imports=-1 allocs=133.3k(0.03%)
-// ---       runtime: cycle=8.8k imports=-1 allocs=624.5k(0.12%)
-// ---       runtime: cycle=16.9k imports=-1 allocs=1.2M(0.24%)
-// ---       runtime: cycle=18.6k imports=-1 allocs=1.3M(0.26%)
-// ok      ./examples/gno.land/r/gnoswap/v2/emission 	1.05s
-
 package emission
 
 import (

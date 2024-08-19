@@ -1,8 +1,3 @@
-// ---       runtime: cycle=157.2k imports=4 allocs=4.5M(0.90%)
-// ---       runtime: cycle=563.0k imports=4 allocs=13.4M(2.68%)
-// ---       runtime: cycle=27.3M imports=4 allocs=603.0M(120.59%)
-// ok      ./examples/gno.land/r/gnoswap/v2/router 	2.67s
-
 package router
 
 import (
@@ -66,7 +61,7 @@ func TestPositionMint(t *testing.T) {
 	shouldEQ(t, poolTick, int32(1))
 }
 
-func TestSwapRouteBarBazExactIn(t *testing.T) {
+func TestSwapRouteBarBazExactOut(t *testing.T) {
 	poolPath := "gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:500"
 
 	std.TestSetRealm(gsaRealm)
@@ -74,24 +69,20 @@ func TestSwapRouteBarBazExactIn(t *testing.T) {
 	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 	baz.Approve(a2u(consts.ROUTER_ADDR), consts.UINT64_MAX) // ITS FOR 0.15% fee
 
-	// spend all baz in pool
-	amountIn, amountOut := SwapRoute(
-		barPath,    // inputToken
-		bazPath,    // outputToken
-		"140000",   // amountSpecified
-		"EXACT_IN", // swapType
-		poolPath,   // strRouteArr
-		"100",      // quoteArr
-		"0",        // tokenAmountLimit
+	shouldPanicWithMsg(
+		t,
+		func() {
+			amountIn, amountOut := SwapRoute(
+				barPath,     // inputToken
+				bazPath,     // outputToken
+				"120000",    // amountSpecified
+				"EXACT_OUT", // swapType
+				poolPath,    // strRouteArr
+				"100",       // quoteArr
+				"0",         // tokenAmountLimit
+			)
+		},
+		"[ROUTER] router.gno__finalizeSwap() || Too few received for user (expected minimum: 120000, actual: 99997, swapType: EXACT_OUT)",
 	)
 
-	shouldEQ(t, amountIn, "135049")
-	shouldEQ(t, amountOut, "-99848")
-
-	pool := pl.GetPool(barPath, bazPath, fee500)
-	poolLiq := pool.PoolGetLiquidity()
-	shouldEQ(t, poolLiq.ToString(), "0")
-
-	poolTick := pl.PoolGetSlot0Tick(poolPath)
-	shouldEQ(t, poolTick, int32(-887270))
 }

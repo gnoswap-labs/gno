@@ -1,10 +1,3 @@
-// ---       runtime: cycle=13.0k imports=20 allocs=931.6k(0.19%)
-// ---       runtime: cycle=17.1k imports=20 allocs=1.0M(0.21%)
-// ---       runtime: cycle=21.9k imports=20 allocs=1.2M(0.23%)
-// ---       runtime: cycle=22.4k imports=20 allocs=1.2M(0.24%)
-// ---       runtime: cycle=23.0k imports=20 allocs=1.3M(0.25%)
-// ok      ./examples/gno.land/r/gnoswap/v2/protocol_fee 	1.09s
-
 package protocol_fee
 
 import (
