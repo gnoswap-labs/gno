@@ -1,0 +1,265 @@
+// ---       runtime: cycle=903.4k imports=5 allocs=31.1M(6.21%)
+// ---       runtime: cycle=1.3M imports=5 allocs=40.7M(8.14%)
+// ---       runtime: cycle=1.8M imports=5 allocs=50.4M(10.08%)
+// ---       runtime: cycle=2.2M imports=5 allocs=59.0M(11.80%)
+// ---       runtime: cycle=3.4M imports=5 allocs=87.0M(17.39%)
+// ---       runtime: cycle=4.9M imports=5 allocs=121.6M(24.31%)
+// ---       runtime: cycle=6.1M imports=5 allocs=149.2M(29.83%)
+// ---       runtime: cycle=7.6M imports=5 allocs=182.9M(36.58%)
+// ---       runtime: cycle=7.6M imports=5 allocs=182.9M(36.59%)
+// ---       runtime: cycle=7.6M imports=5 allocs=183.1M(36.62%)
+// ---       runtime: cycle=7.6M imports=5 allocs=183.2M(36.64%)
+// ---       runtime: cycle=7.6M imports=5 allocs=183.2M(36.65%)
+// ok      ./examples/gno.land/r/gnoswap/v2/router 	1.95s
+
+package router
+
+import (
+	"std"
+	"testing"
+
+	"gno.land/p/demo/json"
+	"gno.land/p/demo/testutils"
+
+	"gno.land/r/gnoswap/v2/consts"
+
+	pl "gno.land/r/gnoswap/v2/pool"
+	pn "gno.land/r/gnoswap/v2/position"
+
+	"gno.land/r/demo/wugnot"
+	"gno.land/r/gnoswap/v2/gns"
+	"gno.land/r/onbloc/bar"
+	"gno.land/r/onbloc/baz"
+	"gno.land/r/onbloc/qux"
+)
+
+func TestCreatePool(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+
+	gns.Approve(a2u(consts.POOL_ADDR), pl.GetPoolCreationFee()*3)
+
+	pl.CreatePool(barPath, bazPath, fee500, "130621891405341611593710811006")     // tick =  10_000, ratio = 2.71814592682522526700950038502924144268035888671875
+	pl.CreatePool(bazPath, quxPath, fee500, "130621891405341611593710811006")     // tick =  10_000, ratio = 2.71814592682522526700950038502924144268035888671875
+	pl.CreatePool(quxPath, consts.GNOT, fee500, "130621891405341611593710811006") // tick =  10_000, ratio = 2.71814592682522526700950038502924144268035888671875
+	// 1 bar ≈ 19.683 gnot
+
+	jsonStr := pl.ApiGetPools()
+	root, err := json.Unmarshal([]byte(jsonStr))
+	if err != nil {
+		panic(err)
+	}
+
+	response, err := root.GetKey("response")
+	if err != nil {
+		panic(err)
+	}
+
+	shouldEQ(t, response.Size(), 3)
+}
+
+func TestPositionMintBarBaz(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	baz.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	tokenId, liquidity, amount0, amount1 := pn.Mint(barPath, bazPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa.String())
+
+	shouldEQ(t, tokenId, uint64(1))
+	shouldEQ(t, amount0, "36790")  // bar
+	shouldEQ(t, amount1, "100000") // baz
+}
+
+func TestPositionMintBazQux(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+	baz.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	qux.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+
+	tokenId, liquidity, amount0, amount1 := pn.Mint(bazPath, quxPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa.String())
+
+	shouldEQ(t, tokenId, uint64(2))
+	shouldEQ(t, amount0, "36790")
+	shouldEQ(t, amount1, "100000")
+}
+
+func TestPositionMintQuxGnot(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+
+	// send
+	std.TestIssueCoins(consts.POSITION_ADDR, std.Coins{{"ugnot", 1000009}})
+	std.TestSetOrigSend(std.Coins{{"ugnot", 1000009}}, nil)
+
+	qux.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	wugnot.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	wugnot.Approve(a2u(consts.POSITION_ADDR), consts.UINT64_MAX) // wrap unwrap
+
+	tokenId, liquidity, amount0, amount1 := pn.Mint(quxPath, consts.GNOT, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa.String())
+
+	shouldEQ(t, tokenId, uint64(3))
+	shouldEQ(t, amount0, "100000")
+	shouldEQ(t, amount1, "36790")
+}
+
+// DRY BUY NATIVE
+func TestDrySwapRouteBarGnotExactIn(t *testing.T) {
+	std.TestSetOrigCaller(gsa)
+
+	dryResult := DrySwapRoute(
+		barPath,     // inputToken
+		consts.GNOT, // outputToken
+		"1000",      // amountSpecified
+		"EXACT_IN",  // swapType
+		"gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/demo/wugnot:500", // strRouteArr
+		"100", // quoteArr
+	)
+	shouldEQ(t, dryResult, "19740")
+}
+
+// BUY NATIVE
+// bar > GNOT
+func TestSwapRouteBarGnotExactIn(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+
+	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	wugnot.Approve(a2u(consts.ROUTER_ADDR), consts.UINT64_MAX) // for output
+	wugnot.Approve(a2u(consts.ROUTER_ADDR), consts.UINT64_MAX) // for unwrap
+
+	// wrap some ugnot
+	std.TestSetOrigSend(std.Coins{{"ugnot", 5000}}, nil)
+	wugnot.Deposit()
+
+	std.TestSetOrigSend(std.Coins{{}}, nil)
+
+	oldWugnot := wugnot.BalanceOf(a2u(gsa))
+	shouldEQ(t, oldWugnot, 5000)
+
+	oldUgnot := ugnotBalanceOf(gsa)
+	shouldEQ(t, oldUgnot, 900009)
+
+	// CHECK PROTOCOL_FEE
+	feeColUgnot := ugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	feeColWugnot := wugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	shouldEQ(t, feeColUgnot, 0)
+	shouldEQ(t, feeColWugnot, 0)
+
+	std.TestSetOrigCaller(gsa)
+	amountIn, amountOut := SwapRoute(
+		barPath,     // inputToken
+		consts.GNOT, // outputToken
+		"1000",      // amountSpecified
+		"EXACT_IN",  // swapType
+		"gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/demo/wugnot:500", // strRouteArr
+		"100", // quoteArr
+		"0",   // tokenAmountLimit
+	)
+	shouldEQ(t, amountIn, "1000")
+	shouldEQ(t, amountOut, "-19711")
+
+	newWugnot := wugnot.BalanceOf(a2u(gsa))
+	shouldEQ(t, newWugnot, 5000) // IT SHOULD STAY SAME SINCE SWAP USED uGNOT, not WUGNOT
+
+	newUgnot := ugnotBalanceOf(gsa)
+	shouldEQ(t, newUgnot, 919720) // 900009 + 19711
+
+	feeColUgnot = ugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	feeColWugnot = wugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	shouldEQ(t, feeColUgnot, 29) // UNWRAP RESULT
+	shouldEQ(t, feeColWugnot, 0)
+}
+
+// DRY SELL NATIVE
+func TestDrySwapRouteGnotBarExactIn(t *testing.T) {
+	std.TestSetOrigCaller(gsa)
+
+	dryResult := DrySwapRoute(
+		consts.GNOT, // intputToken
+		barPath,     // outputToken
+		"5000",      // amountSpecified
+		"EXACT_IN",  // swapType
+		"gno.land/r/demo/wugnot:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/bar:500", // strRouteArr
+		"100", // quoteArr
+	)
+	shouldEQ(t, dryResult, "254")
+}
+
+// SELL NATIVE
+// GNOT > bar
+func TestSwapRouteGnotBarExactIn(t *testing.T) {
+	std.TestSetOrigCaller(gsa)
+
+	wugnot.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX) // for input
+	bar.Approve(a2u(consts.ROUTER_ADDR), consts.UINT64_MAX)  // for output
+
+	oldWugnot := wugnot.BalanceOf(a2u(gsa))
+	shouldEQ(t, oldWugnot, 5000)
+
+	oldUgnot := ugnotBalanceOf(gsa)
+	shouldEQ(t, oldUgnot, 919720)
+
+	feeColUgnot := ugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	feeColWugnot := wugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	shouldEQ(t, feeColUgnot, 29)
+	shouldEQ(t, feeColWugnot, 0)
+
+	// send
+	std.TestSetOrigSend(std.Coins{{"ugnot", 5000}}, nil)
+	amountIn, amountOut := SwapRoute(
+		consts.GNOT, // intputToken
+		barPath,     // outputToken
+		"5000",      // amountSpecified
+		"EXACT_IN",  // swapType
+		"gno.land/r/demo/wugnot:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/bar:500", // strRouteArr
+		"100", // quoteArr
+		"0",
+	)
+	std.TestSetOrigSend(std.Coins{{}}, nil)
+	shouldEQ(t, amountIn, "5000")
+	shouldEQ(t, amountOut, "-254")
+
+	newWugnot := wugnot.BalanceOf(a2u(gsa))
+	shouldEQ(t, newWugnot, 5000)
+
+	newUgnot := ugnotBalanceOf(gsa)
+	shouldEQ(t, newUgnot, 919720) // GNO VM BUG, ugnot amount should be decreased but `std.TestSetOrigSend` doesn't really decrease caller's ugnot balance
+
+	feeColUgnot = ugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	feeColWugnot = wugnotBalanceOf(consts.PROTOCOL_FEE_ADDR)
+	shouldEQ(t, feeColUgnot, 29)
+	shouldEQ(t, feeColWugnot, 0)
+}
+
+// Test Getter/Setter for SwapFee
+func TestGetSwapFee(t *testing.T) {
+	fee := GetSwapFee()
+	shouldEQ(t, fee, uint64(15))
+}
+
+func TestSetSwapFeeNoPermission(t *testing.T) {
+	dummy := testutils.TestAddress("dummy")
+	std.TestSetOrigCaller(dummy)
+
+	shouldPanicWithMsg(
+		t,
+		func() {
+			SetSwapFee(2)
+		},
+		"[ROUTER] protocol_fee_swap.gno__SetSwapFee() || only admin(g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c) or governance(g1cu4dufdlzu0l9pekkqhw6mjnrxkp3z7ykst09d) can set swap fee, called from g1v36k6mteta047h6lta047h6lta047h6lz7gmv8",
+	)
+}
+
+func TestSetSwapFeeOutOfRange(t *testing.T) {
+	std.TestSetOrigCaller(gsa)
+
+	shouldPanicWithMsg(
+		t,
+		func() {
+			SetSwapFee(10001)
+		},
+		"[ROUTER] protocol_fee_swap.gno__SetSwapFee() || fee(10001) must be in range 0 ~ 10000",
+	)
+}
+
+func TestSetSwapFee(t *testing.T) {
+	std.TestSetOrigCaller(gsa)
+	shouldEQ(t, GetSwapFee(), uint64(15))
+	SetSwapFee(51)
+	shouldEQ(t, GetSwapFee(), uint64(51))
+}

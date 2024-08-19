@@ -1,0 +1,16 @@
+// ---       runtime: cycle=27.7k imports=5 allocs=1.4M(0.29%)
+// ok      ./examples/gno.land/r/gnoswap/v2/staker 	1.68s
+
+package staker
+
+import (
+	"std"
+	"testing"
+
+	"gno.land/r/gnoswap/v2/consts"
+)
+
+func TestGnsSetAvgBlockTimeInMs(t *testing.T) {
+	std.TestSetOrigCaller(consts.GNOSWAP_ADMIN)
+	GnsSetAvgBlockTimeInMs(2500)
+}

@@ -1,0 +1,143 @@
+// ---       runtime: cycle=159.5k imports=7 allocs=4.7M(0.93%)
+// ---       runtime: cycle=628.2k imports=7 allocs=15.1M(3.03%)
+// ---       runtime: cycle=1.1M imports=7 allocs=26.1M(5.22%)
+// ---       runtime: cycle=1.5M imports=7 allocs=35.6M(7.12%)
+// ---       runtime: cycle=1.6M imports=7 allocs=39.0M(7.79%)
+// ok      ./examples/gno.land/r/gnoswap/v2/position 	1.74s
+
+package position
+
+import (
+	"std"
+	"testing"
+
+	"gno.land/r/gnoswap/v2/common"
+	"gno.land/r/gnoswap/v2/consts"
+
+	pl "gno.land/r/gnoswap/v2/pool"
+
+	"gno.land/r/onbloc/bar"
+	"gno.land/r/onbloc/foo"
+
+	"gno.land/r/gnoswap/v2/gns"
+)
+
+func init() {
+	// set pool create fee to 0 for testing
+	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
+	pl.SetPoolCreationFee(0)
+}
+
+func TestPoolInitCreatePool(t *testing.T) {
+	shouldEQ(t, gns.TotalSupply(), 100000000000000)
+	shouldEQ(t, gnsBalance(consts.EMISSION_ADDR), 0)
+	shouldEQ(t, gnsBalance(consts.STAKER_ADDR), 0)
+	shouldEQ(t, gnsBalance(consts.DEV_OPS), 0)
+	std.TestSkipHeights(100)
+
+	std.TestSetRealm(gsaRealm)
+
+	gns.Approve(a2u(consts.POOL_ADDR), pl.GetPoolCreationFee())
+	pl.CreatePool(barPath, fooPath, fee500, common.TickMathGetSqrtRatioAtTick(1).ToString())
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/pool CreatePool [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500}]}
+	std.TestSkipHeights(1)
+
+	shouldEQ(t, gns.TotalSupply(), 100001426940600)
+	shouldEQ(t, gnsBalance(consts.EMISSION_ADDR), 0)
+	shouldEQ(t, gnsBalance(consts.STAKER_ADDR), 1070205450)
+	shouldEQ(t, gnsBalance(consts.DEV_OPS), 285388120)
+}
+
+func TestMintPositionFullInRange(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	foo.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+
+	tokenId, liquidity, amount0, amount1 := Mint(
+		barPath,
+		fooPath,
+		fee500,
+		-887270,
+		887270,
+		"50000",
+		"50000",
+		"0",
+		"0",
+		max_timeout,
+		gsa.String(),
+	)
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position Mint [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_tickLower -887270} {p_tickUpper 887270} {tokenId 1} {liquidity 49997} {amount0 49995} {amount1 50000}]}
+	std.TestSkipHeights(1)
+
+	shouldEQ(t, gns.TotalSupply(), 100001441210006)
+	shouldEQ(t, gnsBalance(consts.EMISSION_ADDR), 1)
+	shouldEQ(t, gnsBalance(consts.STAKER_ADDR), 1080907504)
+	shouldEQ(t, gnsBalance(consts.DEV_OPS), 288242001)
+}
+
+func TestIncreaseLiquidity(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	foo.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+
+	tokenId, liquidity, amount0, amount1, poolPath := IncreaseLiquidity(
+		uint64(1),
+		"50000",
+		"50000",
+		"0",
+		"0",
+		max_timeout,
+	)
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position IncreaseLiquidity [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_tokenId 1} {poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {liquidity 49997} {amount0 49995} {amount1 50000}]}
+	std.TestSkipHeights(1)
+
+	shouldEQ(t, gns.TotalSupply(), 100001455479412)
+	shouldEQ(t, gnsBalance(consts.EMISSION_ADDR), 1)
+	shouldEQ(t, gnsBalance(consts.STAKER_ADDR), 1091609559)
+	shouldEQ(t, gnsBalance(consts.DEV_OPS), 291095882)
+}
+
+func TestDecreaseLiquidity(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	foo.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+
+	tokenId, liquidity, fee0, fee1, amount0, amount1, poolPath := DecreaseLiquidity(
+		uint64(1),
+		uint64(50),
+		"0",
+		"0",
+		max_timeout,
+		false,
+	)
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/pool HandleWithdrawalFee [{m_callType INDIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm gno.land/r/gnoswap/v2/position} {p_tokenId 1} {p_token0Path gno.land/r/onbloc/bar} {p_token1Path gno.land/r/onbloc/foo} {fee0Amount 0} {fee1Amount 0}]}
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position CollectFee [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_tokenId 1} {fee0 0} {fee1 0} {poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500}]}
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position DecreaseLiquidity [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_tokenId 1} {p_liquidityRatio 50} {poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {liquidity 49997} {fee0 0} {fee1 0} {amount0 49994} {amount1 49999}]}
+	std.TestSkipHeights(1)
+
+	shouldEQ(t, gns.TotalSupply(), 100001469748818)
+	shouldEQ(t, gnsBalance(consts.EMISSION_ADDR), 1)
+	shouldEQ(t, gnsBalance(consts.STAKER_ADDR), 1102311614)
+	shouldEQ(t, gnsBalance(consts.DEV_OPS), 293949763)
+}
+
+func TestCollectFee(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
+	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+	foo.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
+
+	tokenId, fee0, fee1, poolPath, _, _ := CollectFee(uint64(1))
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/pool HandleWithdrawalFee [{m_callType INDIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm gno.land/r/gnoswap/v2/position} {p_tokenId 1} {p_token0Path gno.land/r/onbloc/bar} {p_token1Path gno.land/r/onbloc/foo} {fee0Amount 0} {fee1Amount 0}]}
+	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position CollectFee [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_tokenId 1} {fee0 0} {fee1 0} {poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500}]}
+	std.TestSkipHeights(1)
+
+	shouldEQ(t, gns.TotalSupply(), 100001484018224)
+	shouldEQ(t, gnsBalance(consts.EMISSION_ADDR), 1)
+	shouldEQ(t, gnsBalance(consts.STAKER_ADDR), 1113013669)
+	shouldEQ(t, gnsBalance(consts.DEV_OPS), 296803644)
+}
+
+func gnsBalance(addr std.Address) uint64 {
+	return gns.BalanceOf(a2u(addr))
+}

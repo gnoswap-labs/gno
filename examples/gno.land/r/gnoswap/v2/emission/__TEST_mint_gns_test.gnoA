@@ -1,0 +1,32 @@
+// ---       runtime: cycle=1.8k imports=-1 allocs=132.7k(0.03%)
+// ---       runtime: cycle=2.4k imports=-1 allocs=179.4k(0.04%)
+// ok      ./examples/gno.land/r/gnoswap/v2/emission 	1.09s
+
+package emission
+
+import (
+	"std"
+	"testing"
+
+	"gno.land/r/gnoswap/v2/gns"
+)
+
+func Test_mintGns(t *testing.T) {
+	shouldEQ(t, gns.TotalSupply(), 100000000000000) // GSA has
+	shouldEQ(t, gnsBalance(emissionAddr), 0)
+
+	std.TestSkipHeights(1)
+	mintGns()
+
+	shouldEQ(t, gnsBalance(emissionAddr), 14269406)
+	shouldEQ(t, gns.TotalSupply(), 100000000000000+14269406)
+
+	shouldEQ(t, std.GetHeight(), 124)
+}
+
+func Test_emitGns_SameBlock(t *testing.T) {
+	// request mint again in same block => do not mint again
+	// it may happen because single block can have multiple txs & msgs
+	mintGns()
+	shouldEQ(t, gns.TotalSupply(), 100000000000000+14269406)
+}
