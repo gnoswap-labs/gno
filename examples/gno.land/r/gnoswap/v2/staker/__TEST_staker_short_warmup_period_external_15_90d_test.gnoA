@@ -1,5 +1,4 @@
 // external incentive + warm up period testing
-// with three external incentives for same pool
 //  qux for 90 days
 
 package staker
