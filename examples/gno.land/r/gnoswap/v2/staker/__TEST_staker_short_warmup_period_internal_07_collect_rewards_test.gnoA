@@ -1,22 +1,3 @@
-// ---       runtime: cycle=21.3k imports=5 allocs=968.8k(0.19%)
-// ---       runtime: cycle=218.5k imports=5 allocs=6.9M(1.38%)
-// ---       runtime: cycle=698.7k imports=5 allocs=19.8M(3.97%)
-// ---       runtime: cycle=1.2M imports=5 allocs=33.1M(6.63%)
-// ---       runtime: cycle=1.5M imports=5 allocs=42.8M(8.55%)
-// ---       runtime: cycle=1.8M imports=5 allocs=53.7M(10.75%)
-// ---       runtime: cycle=2.2M imports=5 allocs=69.8M(13.95%)
-// ---       runtime: cycle=2.5M imports=5 allocs=81.4M(16.28%)
-// ---       runtime: cycle=2.8M imports=5 allocs=93.2M(18.64%)
-// ---       runtime: cycle=3.1M imports=5 allocs=107.0M(21.41%)
-// ---       runtime: cycle=3.4M imports=5 allocs=119.9M(23.99%)
-// ---       runtime: cycle=3.7M imports=5 allocs=131.6M(26.31%)
-// ---       runtime: cycle=3.9M imports=5 allocs=142.8M(28.56%)
-// ---       runtime: cycle=4.2M imports=5 allocs=155.0M(30.99%)
-// ---       runtime: cycle=4.2M imports=5 allocs=155.5M(31.11%)
-// ---       runtime: cycle=4.2M imports=5 allocs=155.6M(31.13%)
-// ---       runtime: cycle=4.3M imports=5 allocs=158.7M(31.74%)
-// ok      ./examples/gno.land/r/gnoswap/v2/staker 	1.94s
-
 package staker
 
 import (

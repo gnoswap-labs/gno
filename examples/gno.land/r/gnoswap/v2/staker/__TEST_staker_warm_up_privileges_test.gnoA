@@ -1,9 +1,3 @@
-// ---       runtime: cycle=13.8k imports=6 allocs=450.1k(0.09%)
-// ---       runtime: cycle=19.8k imports=6 allocs=593.9k(0.12%)
-// ---       runtime: cycle=24.1k imports=6 allocs=694.4k(0.14%)
-// ---       runtime: cycle=24.9k imports=6 allocs=756.2k(0.15%)
-// ok      ./examples/gno.land/r/gnoswap/v2/staker 	1.72s
-
 package staker
 
 import (

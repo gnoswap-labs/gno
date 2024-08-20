@@ -1,17 +1,3 @@
-// ---       runtime: cycle=210.0k imports=5 allocs=6.3M(1.26%)
-// ---       runtime: cycle=597.6k imports=5 allocs=15.3M(3.05%)
-// ---       runtime: cycle=1.0M imports=5 allocs=24.6M(4.92%)
-// ---       runtime: cycle=1.0M imports=5 allocs=26.3M(5.26%)
-// ---       runtime: cycle=1.4M imports=5 allocs=35.0M(7.00%)
-// ---       runtime: cycle=1.5M imports=5 allocs=38.8M(7.76%)
-// ---       runtime: cycle=1.6M imports=5 allocs=42.2M(8.45%)
-// ---       runtime: cycle=1.7M imports=5 allocs=45.5M(9.10%)
-// ---       runtime: cycle=1.9M imports=5 allocs=54.6M(10.93%)
-// ---       runtime: cycle=2.7M imports=5 allocs=72.0M(14.40%)
-// ---       runtime: cycle=2.8M imports=5 allocs=76.4M(15.28%)
-// ---       runtime: cycle=2.9M imports=5 allocs=83.7M(16.74%)
-// ok      ./examples/gno.land/r/gnoswap/v2/staker 	1.83s
-
 // external incentive + warm up period testing
 
 package staker

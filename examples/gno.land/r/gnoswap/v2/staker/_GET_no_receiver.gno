@@ -619,7 +619,7 @@ func GetPrintExternalInfo() string {
 			toGive := externalWarmUpAmount.give30 + externalWarmUpAmount.give50 + externalWarmUpAmount.give70 + externalWarmUpAmount.full100
 
 			externalIncentive.tokenAmountFull += fullAmount
-			externalIncentive.tokenAmountActualFull += toGive
+			externalIncentive.tokenAmountToGive += toGive
 
 			externalIncentives = append(externalIncentives, externalIncentive)
 		}
@@ -653,20 +653,24 @@ func makeExternalPositionsNode(positions []ApiExternalDebugPosition) []*json.Nod
 	for _, externalPosition := range positions {
 		incentives := make([]*json.Node, 0)
 		for _, incentive := range externalPosition.Incentive {
+
+			_max := max(incentive.StartTimestamp, deposits[externalPosition.LpTokenId].stakeTimestamp)
+			stakedOrExternalDuration := (time.Now().Unix() - _max) / consts.BLOCK_GENERATION_INTERVAL
+
 			incentives = append(incentives, json.ObjectNode("", map[string]*json.Node{
-				"poolPath":              json.StringNode("poolPath", incentive.PoolPath),
-				"rewardToken":           json.StringNode("rewardToken", incentive.RewardToken),
-				"rewardAmount":          json.StringNode("rewardAmount", incentive.RewardAmount),
-				"rewardLeft":            json.StringNode("rewardLeft", incentive.RewardLeft),
-				"startTimestamp":        json.NumberNode("startTimestamp", float64(incentive.StartTimestamp)),
-				"endTimestamp":          json.NumberNode("endTimestamp", float64(incentive.EndTimestamp)),
-				"rewardPerBlockX96":     json.StringNode("rewardPerBlockX96", incentive.RewardPerBlockX96),
-				"rewardPerBlock":        json.StringNode("rewardPerBlock", incentive.RewardPerBlock),
-				"refundee":              json.StringNode("refundee", incentive.Refundee.String()),
-				"tokenAmountX96":        json.StringNode("tokenAmountX96", incentive.tokenAmountX96.ToString()),
-				"tokenAmount":           json.NumberNode("tokenAmount", float64(new(u256.Uint).Div(incentive.tokenAmountX96, _q96).Uint64())),
-				"tokenAmountFull":       json.NumberNode("tokenAmountFull", float64(incentive.tokenAmountFull)),
-				"tokenAmountActualFull": json.NumberNode("tokenAmountActualFull", float64(incentive.tokenAmountActualFull)),
+				"poolPath":                 json.StringNode("poolPath", incentive.PoolPath),
+				"rewardToken":              json.StringNode("rewardToken", incentive.RewardToken),
+				"rewardAmount":             json.StringNode("rewardAmount", incentive.RewardAmount),
+				"startTimestamp":           json.NumberNode("startTimestamp", float64(incentive.StartTimestamp)),
+				"endTimestamp":             json.NumberNode("endTimestamp", float64(incentive.EndTimestamp)),
+				"rewardPerBlockX96":        json.StringNode("rewardPerBlockX96", incentive.RewardPerBlockX96),
+				"stakedOrExternalDuration": json.NumberNode("stakedOrExternalDuration", float64(stakedOrExternalDuration)),
+				"rewardPerBlock":           json.StringNode("rewardPerBlock", incentive.RewardPerBlock),
+				"refundee":                 json.StringNode("refundee", incentive.Refundee.String()),
+				// "tokenAmountX96":           json.StringNode("tokenAmountX96", incentive.tokenAmountX96.ToString()),
+				// "tokenAmount":              json.NumberNode("tokenAmount", float64(new(u256.Uint).Div(incentive.tokenAmountX96, _q96).Uint64())),
+				"tokenAmountFull":   json.NumberNode("tokenAmountFull", float64(incentive.tokenAmountFull)),
+				"tokenAmountToGive": json.NumberNode("tokenAmountToGive", float64(incentive.tokenAmountToGive)),
 			}))
 		}
 
@@ -705,8 +709,8 @@ type ApiExternalDebugIncentive struct {
 	RewardPerBlock    string      `json:"rewardPerBlock"`
 	Refundee          std.Address `json:"refundee"`
 	// FROM externalRewards
-	tokenAmountX96        *u256.Uint `json:"tokenAmountX96"`
-	tokenAmount           uint64     `json:"tokenAmount"`
-	tokenAmountFull       uint64     `json:"tokenAmountFull"`
-	tokenAmountActualFull uint64     `json:"tokenAmountActualFull"`
+	tokenAmountX96    *u256.Uint `json:"tokenAmountX96"`
+	tokenAmount       uint64     `json:"tokenAmount"`
+	tokenAmountFull   uint64     `json:"tokenAmountFull"`
+	tokenAmountToGive uint64     `json:"tokenAmountToGive"`
 }
