@@ -56,12 +56,12 @@ func TestTransferGns(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
 
 	gns.Transfer(a2u(consts.COMMUNITY_POOL_ADDR), 1000)
-	shouldEQ(t, gns.BalanceOf(a2u(consts.COMMUNITY_POOL_ADDR)), 1000)
+	shouldEQ(t, gns.BalanceOf(a2u(consts.COMMUNITY_POOL_ADDR)), uint64(1000))
 
 	sendTarget := testutils.TestAddress("sendTarget")
 	TransferToken(consts.GNS_PATH, sendTarget, 900)
-	shouldEQ(t, gns.BalanceOf(a2u(consts.COMMUNITY_POOL_ADDR)), 100)
-	shouldEQ(t, gns.BalanceOf(a2u(sendTarget)), 900)
+	shouldEQ(t, gns.BalanceOf(a2u(consts.COMMUNITY_POOL_ADDR)), uint64(100))
+	shouldEQ(t, gns.BalanceOf(a2u(sendTarget)), uint64(900))
 }
 
 func shouldPanicWithMsg(t *testing.T, f func(), msg string) {
