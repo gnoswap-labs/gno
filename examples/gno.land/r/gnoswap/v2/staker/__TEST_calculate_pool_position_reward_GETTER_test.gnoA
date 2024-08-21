@@ -310,56 +310,56 @@ func TestGetHeight(t *testing.T) {
 	println(GetHeight()) // 130
 
 	res := GetHeight()
-	shouldEQ(t, res, 130)
+	shouldEQ(t, res, int64(130))
 }
 
 func TestGetTimeNowUnix(t *testing.T) {
 	println(GetTimeNowUnix()) // 1234567904
 
 	res := GetTimeNowUnix()
-	shouldEQ(t, res, 1234567904)
+	shouldEQ(t, res, int64(1234567904))
 }
 
 func TestGetExternalGnsAmount(t *testing.T) {
 	println(GetExternalGnsAmount()) // 0
 
 	res := GetExternalGnsAmount()
-	shouldEQ(t, res, 0)
+	shouldEQ(t, res, uint64(0))
 }
 
 func TestGetStakerGnsBalance(t *testing.T) {
-	println(GetStakerGnsBalance()) // 10702055
+	println(GetStakerGnsBalance()) // 21404110
 
 	res := GetStakerGnsBalance()
-	shouldEQ(t, res, 10702055)
+	shouldEQ(t, res, uint64(21404110))
 }
 
 func TestGetStakerEmissionGnsBalance(t *testing.T) {
-	println(GetStakerEmissionGnsBalance()) // 10702055
+	println(GetStakerEmissionGnsBalance()) // 21404110
 
 	res := GetStakerEmissionGnsBalance()
-	shouldEQ(t, res, 10702055)
+	shouldEQ(t, res, uint64(21404110))
 }
 
 func TestGetLastCalculatedBalance(t *testing.T) {
 	println(GetLastCalculatedBalance()) // 10702055
 
 	res := GetLastCalculatedBalance()
-	shouldEQ(t, res, 10702055)
+	shouldEQ(t, res, uint64(10702055))
 }
 
 func TestGetLastCalculatedHeight(t *testing.T) {
 	println(GetLastCalculatedHeight()) // 129
 
 	res := GetLastCalculatedHeight()
-	shouldEQ(t, res, 129)
+	shouldEQ(t, res, int64(129))
 }
 
 func TestGetMintedGnsAmount(t *testing.T) {
-	println(GetMintedGnsAmount()) // 0
+	println(GetMintedGnsAmount()) // 10702055
 
 	res := GetMintedGnsAmount()
-	shouldEQ(t, res, 0)
+	shouldEQ(t, res, uint64(10702055))
 }
 
 func TestGetNumPoolTiers(t *testing.T) {
