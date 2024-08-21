@@ -93,8 +93,8 @@ func TestMintBarQux100_2(t *testing.T) {
 		fee100,       // fee
 		int32(-1000), // tickLower
 		int32(1000),  // tickUpper
-		"50",         // amount0Desired
-		"50",         // amount1Desired
+		"300",        // amount0Desired
+		"300",        // amount1Desired
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
@@ -376,9 +376,68 @@ func TestGetTiersRatio(t *testing.T) {
 	shouldEQ(t, res, `100*STAKER*0*STAKER*0`)
 }
 
-func TestGetWramUpPeriods(t *testing.T) {
-	println(GetWramUpPeriods()) // 1*STAKER*151*STAKER*301*STAKER*901
+func TestGetWarmUpPeriods(t *testing.T) {
+	println(GetWarmUpPeriods()) // 1*STAKER*151*STAKER*301*STAKER*901
 
-	res := GetWramUpPeriods()
+	res := GetWarmUpPeriods()
 	shouldEQ(t, res, `1*STAKER*151*STAKER*301*STAKER*901`)
+}
+
+func TestGetGetPositionsInternalWarmUpAmount(t *testing.T) {
+	println(GetPositionsInternalWarmUpAmount())
+
+	res := GetPositionsInternalWarmUpAmount()
+	shouldEQ(t, res, `[{"tokenId":"1","full30":"10702055","give30":"3210616","left30":"7491439","full50":"0","give50":"0","left50":"0","full70":"0","give70":"0","left70":"0","full100":"0"},{"tokenId":"2","full30":"0","give30":"0","left30":"0","full50":"0","give50":"0","left50":"0","full70":"0","give70":"0","left70":"0","full100":"0"}]`)
+}
+
+// CREATE EXTERNAL INCENTIVE
+func TestCreateExternalIncentive_90_180(t *testing.T) {
+	{
+		std.TestSetOrigCaller(gsa)
+		std.TestSetRealm(gsaRealm)
+
+		bar.Approve(a2u(consts.STAKER_ADDR), consts.UINT64_MAX)
+
+		CreateExternalIncentive(
+			"gno.land/r/onbloc/bar:gno.land/r/onbloc/qux:100", // targetPoolPath string,
+			barPath,     // rewardToken string, // token path should be registered
+			"900000000", // _rewardAmount string,
+			1234569600,
+			1234569600+TIMESTAMP_90DAYS,
+		)
+	}
+
+	{
+		std.TestSetOrigCaller(gsa)
+		std.TestSetRealm(gsaRealm)
+
+		qux.Approve(a2u(consts.STAKER_ADDR), consts.UINT64_MAX)
+
+		CreateExternalIncentive(
+			"gno.land/r/onbloc/bar:gno.land/r/onbloc/qux:100", // targetPoolPath string,
+			quxPath,      // rewardToken string, // token path should be registered
+			"1230000000", // _rewardAmount string,
+			1234569600,
+			1234569600+TIMESTAMP_180DAYS,
+		)
+	}
+}
+
+func TestGetPositionsExternalWarmUpAmount(t *testing.T) {
+	std.TestSkipHeights(100)
+
+	en.MintAndDistributeGns()
+	CalcPoolPosition() // trigger this to update externalGns
+
+	println(GetPositionsExternalWarmUpAmount())
+
+	res := GetPositionsExternalWarmUpAmount()
+	shouldEQ(t, res, `[{"tokenId":"1","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9iYXI6MTIzNDU2Nzk2NDoxMjQyMzQ1NjAwOjEzMA==","full30":"2314","give30":"694","left30":"1620","full50":"0","give50":"0","left50":"0","full70":"0","give70":"0","left70":"0","full100":"0"},{"tokenId":"1","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9xdXg6MTIzNDU2Nzk2NDoxMjUwMTIxNjAwOjEzMA==","full30":"1581","give30":"474","left30":"1107","full50":"0","give50":"0","left50":"0","full70":"0","give70":"0","left70":"0","full100":"0"},{"tokenId":"2","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9iYXI6MTIzNDU2Nzk2NDoxMjQyMzQ1NjAwOjEzMA==","full30":"13886","give30":"4165","left30":"9721","full50":"0","give50":"0","left50":"0","full70":"0","give70":"0","left70":"0","full100":"0"},{"tokenId":"2","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9xdXg6MTIzNDU2Nzk2NDoxMjUwMTIxNjAwOjEzMA==","full30":"9489","give30":"2846","left30":"6643","full50":"0","give50":"0","left50":"0","full70":"0","give70":"0","left70":"0","full100":"0"}]`)
+}
+
+func TestGetPositionsExternalLastCalculatedHeight(t *testing.T) {
+	println(GetPositionsExternalLastCalculatedHeight())
+
+	res := GetPositionsExternalLastCalculatedHeight()
+	shouldEQ(t, res, `[{"tokenId":"1","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9iYXI6MTIzNDU2Nzk2NDoxMjQyMzQ1NjAwOjEzMA==","lastCalculatedHeight":"230"},{"tokenId":"1","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9xdXg6MTIzNDU2Nzk2NDoxMjUwMTIxNjAwOjEzMA==","lastCalculatedHeight":"230"},{"tokenId":"2","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9iYXI6MTIzNDU2Nzk2NDoxMjQyMzQ1NjAwOjEzMA==","lastCalculatedHeight":"230"},{"tokenId":"2","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjEwMDpnbm8ubGFuZC9yL29uYmxvYy9xdXg6MTIzNDU2Nzk2NDoxMjUwMTIxNjAwOjEzMA==","lastCalculatedHeight":"230"}]`)
 }

@@ -1,6 +1,7 @@
 package staker
 
 import (
+	"encoding/base64"
 	"std"
 	"time"
 
@@ -295,8 +296,8 @@ func GetPositionExternal() string {
 				"tokenPath":      json.StringNode("tokenPath", externalRewards.tokenPath),
 				"tokenAmountX96": json.StringNode("tokenAmountX96", externalRewards.tokenAmountX96.ToString()),
 				//
-				"tokenAmountFull":       json.StringNode("tokenAmountFull", ufmt.Sprintf("%d", externalRewards.tokenAmountFull)),
-				"tokenAmountActualFull": json.StringNode("tokenAmountActualFull", ufmt.Sprintf("%d", externalRewards.tokenAmountActualFull)),
+				"tokenAmountFull":   json.StringNode("tokenAmountFull", ufmt.Sprintf("%d", externalRewards.tokenAmountFull)),
+				"tokenAmountToGive": json.StringNode("tokenAmountToGive", ufmt.Sprintf("%d", externalRewards.tokenAmountToGive)),
 			})
 			arr2Node.AppendArray(obj2Node)
 		}
@@ -306,6 +307,90 @@ func GetPositionExternal() string {
 			"externals": arr2Node,
 		})
 		arrNode.AppendArray(objNode)
+	}
+
+	return marshal(arrNode)
+}
+
+// positionsInternalWarmUpAmount
+func GetPositionsInternalWarmUpAmount() string {
+	en.MintAndDistributeGns()
+
+	if len(positionsInternalWarmUpAmount) == 0 {
+		return ""
+	}
+
+	arrNode := json.ArrayNode("", []*json.Node{})
+	for tokenId, internalWarmUpAmount := range positionsInternalWarmUpAmount {
+		objNode := json.ObjectNode("", map[string]*json.Node{
+			"tokenId": json.StringNode("tokenId", ufmt.Sprintf("%d", tokenId)),
+			"full30":  json.StringNode("full30", ufmt.Sprintf("%d", internalWarmUpAmount.full30)),
+			"give30":  json.StringNode("give30", ufmt.Sprintf("%d", internalWarmUpAmount.give30)),
+			"left30":  json.StringNode("left30", ufmt.Sprintf("%d", internalWarmUpAmount.left30)),
+			"full50":  json.StringNode("full50", ufmt.Sprintf("%d", internalWarmUpAmount.full50)),
+			"give50":  json.StringNode("give50", ufmt.Sprintf("%d", internalWarmUpAmount.give50)),
+			"left50":  json.StringNode("left50", ufmt.Sprintf("%d", internalWarmUpAmount.left50)),
+			"full70":  json.StringNode("full70", ufmt.Sprintf("%d", internalWarmUpAmount.full70)),
+			"give70":  json.StringNode("give70", ufmt.Sprintf("%d", internalWarmUpAmount.give70)),
+			"left70":  json.StringNode("left70", ufmt.Sprintf("%d", internalWarmUpAmount.left70)),
+			"full100": json.StringNode("full100", ufmt.Sprintf("%d", internalWarmUpAmount.full100)),
+		})
+		arrNode.AppendArray(objNode)
+	}
+
+	return marshal(arrNode)
+}
+
+// positionsExternalWarmUpAmount
+func GetPositionsExternalWarmUpAmount() string {
+	en.MintAndDistributeGns()
+
+	if len(positionsExternalWarmUpAmount) == 0 {
+		return ""
+	}
+
+	arrNode := json.ArrayNode("", []*json.Node{})
+	for tokenId, externals := range positionsExternalWarmUpAmount {
+		for incentiveId, externalWarmUpAmount := range externals {
+			objNode := json.ObjectNode("", map[string]*json.Node{
+				"tokenId":     json.StringNode("tokenId", ufmt.Sprintf("%d", tokenId)),
+				"incentiveId": json.StringNode("incentiveId", incentiveId),
+				"full30":      json.StringNode("full30", ufmt.Sprintf("%d", externalWarmUpAmount.full30)),
+				"give30":      json.StringNode("give30", ufmt.Sprintf("%d", externalWarmUpAmount.give30)),
+				"left30":      json.StringNode("left30", ufmt.Sprintf("%d", externalWarmUpAmount.left30)),
+				"full50":      json.StringNode("full50", ufmt.Sprintf("%d", externalWarmUpAmount.full50)),
+				"give50":      json.StringNode("give50", ufmt.Sprintf("%d", externalWarmUpAmount.give50)),
+				"left50":      json.StringNode("left50", ufmt.Sprintf("%d", externalWarmUpAmount.left50)),
+				"full70":      json.StringNode("full70", ufmt.Sprintf("%d", externalWarmUpAmount.full70)),
+				"give70":      json.StringNode("give70", ufmt.Sprintf("%d", externalWarmUpAmount.give70)),
+				"left70":      json.StringNode("left70", ufmt.Sprintf("%d", externalWarmUpAmount.left70)),
+				"full100":     json.StringNode("full100", ufmt.Sprintf("%d", externalWarmUpAmount.full100)),
+			})
+			arrNode.AppendArray(objNode)
+		}
+	}
+
+	return marshal(arrNode)
+}
+
+// positionsExternalLastCalculatedHeight
+func GetPositionsExternalLastCalculatedHeight() string {
+	en.MintAndDistributeGns()
+
+	if len(positionsExternalLastCalculatedHeight) == 0 {
+		return ""
+	}
+
+	arrNode := json.ArrayNode("", []*json.Node{})
+	for tokenId, externals := range positionsExternalLastCalculatedHeight {
+		for incentiveId, lastCalculatedHeight := range externals {
+			objNode := json.ObjectNode("", map[string]*json.Node{
+				"tokenId":              json.StringNode("tokenId", ufmt.Sprintf("%d", tokenId)),
+				"incentiveId":          json.StringNode("incentiveId", incentiveId),
+				"lastCalculatedHeight": json.StringNode("lastCalculatedHeight", ufmt.Sprintf("%d", lastCalculatedHeight)),
+			})
+			arrNode.AppendArray(objNode)
+		}
 	}
 
 	return marshal(arrNode)
@@ -397,7 +482,7 @@ func GetTiersAmount(amount uint64) string {
 	return ufmt.Sprintf("%d*STAKER*%d*STAKER*%d", tier1Amount, tier2Amount, tier3Amount)
 }
 
-func GetWramUpPeriods() string {
+func GetWarmUpPeriods() string {
 	en.MintAndDistributeGns()
 
 	warmUp30 := warmUp[30]
@@ -431,6 +516,10 @@ func GetNecessary() string {
 	numPoolTiers := GetNumPoolTiers()
 	tiersRatio := GetTiersRatio()
 
+	// positionsInternalWarmUpAmount
+	// positionsExternalWarmUpAmount
+	// positionsExternalLastCalculatedHeight
+
 	response := json.ObjectNode("", map[string]*json.Node{
 		"height":                json.StringNode("height", ufmt.Sprintf("%d", height)),
 		"now":                   json.StringNode("now", ufmt.Sprintf("%d", now)),
@@ -440,8 +529,17 @@ func GetNecessary() string {
 		"gnsBalance":            json.StringNode("gnsBalance", ufmt.Sprintf("%d", gnsBalance)),
 		"numPoolTiers":          json.StringNode("numPoolTiers", numPoolTiers),
 		"tiersRatio":            json.StringNode("tiersRatio", tiersRatio),
+		"poolGns":               json.StringNode("poolGns", b64encode(GetPoolGns())),
+		"poolAccuGns":           json.StringNode("poolAccuGns", b64encode(GetPoolAccuGns())),
+		"poolLastTmpGns":        json.StringNode("poolLastTmpGns", b64encode(GetPoolLastTmpGns())),
+		"positionLastGns":       json.StringNode("positionLastGns", b64encode(GetPositionLastGns())),
+		"positionGns":           json.StringNode("positionGns", b64encode(GetPositionGns())),
+		"warmUpPeriods":         json.StringNode("warmUpPeriods", GetWarmUpPeriods()),
 	})
 
 	return marshal(response)
+}
 
+func b64encode(data string) string {
+	return base64.StdEncoding.EncodeToString([]byte(data))
 }
