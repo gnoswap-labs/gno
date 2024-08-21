@@ -521,20 +521,23 @@ func GetNecessary() string {
 	// positionsExternalLastCalculatedHeight
 
 	response := json.ObjectNode("", map[string]*json.Node{
-		"height":                json.StringNode("height", ufmt.Sprintf("%d", height)),
-		"now":                   json.StringNode("now", ufmt.Sprintf("%d", now)),
-		"lastCalculatedHeight":  json.StringNode("lastCalculatedHeight", ufmt.Sprintf("%d", lastCalculatedHeight)),
-		"lastCalculatedBalance": json.StringNode("lastCalculatedBalance", ufmt.Sprintf("%d", lastCalculatedBalance)),
-		"externalGnsBalance":    json.StringNode("externalGnsBalance", ufmt.Sprintf("%d", externalGnsBalance)),
-		"gnsBalance":            json.StringNode("gnsBalance", ufmt.Sprintf("%d", gnsBalance)),
-		"numPoolTiers":          json.StringNode("numPoolTiers", numPoolTiers),
-		"tiersRatio":            json.StringNode("tiersRatio", tiersRatio),
-		"poolGns":               json.StringNode("poolGns", b64encode(GetPoolGns())),
-		"poolAccuGns":           json.StringNode("poolAccuGns", b64encode(GetPoolAccuGns())),
-		"poolLastTmpGns":        json.StringNode("poolLastTmpGns", b64encode(GetPoolLastTmpGns())),
-		"positionLastGns":       json.StringNode("positionLastGns", b64encode(GetPositionLastGns())),
-		"positionGns":           json.StringNode("positionGns", b64encode(GetPositionGns())),
-		"warmUpPeriods":         json.StringNode("warmUpPeriods", GetWarmUpPeriods()),
+		"height":                                json.StringNode("height", ufmt.Sprintf("%d", height)),
+		"now":                                   json.StringNode("now", ufmt.Sprintf("%d", now)),
+		"lastCalculatedHeight":                  json.StringNode("lastCalculatedHeight", ufmt.Sprintf("%d", lastCalculatedHeight)),
+		"lastCalculatedBalance":                 json.StringNode("lastCalculatedBalance", ufmt.Sprintf("%d", lastCalculatedBalance)),
+		"externalGnsBalance":                    json.StringNode("externalGnsBalance", ufmt.Sprintf("%d", externalGnsBalance)),
+		"gnsBalance":                            json.StringNode("gnsBalance", ufmt.Sprintf("%d", gnsBalance)),
+		"numPoolTiers":                          json.StringNode("numPoolTiers", numPoolTiers),
+		"tiersRatio":                            json.StringNode("tiersRatio", tiersRatio),
+		"poolGns":                               json.StringNode("poolGns", b64encode(GetPoolGns())),
+		"poolAccuGns":                           json.StringNode("poolAccuGns", b64encode(GetPoolAccuGns())),
+		"poolLastTmpGns":                        json.StringNode("poolLastTmpGns", b64encode(GetPoolLastTmpGns())),
+		"positionLastGns":                       json.StringNode("positionLastGns", b64encode(GetPositionLastGns())),
+		"positionGns":                           json.StringNode("positionGns", b64encode(GetPositionGns())),
+		"warmUpPeriods":                         json.StringNode("warmUpPeriods", GetWarmUpPeriods()),
+		"positionsInternalWarmUpAmount":         json.StringNode("positionsInternalWarmUpAmount", b64encode(GetPositionsInternalWarmUpAmount())),
+		"positionsExternalWarmUpAmount":         json.StringNode("positionsExternalWarmUpAmount", b64encode(GetPositionsExternalWarmUpAmount())),
+		"positionsExternalLastCalculatedHeight": json.StringNode("positionsExternalLastCalculatedHeight", b64encode(GetPositionsExternalLastCalculatedHeight())),
 	})
 
 	return marshal(response)
