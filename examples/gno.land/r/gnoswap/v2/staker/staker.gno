@@ -245,6 +245,7 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 				"rewardToken", external.tokenPath,
 				"recipient", deposit.owner.String(),
 				"amount", uint64ToStr(toUser),
+				"unwrapResult", boolToStr(unwrapResult),
 			)
 		}
 	}
@@ -351,6 +352,7 @@ func UnstakeToken(tokenId uint64, unwrapResult bool) (string, string, string) { 
 	if !exist {
 		panic(ufmt.Sprintf("[STAKER] staker.gno__UnstakeToken() || tokenId(%d) not staked", tokenId))
 	}
+
 	// Claim All Rewards
 	CollectReward(tokenId, unwrapResult)
 
