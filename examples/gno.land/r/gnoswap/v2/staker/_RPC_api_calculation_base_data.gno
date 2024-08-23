@@ -415,6 +415,12 @@ func GetExternalGnsAmount() uint64 {
 	return externalGnsAmount()
 }
 
+func GetExternalDepositGnsAmount() uint64 {
+	en.MintAndDistributeGns()
+
+	return externalDepositGnsAmount()
+}
+
 func GetStakerGnsBalance() uint64 {
 	en.MintAndDistributeGns()
 
@@ -424,7 +430,7 @@ func GetStakerGnsBalance() uint64 {
 func GetStakerEmissionGnsBalance() uint64 {
 	en.MintAndDistributeGns()
 
-	return gnsBalance(consts.STAKER_ADDR) - externalGnsAmount()
+	return gnsBalance(consts.STAKER_ADDR) - externalGnsAmount() - externalDepositGnsAmount()
 }
 
 func GetLastCalculatedBalance() uint64 {
