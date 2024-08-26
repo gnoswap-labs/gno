@@ -8,7 +8,7 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
-var xGnsPctBps uint64 = 5000 // 50%
+var xGnsPctBps uint64 = 3000 // 30%
 
 func DistributeProtocolFee() {
 	caller := std.PrevRealm().Addr()
@@ -32,8 +32,8 @@ func DistributeProtocolFee() {
 
 		balance := balanceOfByRegisterCall(token, consts.PROTOCOL_FEE_ADDR)
 		if balance > 0 {
-			toDevOps := balance * 5000 / 10000
-			toXGns := balance - toDevOps
+			toDevOps := balance * 5000 / 10000 // default 30%
+			toXGns := balance - toDevOps       // default 70%
 
 			transferByRegisterCall(token, consts.DEV_OPS, toDevOps)
 			transferByRegisterCall(token, consts.X_GNS_ADDR, toXGns)
