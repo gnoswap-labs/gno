@@ -50,7 +50,6 @@ func DistributeProtocolFee() {
 
 			transferByRegisterCall(token, consts.DEV_OPS, toDevOps)
 			transferByRegisterCall(token, consts.GOV_STAKER_ADDR, toGovStaker)
-			println("PF_DIST", token, "DEVOPS", toDevOps, "GOVSTAKER", toGovStaker)
 		}
 	}
 }

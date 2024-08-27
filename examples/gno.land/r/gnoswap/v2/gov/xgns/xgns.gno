@@ -23,7 +23,7 @@ var (
 func init() {
 	admin = ownable.NewWithAddress(std.DerivePkgAddr(consts.GOV_STAKER_PATH))
 
-	banker = grc20.NewBanker("XGNS", "govStaker", 6)
+	banker = grc20.NewBanker("XGNS", "xGNS", 6)
 	token = banker.Token()
 }
 
