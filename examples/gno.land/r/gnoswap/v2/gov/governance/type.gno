@@ -1,40 +1,10 @@
 package governance
 
 import (
-	"strconv"
-	"strings"
+	"std"
+
+	u256 "gno.land/p/gnoswap/uint256"
 )
-
-// Governor represents the governor contract
-type Governor struct {
-	// staker is the interface to interact with the staking contract
-	staker IStakerDispatcher
-
-	// config is the current configuration of the governor
-	config Config
-
-	// configVersions stores all historical configurations indexed by their version number
-	configVersions *avl.Tree
-
-	// latestConfigVersion is the version number of the most recent configuration
-	latestConfigVersion uint64
-
-	// nonce is used to generate unique proposal IDs
-	nonce uint64
-
-	// proposals stores all proposals indexed by their ID
-	proposals *avl.Tree
-
-	// latestProposalByProposer keeps track of the latest proposal ID for each proposer
-	latestProposalByProposer *avl.Tree
-
-	// vote stores the voting information for each proposal
-	// The uint8 value represents: 0 = not voted, 2 = voted no, 3 = voted yes
-	vote *avl.Tree
-
-	votingStartTime uint64
-	votingEndTime   uint64
-}
 
 // Config represents the configuration of the governor contract
 type Config struct {
@@ -65,23 +35,32 @@ type ExecutionState struct {
 	Created   bool
 	CreatedAt uint64
 
-	Executed   bool
-	ExecutedAt uint64
+	Upcoming bool
+	Active   bool
+
+	Passed   bool
+	PassedAt uint64
+
+	Rejected   bool
+	RejectedAt uint64
 
 	Canceled   bool
 	CanceledAt uint64
 
-	// passed
-	// rejected
+	// LABEL
+	Executed   bool
+	ExecutedAt uint64
+
+	Expired   bool
+	ExpiredAt uint64
 }
 
 // ProposalInfo represents all the information about a proposal
 type ProposalInfo struct {
-	// The hash of the set of calls that are executed in this proposal
-	CallsHash string
-
 	// The address of the proposer
 	Proposer std.Address
+
+	ProposalType string
 
 	// The execution state of the proposal
 	ExecutionState ExecutionState
@@ -100,29 +79,36 @@ type ProposalInfo struct {
 
 	// The description of the proposal
 	Description string
+
+	// The list of calls that will be executed if the proposal is successful
+	ExecuteMsg string
 }
 
+// TODO: dynamic call
 // Call represents a contract call
 type Call struct {
-	To       std.Address
-	Selector uint64
+	// To       std.Address
+	// Selector uint64
+	To  std.Address // TODO: XXX: need this ??
+	Key string      // pkg_path + ":" + fn_name
+
 	Calldata string
 }
 
+// TODO: XXX : need this ??
 // hashCalls computes the hash of a list of calls
+// func hashCalls(calls []Call) string {
+// 	var buf strings.Builder
+// 	buf.WriteString("governance::governor::Governor::hash_calls")
 
-func hashCalls(calls []Call) string {
-	var buf strings.Builder
-	buf.WriteString("governance::governor::Governor::hash_calls")
+// 	for _, call := range calls {
+// 		buf.WriteString(string(call.To))
+// 		buf.WriteString(strconv.FormatUint(call.Key, 10))
+// 		buf.WriteString(call.Calldata)
+// 	}
 
-	for _, call := range calls {
-		buf.WriteString(string(call.To))
-		buf.WriteString(strconv.FormatUint(call.Selector, 10))
-		buf.WriteString(call.Calldata)
-	}
-
-	return buf.String()
-}
+// 	return buf.String()
+// }
 
 // CallFunction prepresents a function that can be called by the governor
 type CallFunction func(...string) (string, error)

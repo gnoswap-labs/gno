@@ -13,6 +13,7 @@ import (
 type DelegationHistory struct {
 	amount    uint64
 	timestamp uint64
+	add       bool
 }
 
 var (
@@ -45,14 +46,24 @@ func GetDelegatedCumulative(_delegator string, timestamp uint64) string {
 
 		if lastSnapshot.timestamp != 0 {
 			duration := snapshot.timestamp - lastSnapshot.timestamp
-			cumulativeAmount = new(u256.Uint).Add(cumulativeAmount, new(u256.Uint).Mul(u256.NewUint(lastSnapshot.amount), u256.NewUint(duration)))
+			if lastSnapshot.add {
+				cumulativeAmount = new(u256.Uint).Add(cumulativeAmount, new(u256.Uint).Mul(u256.NewUint(lastSnapshot.amount), u256.NewUint(duration)))
+			} else {
+				cumulativeAmount = new(u256.Uint).Sub(cumulativeAmount, new(u256.Uint).Mul(u256.NewUint(lastSnapshot.amount), u256.NewUint(duration)))
+			}
 		}
 		lastSnapshot = snapshot
 	}
 
 	if lastSnapshot.timestamp < timestamp {
 		duration := timestamp - lastSnapshot.timestamp
-		cumulativeAmount = new(u256.Uint).Add(cumulativeAmount, new(u256.Uint).Mul(u256.NewUint(lastSnapshot.amount), u256.NewUint(duration)))
+
+		if lastSnapshot.add {
+			cumulativeAmount = new(u256.Uint).Add(cumulativeAmount, new(u256.Uint).Mul(u256.NewUint(lastSnapshot.amount), u256.NewUint(duration)))
+		} else {
+			cumulativeAmount = new(u256.Uint).Sub(cumulativeAmount, new(u256.Uint).Mul(u256.NewUint(lastSnapshot.amount), u256.NewUint(duration)))
+		}
+
 	}
 
 	return cumulativeAmount.ToString()
@@ -60,7 +71,6 @@ func GetDelegatedCumulative(_delegator string, timestamp uint64) string {
 
 // GetAverageDelegated calculates the average delegated amount for a delegate over a given period
 func GetAverageDelegated(_delegator string, start, end uint64) string {
-
 	delegator := std.Address(_delegator)
 	if !delegator.IsValid() {
 		panic(ufmt.Sprintf("invalid delegator address: %s", _delegator))
@@ -96,12 +106,21 @@ func GetAverageDelegated(_delegator string, start, end uint64) string {
 
 		if i == 0 {
 			if record.timestamp > start {
-				totalAmount = new(u256.Uint).Add(totalAmount, new(u256.Uint).Mul(u256.NewUint(record.amount), u256.NewUint(record.timestamp-start)))
+				if record.add {
+					totalAmount = new(u256.Uint).Add(totalAmount, new(u256.Uint).Mul(u256.NewUint(record.amount), u256.NewUint(record.timestamp-start)))
+				} else {
+					totalAmount = new(u256.Uint).Sub(totalAmount, new(u256.Uint).Mul(u256.NewUint(record.amount), u256.NewUint(record.timestamp-start)))
+				}
 			}
 		} else {
 			if record.timestamp > start {
 				duration := record.timestamp - maxUint64(start, lastTimestamp)
-				totalAmount = new(u256.Uint).Add(totalAmount, new(u256.Uint).Mul(lastAmount, u256.NewUint(duration)))
+
+				if record.add {
+					totalAmount = new(u256.Uint).Add(totalAmount, new(u256.Uint).Mul(lastAmount, u256.NewUint(duration)))
+				} else {
+					totalAmount = new(u256.Uint).Sub(totalAmount, new(u256.Uint).Mul(lastAmount, u256.NewUint(duration)))
+				}
 			}
 		}
 

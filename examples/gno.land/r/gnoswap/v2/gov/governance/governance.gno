@@ -1,491 +1,342 @@
 package governance
 
 import (
-	"errors"
+	"std"
 	"time"
+
+	u256 "gno.land/p/gnoswap/uint256"
+	gs "gno.land/r/gnoswap/v2/gov/staker"
+
+	"gno.land/p/demo/json"
+	"gno.land/p/demo/ufmt"
 )
 
 var (
-	config Config
+	votes = make(map[string]bool) // voteKey -> yes/no
 
-	vote map[string]uint8 // voteKey -> XXX
-
-	proposalId         uint64
-	proposals          map[uint64]ProposalInfo // proposalId -> ProposalInfo
-	proposalByProposer map[string]uint64       // proposer -> proposalId
+	proposalId               uint64
+	proposals                = make(map[uint64]ProposalInfo) // proposalId -> ProposalInfo
+	latestProposalByProposer = make(map[string]uint64)       // proposer -> proposalId
 )
 
-func init() {
-	config := Config{
-		VotingStartDelay:              100,
-		VotingPeriod:                  1000,
-		VotingWeightSmoothingDuration: 100,
-		Quorum:                        500,
-		ProposalCreationThreshold:     100,
-		ExecutionDelay:                100,
-		ExecutionWindow:               1000,
-	}
-}
+// Propose creates a new proposal with the given set of calls.
+// It checks if the proposer is eligible to create a proposal and if they don't have an active proposal.
+// Returns the proposal ID and an error if the proposal creation fails.
+func Propose(
+	proposalType string,
+	title string,
+	text string,
+	msgToExecute string, // for proposalType == "COMMUNITY_POOL_SPEND" or "PARAMETER_CHANGE"
+) uint64 { // proposalId
+	updateProposalsState()
 
-func Propose() (string, error) {
-	propser := std.GetOrigCaller()
+	checkProposalType(proposalType)
+	if proposalType == "TEXT" && msgToExecute != "" {
+		panic("TEXT_PROPOSAL_SHOULD_NOT_HAVE_MSG_TO_EXECUTE")
+	}
+
+	proposer := std.GetOrigCaller()
 	proposalId++
 
-	now := time.Now().Unix()
+	now := uint64(time.Now().Unix())
 
-	latestProposalId, exists := proposalByProposer[proposer.String()]
-	if exists {
+	latestProposalId, exist := latestProposalByProposer[proposer.String()]
+	if exist {
 		latestProposal := proposals[latestProposalId]
-		if latestProposal.ExecutionState.Canceled == false && latestProposal.ExecutionState.Executed == false {
+		if !latestProposal.ExecutionState.Canceled && !latestProposal.ExecutionState.Executed {
 			if latestProposal.ExecutionState.CreatedAt+config.VotingStartDelay+config.VotingPeriod > now { // check end of voting period
-				return "", errors.New("PROPOSER_HAS_ACTIVE_PROPOSAL")
+				panic("PROPOSER_HAS_ACTIVE_PROPOSAL")
 			}
 		}
 	}
 
+	avgDelegatedStr := gs.GetAverageDelegatedOverLast(proposer.String(), config.VotingWeightSmoothingDuration)
+	avgDelegated := strToU256U64(avgDelegatedStr)
+	if avgDelegated < config.ProposalCreationThreshold {
+		panic(ufmt.Sprintf("THRESHOLD NOT MET: %d < %d", avgDelegated, config.ProposalCreationThreshold))
+	}
+
+	proposal := ProposalInfo{
+		Proposer: proposer,
+		ExecutionState: ExecutionState{
+			Created:   true,
+			CreatedAt: now,
+			Upcoming:  true,
+		},
+		Yea:           u256.Zero(),
+		Nay:           u256.Zero(),
+		ConfigVersion: uint64(len(configVersions)),
+		Title:         title,
+		Description:   text,
+		ExecuteMsg:    msgToExecute,
+	}
+
+	proposals[proposalId] = proposal
+	latestProposalByProposer[proposer.String()] = proposalId
+
+	std.Emit(
+		"Proposed",
+		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"proposer", proposer.String(),
+		"proposalType", proposalType,
+		"title", title, // TODO: length
+		"text", text, // TODO: length
+		"msgToExecute", msgToExecute, // TODO: vulnerability
+	)
+
+	return proposalId
 }
 
-// // Propose creates a new proposal with the given set of calls.
-// // It checks if the proposer is eligible to create a proposal and if they don't have an active proposal.
-// // Returns the proposal ID and an error if the proposal creation fails.
-// func Propose(callsJSON string) (string, error) {
-// 	if gGovernor == nil {
-// 		panic("Governor not initialized")
-// 	}
-
-// 	proposer := std.GetOrigCaller()
-// 	nonce := gGovernor.nonce
-// 	gGovernor.nonce++
-
-// 	id := getProposalID(std.GetOrigPkgAddr(), nonce)
-
-// 	config := gGovernor.config
-// 	timestampCurrent := uint64(timeNow().Unix())
-
-// 	latestProposalID, exists := gGovernor.latestProposalByProposer.Get(proposer.String())
-// 	if exists {
-// 		latestProposalInfo, _ := gGovernor.proposals.Get(latestProposalID.(string))
-// 		latestProposalState := latestProposalInfo.(ProposalInfo).ExecutionState
-
-// 		if latestProposalState.Canceled == 0 {
-// 			if latestProposalState.Created+config.VotingStartDelay+config.VotingPeriod > timestampCurrent {
-// 				panic("PROPOSER_HAS_ACTIVE_PROPOSAL")
-// 			}
-// 		}
-// 	}
-
-// 	avgDelegated, err := gGovernor.staker.GetAverageDelegatedOverLast(proposer, config.VotingWeightSmoothingDuration)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	if avgDelegated.Uint64() < config.ProposalCreationThreshold {
-// 		panic("THRESHOLD")
-// 	}
-
-// 	callsNode, err := json.Unmarshal([]byte(callsJSON))
-// 	if err != nil {
-// 		panic(ufmt.Sprintf("failed to unmarshal calls JSON: %v", err))
-// 	}
-
-// 	calls, err := parseCallsFromJSON(callsNode)
-// 	if err != nil {
-// 		panic(ufmt.Sprintf("failed to parsing calls from JSON: %v", err))
-// 	}
-
-// 	callsHash := hashCalls(calls)
-
-// 	proposal := ProposalInfo{
-// 		CallsHash: callsHash,
-// 		Proposer:  proposer,
-// 		ExecutionState: ExecutionState{
-// 			Created:  timestampCurrent,
-// 			Executed: 0,
-// 			Canceled: 0,
-// 		},
-// 		Yea:           u256.NewUint(0),
-// 		Nay:           u256.NewUint(0),
-// 		ConfigVersion: gGovernor.latestConfigVersion,
-// 		Title:         "",
-// 		Description:   "",
-// 	}
-
-// 	gGovernor.proposals.Set(id, proposal)
-// 	gGovernor.latestProposalByProposer.Set(proposer.String(), id)
-
-// 	std.Emit(
-// 		"Proposed",
-// 		"id", id,
-// 		"proposer", proposer.String(),
-// 		"calls", ufmt.Sprintf("%v", calls),
-// 	)
-
-// 	return string(id), nil
-// }
-
-// // Describe adds a description to an existing proposal.
-// // Only the original proposer can add a description, and it must be done before the proposal is executed or canceled.
-// func Describe(id, title, description string) {
-// 	if gGovernor == nil {
-// 		panic("Governor not initialized")
-// 	}
-
-// 	proposalValue, exists := gGovernor.proposals.Get(id)
-// 	if !exists {
-// 		panic(ufmt.Sprintf("proposal %s does not exist", id))
-// 	}
-
-// 	proposal := proposalValue.(ProposalInfo)
-
-// 	if proposal.ExecutionState.Executed != 0 {
-// 		panic(ufmt.Sprintf("proposal %s has already been executed", id))
-// 	}
-
-// 	if proposal.ExecutionState.Canceled != 0 {
-// 		panic(ufmt.Sprintf("proposal %s has already been canceled", id))
-// 	}
-
-// 	if proposal.Proposer != std.GetOrigCaller() {
-// 		panic(ufmt.Sprintf("caller %s is not the proposer of proposal %s", std.GetOrigCaller().String(), id))
-// 	}
-
-// 	proposal.Title = title
-// 	proposal.Description = description
-// 	gGovernor.proposals.Set(id, proposal)
-
-// 	std.Emit(
-// 		"Described",
-// 		"id", id, // Convert byte array to string for event emission
-// 		"title", title,
-// 		"description", description,
-// 	)
-// }
-
-// // ProposeAndDescribe combines the functionality of Propose and Describe.
-// // It creates a new proposal and immediately adds a description to it.
-// // Returns the proposal ID and an error if either the proposal creation or description fails.
-// func ProposeAndDescribe(callsJSON, title, desc string) (string, error) {
-// 	if gGovernor == nil {
-// 		panic("governor not initialized")
-// 	}
-
-// 	// 1. propose the calls
-// 	id, err := Propose(callsJSON)
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	// 2. describe the proposal
-// 	Describe(id, title, desc)
-
-// 	return id, nil
-// }
-
-// // Vote allows a user to vote on a given proposal.
-// // The user's voting weight is determined by their average delegated stake over a specified period.
-// // Panics if the voting conditions are not met (e.g., voting period hasn't started, has ended, or user has already voted).
-// func Vote(id string, yes bool) {
-// 	if gGovernor == nil {
-// 		panic("governor not initialized")
-// 	}
-
-// 	proposalValue, exists := gGovernor.proposals.Get(id)
-// 	if !exists {
-// 		panic(ufmt.Sprintf("Proposal %v does not exist", id))
-// 	}
-
-// 	proposal := proposalValue.(ProposalInfo)
-// 	if proposal.ExecutionState.Executed != 0 {
-// 		panic(ufmt.Sprintf("Proposal %v has already been executed", id))
-// 	}
-
-// 	config := GetConfigVersion(proposal.ConfigVersion)
-// 	timestampCurrent := uint64(timeNow().Unix())
-// 	votingStartTime := proposal.ExecutionState.Created + config.VotingStartDelay
-// 	gGovernor.votingStartTime = votingStartTime
-
-// 	voter := std.GetOrigCaller()
-
-// 	if timestampCurrent < votingStartTime {
-// 		panic(ufmt.Sprintf("voting has not started yet. Current time: %d, Voting start time: %d", timestampCurrent, votingStartTime))
-// 	}
-
-// 	votingEndTime := votingStartTime + config.VotingPeriod
-// 	gGovernor.votingEndTime = votingEndTime
-
-// 	if timestampCurrent >= votingEndTime {
-// 		panic(ufmt.Sprintf("voting has ended. Current time: %d, Voting end time: %d", timestampCurrent, votingStartTime+config.VotingPeriod))
-// 	}
-
-// 	voteKey := id + ":" + voter.String()
-// 	_, voted := gGovernor.vote.Get(voteKey)
-// 	if voted {
-// 		panic(ufmt.Sprintf("user %v has already voted on proposal %v", voter.String(), id))
-// 	}
-
-// 	weight, err := gGovernor.staker.GetAverageDelegated(
-// 		voter,
-// 		votingStartTime-config.VotingWeightSmoothingDuration,
-// 		votingStartTime,
-// 	)
-// 	if err != nil {
-// 		panic(ufmt.Sprintf("failed to get average delegated stake for voter %s: %v", voter.String(), err))
-// 	}
-
-// 	var overflow bool
-// 	if yes {
-// 		proposal.Yea, overflow = new(u256.Uint).AddOverflow(proposal.Yea, weight)
-// 		if overflow {
-// 			panic("OVERFLOW")
-// 		}
-// 	} else {
-// 		proposal.Nay, overflow = new(u256.Uint).AddOverflow(proposal.Nay, weight)
-// 		if overflow {
-// 			panic("OVERFLOW")
-// 		}
-// 	}
-
-// 	gGovernor.proposals.Set(id, proposal)
-// 	gGovernor.vote.Set(voteKey, uint8(2+b2i(yes)))
-
-// 	std.Emit(
-// 		"Voted",
-// 		"id", id,
-// 		"voter", voter.String(),
-// 		"weight", weight.ToString(),
-// 		"yes", b2s(yes),
-// 	)
-// }
-
-// // Cancel cancels the proposal with the given ID.
-// // Only callable by the proposer or if the proposer's stake has fallen below the threshold.
-// // Panics if the proposal doesn't exist, is already canceled, or if voting has already started.
-// func Cancel(id string) {
-// 	if gGovernor == nil {
-// 		panic("Governor not initialized")
-// 	}
-
-// 	proposalValue, exists := gGovernor.proposals.Get(id)
-// 	if !exists {
-// 		panic(ufmt.Sprintf("proposal %s does not exist", id))
-// 	}
-
-// 	proposal := proposalValue.(ProposalInfo)
-// 	if proposal.ExecutionState.Canceled != 0 {
-// 		panic(ufmt.Sprintf("proposal %s has already been canceled", id))
-// 	}
-
-// 	config := GetConfigVersion(proposal.ConfigVersion)
-// 	timestampCurrent := uint64(timeNow().Unix())
-// 	if timestampCurrent >= (proposal.ExecutionState.Created + config.VotingStartDelay) {
-// 		panic(ufmt.Sprintf("voting has already started for proposal %s", id))
-// 	}
-
-// 	caller := std.GetOrigCaller()
-// 	if caller != proposal.Proposer {
-// 		// If the caller is not the proposer, check if the proposer's stake has fallen below the threshold
-// 		avgDelegated, err := gGovernor.staker.GetAverageDelegatedOverLast(proposal.Proposer, config.VotingWeightSmoothingDuration)
-// 		if err != nil {
-// 			panic(ufmt.Sprintf("failed to get average delegated stake for proposer %s: %v", proposal.Proposer, err))
-// 		}
-
-// 		if avgDelegated.Uint64() >= config.ProposalCreationThreshold {
-// 			panic(ufmt.Sprintf("caller %s is not the proposer and proposer's stake is above the threshold", caller))
-// 		}
-// 	}
-
-// 	proposal.ExecutionState.Canceled = timestampCurrent
-// 	gGovernor.proposals.Set(id, proposal)
-
-// 	std.Emit("Canceled",
-// 		"id", id,
-// 	)
-// }
-
-// // Execute executes the given proposal.
-// // It checks various conditions such as voting period, execution window, quorum, and majority.
-// // Returns the results of the executed calls.
-// // Panics if any of the execution conditions are not met.
-// //
-// // XXX: Dynamic Call?
-// func Execute(id, callsJSON string) string {
-// 	if gGovernor == nil {
-// 		panic("governor not initialized")
-// 	}
-
-// 	calls, err := parseCallsFromJSON(json.Must(json.Unmarshal([]byte(callsJSON))))
-// 	if err != nil {
-// 		panic("INVALID_CALLS_JSON")
-// 	}
-
-// 	callsHash := hashCalls(calls)
-
-// 	proposalValue, exists := gGovernor.proposals.Get(id)
-// 	if !exists {
-// 		panic(ufmt.Sprintf("proposal %s does not exist. failed to execute", id))
-// 	}
-
-// 	proposal := proposalValue.(ProposalInfo)
-// 	if proposal.CallsHash != callsHash {
-// 		panic(ufmt.Sprintf("calls hash mismatch. expected %s, got %s", proposal.CallsHash, callsHash))
-// 	}
-
-// 	if proposal.ExecutionState.Executed != 0 {
-// 		panic(ufmt.Sprintf("proposal %s has already been executed", id))
-// 	}
-
-// 	if proposal.ExecutionState.Canceled != 0 {
-// 		panic(ufmt.Sprintf("proposal %s has already been canceled", id))
-// 	}
-
-// 	timestampCurrent := uint64(timeNow().Unix())
-// 	if timestampCurrent == 0 {
-// 		panic("current timestamp is 0. failed to execute")
-// 	}
-
-// 	config := GetConfigVersion(proposal.ConfigVersion)
-// 	votingEnd := proposal.ExecutionState.Created + config.VotingStartDelay + config.VotingPeriod
-// 	if timestampCurrent < votingEnd {
-// 		panic("VOTING_NOT_ENDED")
-// 	}
-
-// 	windowStart := votingEnd + config.ExecutionDelay
-// 	if timestampCurrent < windowStart {
-// 		panic("EXECUTION_WINDOW_NOT_STARTED")
-// 	}
-
-// 	windowEnd := windowStart + config.ExecutionWindow
-// 	if timestampCurrent >= windowEnd {
-// 		panic("EXECUTION_WINDOW_OVER")
-// 	}
-
-// 	yeaUint := proposal.Yea.Uint64()
-// 	nayUint := proposal.Nay.Uint64()
-// 	quorumUint := config.Quorum
-
-// 	if yeaUint < quorumUint {
-// 		panic("QUORUM_NOT_MET")
-// 	}
-
-// 	if yeaUint < nayUint {
-// 		panic("NO_MAJORITY")
-// 	}
-
-// 	proposal.ExecutionState.Executed = timestampCurrent
-// 	gGovernor.proposals.Set(id, proposal)
-
-// 	results := make([]string, 0, len(calls))
-// 	for _, call := range calls {
-// 		result := executeCall(call)
-// 		results = append(results, result)
-// 	}
-
-// 	std.Emit(
-// 		"Executed",
-// 		"id", id,
-// 	)
-
-// 	return strings.Join(results, ",")
-// }
-
-// // registry stores registered functions
-// var registry = make(map[uint64]CallFunction)
-
-// // RegisterFunction registers a function with the given selector.
-// // This allows the governor to execute custom functions during proposal execution.
-// func RegisterFunction(selector uint64, fn CallFunction) {
-// 	registry[selector] = fn
-// }
-
-// // executeCall executes a single call
-// func executeCall(call Call) string {
-// 	fn, exists := registry[call.Selector]
-// 	if !exists {
-// 		panic("FUNCTION_NOT_REGISTERED")
-// 	}
-
-// 	args := strings.Split(call.Calldata, ",")
-
-// 	result, err := fn(args...)
-// 	if err != nil {
-// 		panic("CALL_EXECUTION_FAILED: " + err.Error())
-// 	}
-
-// 	return string(result)
-// }
-
-// // GetConfigVersion returns the configuration for a specific version.
-// // If version is 0, it returns the current configuration.
-// func GetConfigVersion(version uint64) Config {
-// 	if gGovernor == nil {
-// 		panic("governor not initialized")
-// 	}
-
-// 	if version == 0 {
-// 		return gGovernor.config
-// 	}
-
-// 	configValue, exists := gGovernor.configVersions.Get(strconv.FormatUint(version, 10))
-// 	if !exists {
-// 		panic("DOES_NOT_EXIST")
-// 	}
-
-// 	return configValue.(Config)
-// }
-
-// // Reconfigure updates the Governor's configuration.
-// // This function can only be called by the Governor itself (via a proposal).
-// // Returns the new configuration version number.
-// func Reconfigure(newConfigJSON string) uint64 {
-// 	if gGovernor == nil {
-// 		panic("governor not initialized")
-// 	}
-
-// 	// ensure called by the Governor itself
-// 	if std.GetOrigCaller() != std.GetOrigPkgAddr() {
-// 		panic("NOT_SELF_CALL")
-// 	}
-
-// 	newConfigNode, err := json.Unmarshal([]byte(newConfigJSON))
-// 	if err != nil {
-// 		panic("invalid confiquration JSON: " + err.Error())
-// 	}
-
-// 	newConfig, err := parseConfig(newConfigNode)
-// 	if err != nil {
-// 		panic("failed to parse configuration: " + err.Error())
-// 	}
-
-// 	gGovernor.latestConfigVersion++
-// 	gGovernor.configVersions.Set(strconv.FormatUint(gGovernor.latestConfigVersion, 10), newConfig)
-// 	gGovernor.config = newConfig
-
-// 	std.Emit(
-// 		"Reconfigured",
-// 		"version", string(gGovernor.latestConfigVersion),
-// 		"voting_start_delay", string(newConfig.VotingStartDelay),
-// 		"voting_period", string(newConfig.VotingPeriod),
-// 		"voting_weight_smoothing_duration", string(newConfig.VotingWeightSmoothingDuration),
-// 		"quorum", string(newConfig.Quorum),
-// 		"proposal_creation_threshold", string(newConfig.ProposalCreationThreshold),
-// 		"execution_delay", string(newConfig.ExecutionDelay),
-// 		"execution_window", string(newConfig.ExecutionWindow),
-// 	)
-
-// 	return gGovernor.latestConfigVersion
-// }
-
-// // getProposalID generates a unique proposal ID based on the contract address and nonce
-// func getProposalID(address std.Address, nonce uint64) string {
-// 	data := make([]byte, len("governance::governor::Governor::get_proposal_id")+len(address)+8)
-// 	copy(data, []byte("governance::governor::Governor::get_proposal_id"))
-// 	copy(data[len("governance::governor::Governor::get_proposal_id"):], address[:])
-// 	binary.BigEndian.PutUint64(data[len("governance::governor::Governor::get_proposal_id")+len(address):], nonce)
-// 	sha := sha256.Sum256(data)
-
-// 	var buf bytes.Buffer
-// 	for _, b := range sha {
-// 		buf.WriteString(strconv.FormatInt(int64(b), 16))
-// 	}
-// 	return buf.String()
-// }
+// Vote allows a user to vote on a given proposal.
+// The user's voting weight is determined by their average delegated stake over a specified period.
+// Panics if the voting conditions are not met (e.g., voting period hasn't started, has ended, or user has already voted).
+func Vote(proposalId uint64, yes bool) string {
+	updateProposalsState()
+
+	proposal, exist := proposals[proposalId]
+	if !exist {
+		panic(ufmt.Sprintf("Proposal %d does not exist", proposalId))
+	}
+
+	config := GetConfigVersion(proposal.ConfigVersion)
+	now := uint64(time.Now().Unix())
+	votingStartTime := proposal.ExecutionState.CreatedAt + config.VotingStartDelay
+
+	voter := std.GetOrigCaller()
+
+	if now < votingStartTime {
+		panic(ufmt.Sprintf("voting has not started yet. Current time: %d, Voting start time: %d", now, votingStartTime))
+	}
+
+	votingEndTime := votingStartTime + config.VotingPeriod
+	if now >= votingEndTime {
+		panic(ufmt.Sprintf("voting has ended. Current time: %d, Voting end time: %d", now, votingStartTime+config.VotingPeriod))
+	}
+
+	// check proposal state
+	if proposal.ExecutionState.Canceled {
+		panic(ufmt.Sprintf("proposal %d has canceled(%t)", proposalId, proposal.ExecutionState.Canceled))
+	}
+
+	voteKey := ufmt.Sprintf("%d", proposalId) + ":" + voter.String()
+	_, voted := votes[voteKey]
+	if voted {
+		panic(ufmt.Sprintf("user %s has already voted on proposal %d", voter.String(), proposalId))
+	}
+
+	weight := gs.GetAverageDelegated(
+		voter.String(),
+		votingStartTime-config.VotingWeightSmoothingDuration,
+		votingStartTime,
+	)
+	if weight == "0" {
+		panic(ufmt.Sprintf("no average delegated found for voter %s", voter.String()))
+	}
+
+	var overflow bool
+	if yes {
+		proposal.Yea, overflow = new(u256.Uint).AddOverflow(proposal.Yea, u256.MustFromDecimal(weight))
+		if overflow {
+			panic("VOTE YES OVERFLOW")
+		}
+	} else {
+		proposal.Nay, overflow = new(u256.Uint).AddOverflow(proposal.Nay, u256.MustFromDecimal(weight))
+		if overflow {
+			panic("VOTE NO OVERFLOW")
+		}
+	}
+
+	proposals[proposalId] = proposal // update Yea, Nay
+	votes[voteKey] = yes
+
+	std.Emit(
+		"Voted",
+		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"voter", voter.String(),
+		"weight", weight,
+		"yes", voteToString(yes),
+	)
+
+	return voteKey
+}
+
+// Cancel cancels the proposal with the given ID.
+// Only callable by the proposer or if the proposer's stake has fallen below the threshold.
+// Panics if the proposal doesn't exist, is already canceled, or if voting has already started.
+func Cancel(proposalId uint64) {
+	updateProposalsState()
+
+	proposal, exist := proposals[proposalId]
+	if !exist {
+		panic(ufmt.Sprintf("proposal %d does not exist", proposalId))
+	}
+
+	if proposal.ExecutionState.Canceled {
+		panic(ufmt.Sprintf("proposal %d has already been canceled", proposalId))
+	}
+
+	config := GetConfigVersion(proposal.ConfigVersion)
+	now := uint64(time.Now().Unix())
+	if now >= (proposal.ExecutionState.CreatedAt + config.VotingStartDelay) {
+		panic(ufmt.Sprintf("voting has already started for proposal %d", proposalId))
+	}
+
+	caller := std.GetOrigCaller()
+	if caller != proposal.Proposer {
+		// If the caller is not the proposer, check if the proposer's stake has fallen below the threshold
+		avgDelegatedStr := gs.GetAverageDelegatedOverLast(proposal.Proposer.String(), config.VotingWeightSmoothingDuration)
+		if avgDelegatedStr == "0" {
+			panic(ufmt.Sprintf("no average delegated found for proposer %s", proposal.Proposer.String()))
+		}
+
+		if strToU256U64(avgDelegatedStr) >= config.ProposalCreationThreshold {
+			panic(
+				ufmt.Sprintf(
+					"caller %s is not the proposer(%s) and proposer's stake(%s) is above the threshold(%d)",
+					caller, proposal.Proposer, avgDelegatedStr, config.ProposalCreationThreshold,
+				),
+			)
+		}
+	}
+
+	proposal.ExecutionState.Canceled = true
+	proposal.ExecutionState.CanceledAt = now
+	proposal.ExecutionState.Upcoming = false
+	proposal.ExecutionState.Active = false
+
+	proposals[proposalId] = proposal
+
+	std.Emit(
+		"Canceled",
+		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"by", caller.String(),
+	)
+}
+
+// Execute executes the given proposal.
+// It checks various conditions such as voting period, execution window, quorum, and majority.
+// Returns the results of the executed calls.
+// Panics if any of the execution conditions are not met.
+//
+// XXX: Dynamic Call
+func Execute(proposalId uint64, callsJSON string) {
+	updateProposalsState()
+
+	proposal, exist := proposals[proposalId]
+	if !exist {
+		panic(ufmt.Sprintf("proposal %d does not exist. failed to execute", proposalId))
+	}
+
+	if proposal.ExecutionState.Executed || proposal.ExecutionState.Canceled || proposal.ExecutionState.Rejected {
+		panic(ufmt.Sprintf("proposal %d has already been executed(%t) or canceled(%t) or rejected(%t). failed to execute", proposalId, proposal.ExecutionState.Executed, proposal.ExecutionState.Canceled, proposal.ExecutionState.Rejected))
+	}
+
+	now := uint64(time.Now().Unix())
+
+	config := GetConfigVersion(proposal.ConfigVersion)
+	votingEnd := proposal.ExecutionState.CreatedAt + config.VotingStartDelay + config.VotingPeriod
+	if now < votingEnd {
+		panic("VOTING_NOT_ENDED")
+	}
+
+	windowStart := votingEnd + config.ExecutionDelay
+	if now < windowStart {
+		panic("EXECUTION_WINDOW_NOT_STARTED")
+	}
+
+	windowEnd := windowStart + config.ExecutionWindow
+	if now >= windowEnd {
+		panic("EXECUTION_WINDOW_OVER")
+	}
+
+	yeaUint := proposal.Yea.Uint64()
+	nayUint := proposal.Nay.Uint64()
+	quorumUint := config.Quorum
+
+	if yeaUint < quorumUint {
+		panic("QUORUM_NOT_MET")
+	}
+
+	if yeaUint < nayUint {
+		panic("NO_MAJORITY")
+	}
+
+	proposal.ExecutionState.Executed = true
+	proposal.ExecutionState.ExecutedAt = now
+	proposal.ExecutionState.Upcoming = false
+	proposal.ExecutionState.Active = false
+	proposals[proposalId] = proposal
+
+	calls := parseCallsFromJSON(json.Must(json.Unmarshal([]byte(callsJSON))))
+
+	results := make([]string, 0, len(calls))
+	for _, call := range calls {
+		result := executeCall(call)
+		results = append(results, result)
+	}
+
+	std.Emit(
+		"Executed",
+		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"executor", std.GetOrigCaller().String(),
+	)
+}
+
+func updateProposalsState() {
+	for id, proposal := range proposals {
+		// check if proposal is in a state that needs to be updated
+		// - created
+		// - not canceled
+		// - not executed
+		if proposal.ExecutionState.Created &&
+			!proposal.ExecutionState.Canceled &&
+			!proposal.ExecutionState.Executed {
+
+			config := GetConfigVersion(proposal.ConfigVersion)
+			now := uint64(time.Now().Unix())
+
+			// proposal is in voting period
+			if proposal.ExecutionState.Upcoming && // was upcoming
+				now >= (proposal.ExecutionState.CreatedAt+config.VotingStartDelay) && // voting started
+				now <= (proposal.ExecutionState.CreatedAt+config.VotingStartDelay+config.VotingPeriod) { // voting not ended
+				proposal.ExecutionState.Upcoming = false
+				proposal.ExecutionState.Active = true
+			}
+
+			// proposal voting ended, check if passed or rejected
+			if now > (proposal.ExecutionState.CreatedAt + config.VotingStartDelay + config.VotingPeriod) {
+				yeaUint := proposal.Yea.Uint64()
+				nayUint := proposal.Nay.Uint64()
+				quorumUint := config.Quorum
+
+				if yeaUint >= quorumUint {
+					proposal.ExecutionState.Passed = true
+					proposal.ExecutionState.PassedAt = now
+				} else {
+					proposal.ExecutionState.Rejected = true
+					proposal.ExecutionState.RejectedAt = now
+				}
+
+				proposal.ExecutionState.Upcoming = false
+				proposal.ExecutionState.Active = false
+			}
+
+			// (non text) proposal passed but not executed until executing window ends
+			if proposal.ProposalType != "TEXT" && // isn't text type ≈ can be executed
+				proposal.ExecutionState.Passed && // passed
+				!proposal.ExecutionState.Executed { // not executed
+
+				votingEnd := proposal.ExecutionState.CreatedAt + config.VotingStartDelay + config.VotingPeriod
+				windowStart := votingEnd + config.ExecutionDelay
+				windowEnd := windowStart + config.ExecutionWindow
+
+				if now >= windowEnd { // execution window ended
+					proposal.ExecutionState.Expired = true
+					proposal.ExecutionState.ExpiredAt = now
+				}
+			}
+
+			proposals[id] = proposal
+		}
+	}
+}
