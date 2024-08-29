@@ -21,17 +21,9 @@ func TestReconfigure(t *testing.T) {
 	t.Run("Successful reconfiguration", func(t *testing.T) {
 		setGovernorAsCaller()
 
-		newConfigJSON := `{
-            "votingStartDelay": 200,
-            "votingPeriod": 2000,
-            "votingWeightSmoothingDuration": 200,
-            "quorum": 1000,
-            "proposalCreationThreshold": 200,
-            "executionDelay": 200,
-            "executionWindow": 2000
-        }`
-
-		newVersion := Reconfigure(newConfigJSON)
+		newConfigParams := "200*GOV*2000*GOV*200*GOV*1000*GOV*200*GOV*200*GOV*2000"
+		params := strings.Split(newConfigParams, "*GOV*")
+		newVersion := Reconfigure(handleGovernanceReconfigure(params))
 
 		if newVersion != 2 {
 			t.Errorf("Expected new version to be 2, got %d", newVersion)
@@ -54,23 +46,6 @@ func TestReconfigure(t *testing.T) {
 	})
 
 	t.Run("Not called by governor", func(t *testing.T) {
-		// Set the caller to be a different address
-		dummyRealm := std.NewCodeRealm("dummy")
-		std.TestSetRealm(dummyRealm)
-
-		newConfigJSON := `{"votingStartDelay":200,"votingPeriod":2000,"votingWeightSmoothingDuration":200,"quorum":1000,"proposalCreationThreshold":200,"executionDelay":200,"executionWindow":2000}`
-		/*
-			{
-			  "votingStartDelay": 200,
-			  "votingPeriod": 2000,
-			  "votingWeightSmoothingDuration": 200,
-			  "quorum": 1000,
-			  "proposalCreationThreshold": 200,
-			  "executionDelay": 200,
-			  "executionWindow": 2000
-			}
-		*/
-
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
@@ -79,6 +54,12 @@ func TestReconfigure(t *testing.T) {
 			}
 		}()
 
-		Reconfigure(newConfigJSON)
+		// Set the caller to be a different address
+		dummyRealm := std.NewCodeRealm("dummy")
+		std.TestSetRealm(dummyRealm)
+
+		newConfigParams := "200*GOV*2000*GOV*200*GOV*1000*GOV*200*GOV*200*GOV*2000"
+		params := strings.Split(newConfigParams, "*GOV*")
+		Reconfigure(handleGovernanceReconfigure(params))
 	})
 }

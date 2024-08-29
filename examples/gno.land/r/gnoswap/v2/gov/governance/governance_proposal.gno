@@ -1,13 +1,14 @@
 package governance
 
 import (
+	"fmt"
 	"std"
 	"time"
 
 	u256 "gno.land/p/gnoswap/uint256"
+	cp "gno.land/r/gnoswap/v2/community_pool"
 	gs "gno.land/r/gnoswap/v2/gov/staker"
 
-	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
 )
 
@@ -19,36 +20,17 @@ var (
 	latestProposalByProposer = make(map[string]uint64)       // proposer -> proposalId
 )
 
-// Propose creates a new proposal with the given set of calls.
+// ProposeText creates a new text proposal with the given data
 // It checks if the proposer is eligible to create a proposal and if they don't have an active proposal.
-// Returns the proposal ID and an error if the proposal creation fails.
-func Propose(
-	proposalType string,
+// Returns the proposal ID
+func ProposeText(
 	title string,
-	text string,
-	msgToExecute string, // for proposalType == "COMMUNITY_POOL_SPEND" or "PARAMETER_CHANGE"
+	description string,
 ) uint64 { // proposalId
 	updateProposalsState()
 
-	checkProposalType(proposalType)
-	if proposalType == "TEXT" && msgToExecute != "" {
-		panic("TEXT_PROPOSAL_SHOULD_NOT_HAVE_MSG_TO_EXECUTE")
-	}
-
 	proposer := std.GetOrigCaller()
-	proposalId++
-
-	now := uint64(time.Now().Unix())
-
-	latestProposalId, exist := latestProposalByProposer[proposer.String()]
-	if exist {
-		latestProposal := proposals[latestProposalId]
-		if !latestProposal.ExecutionState.Canceled && !latestProposal.ExecutionState.Executed {
-			if latestProposal.ExecutionState.CreatedAt+config.VotingStartDelay+config.VotingPeriod > now { // check end of voting period
-				panic("PROPOSER_HAS_ACTIVE_PROPOSAL")
-			}
-		}
-	}
+	checkExisitngProposal(proposer)
 
 	avgDelegatedStr := gs.GetAverageDelegatedOverLast(proposer.String(), config.VotingWeightSmoothingDuration)
 	avgDelegated := strToU256U64(avgDelegatedStr)
@@ -57,31 +39,151 @@ func Propose(
 	}
 
 	proposal := ProposalInfo{
-		Proposer: proposer,
+		Proposer:     proposer,
+		ProposalType: "TEXT",
 		ExecutionState: ExecutionState{
 			Created:   true,
-			CreatedAt: now,
+			CreatedAt: uint64(time.Now().Unix()),
+			Upcoming:  true,
+		},
+		Yea:           u256.Zero(),
+		Nay:           u256.Zero(),
+		ConfigVersion: uint64(len(configVersions)), // use latest config version
+		Title:         title,
+		Description:   description,
+	}
+
+	proposalId++
+	proposals[proposalId] = proposal
+	latestProposalByProposer[proposer.String()] = proposalId
+
+	std.Emit(
+		"Proposed",
+		"proposalType", "TEXT",
+		"proposer", proposer.String(),
+		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"title", title,
+		"description", description,
+	)
+
+	return proposalId
+}
+
+// ProposeCommunityPoolSpend creates a new community pool spend proposal with the given data
+// It checks if the proposer is eligible to create a proposal and if they don't have an active proposal.
+// Returns the proposal ID
+func ProposeCommunityPoolSpend(
+	title string,
+	description string,
+	to std.Address,
+	tokenPath string,
+	amount uint64,
+) uint64 { // proposalId
+	updateProposalsState()
+
+	proposer := std.GetOrigCaller()
+	checkExisitngProposal(proposer)
+
+	avgDelegatedStr := gs.GetAverageDelegatedOverLast(proposer.String(), config.VotingWeightSmoothingDuration)
+	avgDelegated := strToU256U64(avgDelegatedStr)
+	if avgDelegated < config.ProposalCreationThreshold {
+		panic(ufmt.Sprintf("THRESHOLD NOT MET: %d < %d", avgDelegated, config.ProposalCreationThreshold))
+	}
+
+	proposal := ProposalInfo{
+		Proposer:     proposer,
+		ProposalType: "COMMUNITY_POOL_SPEND",
+		ExecutionState: ExecutionState{
+			Created:   true,
+			CreatedAt: uint64(time.Now().Unix()),
 			Upcoming:  true,
 		},
 		Yea:           u256.Zero(),
 		Nay:           u256.Zero(),
 		ConfigVersion: uint64(len(configVersions)),
 		Title:         title,
-		Description:   text,
-		ExecuteMsg:    msgToExecute,
+		Description:   description,
+		CommunityPoolSpend: CommunityPoolSpendInfo{
+			To:        to,
+			TokenPath: tokenPath,
+			Amount:    amount,
+		},
 	}
 
+	proposalId++
 	proposals[proposalId] = proposal
 	latestProposalByProposer[proposer.String()] = proposalId
 
 	std.Emit(
 		"Proposed",
-		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"proposalType", "COMMUNITY_POOL_SPEND",
 		"proposer", proposer.String(),
-		"proposalType", proposalType,
-		"title", title, // TODO: length
-		"text", text, // TODO: length
-		"msgToExecute", msgToExecute, // TODO: vulnerability
+		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"title", title,
+		"description", description,
+		"to", to.String(),
+		"tokenPath", tokenPath,
+		"amount", fmt.Sprintf("%d", amount),
+	)
+
+	return proposalId
+}
+
+// ProposeParameterChange creates a new parameter change with the given data
+// It checks if the proposer is eligible to create a proposal and if they don't have an active proposal.
+// Returns the proposal ID
+func ProposeParameterChange(
+	title string,
+	description string,
+	pkgPath string,
+	function string,
+	param string,
+) uint64 { // proposalId
+	updateProposalsState()
+
+	proposer := std.GetOrigCaller()
+	checkExisitngProposal(proposer)
+
+	avgDelegatedStr := gs.GetAverageDelegatedOverLast(proposer.String(), config.VotingWeightSmoothingDuration)
+	avgDelegated := strToU256U64(avgDelegatedStr)
+	if avgDelegated < config.ProposalCreationThreshold {
+		panic(ufmt.Sprintf("THRESHOLD NOT MET: %d < %d", avgDelegated, config.ProposalCreationThreshold))
+	}
+
+	proposal := ProposalInfo{
+		Proposer:     proposer,
+		ProposalType: "PARAMETER_CHANGE",
+		ExecutionState: ExecutionState{
+			Created:   true,
+			CreatedAt: uint64(time.Now().Unix()),
+			Upcoming:  true,
+		},
+		Yea:           u256.Zero(),
+		Nay:           u256.Zero(),
+		ConfigVersion: uint64(len(configVersions)),
+		Title:         title,
+		Description:   description,
+		ParameterChange: ParameterChangeInfo{
+			PkgPath:  pkgPath,
+			Function: function,
+			Params:   param,
+		},
+	}
+
+	proposalId++
+	proposals[proposalId] = proposal
+	latestProposalByProposer[proposer.String()] = proposalId
+
+	std.Emit(
+		"Proposed",
+		"proposalType", "PARAMETER_CHANGE",
+		"proposer", proposer.String(),
+		"proposalId", ufmt.Sprintf("%d", proposalId),
+		"title", title,
+		"description", description,
+		"pkgPath", pkgPath,
+		"function", function,
+		"param", param,
 	)
 
 	return proposalId
@@ -172,7 +274,7 @@ func Cancel(proposalId uint64) {
 	}
 
 	if proposal.ExecutionState.Canceled {
-		panic(ufmt.Sprintf("proposal %d has already been canceled", proposalId))
+		panic(ufmt.Sprintf("proposal %d has already canceled", proposalId))
 	}
 
 	config := GetConfigVersion(proposal.ConfigVersion)
@@ -217,9 +319,7 @@ func Cancel(proposalId uint64) {
 // It checks various conditions such as voting period, execution window, quorum, and majority.
 // Returns the results of the executed calls.
 // Panics if any of the execution conditions are not met.
-//
-// XXX: Dynamic Call
-func Execute(proposalId uint64, callsJSON string) {
+func Execute(proposalId uint64) {
 	updateProposalsState()
 
 	proposal, exist := proposals[proposalId]
@@ -227,26 +327,30 @@ func Execute(proposalId uint64, callsJSON string) {
 		panic(ufmt.Sprintf("proposal %d does not exist. failed to execute", proposalId))
 	}
 
+	if proposal.ProposalType == "TEXT" {
+		panic(ufmt.Sprintf("proposal %d is a TEXT proposal. not executable", proposalId))
+	}
+
 	if proposal.ExecutionState.Executed || proposal.ExecutionState.Canceled || proposal.ExecutionState.Rejected {
-		panic(ufmt.Sprintf("proposal %d has already been executed(%t) or canceled(%t) or rejected(%t). failed to execute", proposalId, proposal.ExecutionState.Executed, proposal.ExecutionState.Canceled, proposal.ExecutionState.Rejected))
+		panic(ufmt.Sprintf("proposal %d has already executed(%t) or canceled(%t) or rejected(%t). failed to execute", proposalId, proposal.ExecutionState.Executed, proposal.ExecutionState.Canceled, proposal.ExecutionState.Rejected))
+	}
+
+	if !proposal.ExecutionState.Passed {
+		panic(ufmt.Sprintf("proposal %d has not passed. failed to execute", proposalId))
 	}
 
 	now := uint64(time.Now().Unix())
 
 	config := GetConfigVersion(proposal.ConfigVersion)
 	votingEnd := proposal.ExecutionState.CreatedAt + config.VotingStartDelay + config.VotingPeriod
-	if now < votingEnd {
-		panic("VOTING_NOT_ENDED")
-	}
-
 	windowStart := votingEnd + config.ExecutionDelay
 	if now < windowStart {
-		panic("EXECUTION_WINDOW_NOT_STARTED")
+		panic(ufmt.Sprintf("EXECUTION_WINDOW_NOT_STARTED (now(%d) < windowStart(%d))", now, windowStart))
 	}
 
 	windowEnd := windowStart + config.ExecutionWindow
 	if now >= windowEnd {
-		panic("EXECUTION_WINDOW_OVER")
+		panic(ufmt.Sprintf("EXECUTION_WINDOW_OVER (now(%d) >= windowEnd(%d))", now, windowEnd))
 	}
 
 	yeaUint := proposal.Yea.Uint64()
@@ -261,25 +365,43 @@ func Execute(proposalId uint64, callsJSON string) {
 		panic("NO_MAJORITY")
 	}
 
+	if proposal.ProposalType == "COMMUNITY_POOL_SPEND" {
+		// check if the token is registered to community pool
+		registered := cp.GetRegisteredTokens()
+		if !contains(registered, proposal.CommunityPoolSpend.TokenPath) {
+			panic(ufmt.Sprintf("token %s is not registered to community pool", proposal.CommunityPoolSpend.TokenPath))
+		}
+
+		// trigger community pool spend
+		cp.TransferToken(proposal.CommunityPoolSpend.TokenPath, proposal.CommunityPoolSpend.To, proposal.CommunityPoolSpend.Amount)
+	}
+
+	if proposal.ProposalType == "PARAMETER_CHANGE" {
+		// trigger parameter change
+		executeParameterChange(proposal.ParameterChange)
+	}
+
 	proposal.ExecutionState.Executed = true
 	proposal.ExecutionState.ExecutedAt = now
 	proposal.ExecutionState.Upcoming = false
 	proposal.ExecutionState.Active = false
 	proposals[proposalId] = proposal
 
-	calls := parseCallsFromJSON(json.Must(json.Unmarshal([]byte(callsJSON))))
-
-	results := make([]string, 0, len(calls))
-	for _, call := range calls {
-		result := executeCall(call)
-		results = append(results, result)
-	}
-
 	std.Emit(
 		"Executed",
 		"proposalId", ufmt.Sprintf("%d", proposalId),
 		"executor", std.GetOrigCaller().String(),
 	)
+}
+
+func checkExisitngProposal(proposer std.Address) {
+	latestProposalId, exist := latestProposalByProposer[proposer.String()]
+	if exist {
+		latestProposal := proposals[latestProposalId]
+		if latestProposal.ExecutionState.Upcoming || latestProposal.ExecutionState.Active {
+			panic("PROPOSER_HAS_UPCOMING_OR_ACTIVE_PROPOSAL")
+		}
+	}
 }
 
 func updateProposalsState() {
@@ -309,7 +431,7 @@ func updateProposalsState() {
 				nayUint := proposal.Nay.Uint64()
 				quorumUint := config.Quorum
 
-				if yeaUint >= quorumUint {
+				if yeaUint >= quorumUint && yeaUint > nayUint {
 					proposal.ExecutionState.Passed = true
 					proposal.ExecutionState.PassedAt = now
 				} else {
@@ -317,7 +439,6 @@ func updateProposalsState() {
 					proposal.ExecutionState.RejectedAt = now
 				}
 
-				proposal.ExecutionState.Upcoming = false
 				proposal.ExecutionState.Active = false
 			}
 
