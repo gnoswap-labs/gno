@@ -73,6 +73,8 @@ func init() {
 //   - tokenId has no liquidity
 //   - tokenId is not owned by the caller or staker
 func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Amount, token1Amount
+	common.IsHalted()
+
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -151,6 +153,8 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 //   - token is not staked
 //   - caller is not owner of lp token
 func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
+	common.IsHalted()
+
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -344,6 +348,8 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 // Panics:
 //   - If the token is not staked
 func UnstakeToken(tokenId uint64, unwrapResult bool) (string, string, string) { // poolPath, token0Amount, token1Amount
+	common.IsHalted()
+
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -402,6 +408,8 @@ func CreateExternalIncentive(
 	startTimestamp int64,
 	endTimestamp int64,
 ) {
+	common.IsHalted()
+
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -566,6 +574,8 @@ func CreateExternalIncentive(
 //   - If reward token amount is not enough to refund
 //   - If the caller is neither the refundee nor the admin
 func EndExternalIncentive(_refundee, targetPoolPath, rewardToken string, startTimestamp, endTimestamp, height int64) {
+	common.IsHalted()
+
 	refundee := std.Address(_refundee)
 
 	incentiveId := incentiveIdCompute(refundee, targetPoolPath, rewardToken, startTimestamp, endTimestamp, height)
