@@ -77,7 +77,7 @@ func SetDevOpsPct(pct uint64) {
 	}
 
 	if pct > 10000 {
-		panic("pct should be less than 10000")
+		panic("pct should not be bigger than 10000")
 	}
 
 	devOpsPct = pct
