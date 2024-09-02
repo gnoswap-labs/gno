@@ -73,8 +73,6 @@ func init() {
 //   - tokenId has no liquidity
 //   - tokenId is not owned by the caller or staker
 func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Amount, token1Amount
-	common.IsHalted()
-
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -153,8 +151,6 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 //   - token is not staked
 //   - caller is not owner of lp token
 func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
-	common.IsHalted()
-
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -230,6 +226,7 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 				"reason", "unstaking_fee_penalty",
 				"token", external.tokenPath,
 				"amount", strconv.FormatUint(left, 10),
+				"incentiveId", incentiveId,
 			)
 
 			incentive.rewardLeft = new(u256.Uint).Sub(incentive.rewardLeft, u256.NewUint(fullAmount))
@@ -245,11 +242,12 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 				"m_origCaller", origCaller(),
 				"m_prevRealm", prevRealm(),
 				"p_tokenId", uint64ToStr(tokenId),
+				"p_unwrapResult", boolToStr(unwrapResult),
 				"poolPath", poolPath,
 				"rewardToken", external.tokenPath,
 				"recipient", deposit.owner.String(),
 				"amount", uint64ToStr(toUser),
-				"unwrapResult", boolToStr(unwrapResult),
+				"incentiveId", incentiveId,
 			)
 		}
 	}
@@ -301,6 +299,7 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 		"reason", "gns_penalty",
 		"token", consts.GNS_PATH,
 		"amount", strconv.FormatUint(left, 10),
+		"incentiveId", "INTERNAL",
 	)
 
 	// emit internal reward tokens
@@ -316,6 +315,7 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 		"fullAmount", uint64ToStr(fullAmount),
 		"toGive", uint64ToStr(toGive),
 		"amount", uint64ToStr(toUser),
+		"incentiveId", "INTERNAL",
 		"unstakingFee", uint64ToStr(toGive-toUser),
 		"left", uint64ToStr(left),
 	)
@@ -348,8 +348,6 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 // Panics:
 //   - If the token is not staked
 func UnstakeToken(tokenId uint64, unwrapResult bool) (string, string, string) { // poolPath, token0Amount, token1Amount
-	common.IsHalted()
-
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -378,6 +376,7 @@ func UnstakeToken(tokenId uint64, unwrapResult bool) (string, string, string) { 
 		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_tokenId", uint64ToStr(tokenId),
+		"p_unwrapResult", boolToStr(unwrapResult),
 		"poolPath", poolPath,
 		"from", GetOrigPkgAddr().String(),
 		"to", deposit.owner.String(),
@@ -408,8 +407,6 @@ func CreateExternalIncentive(
 	startTimestamp int64,
 	endTimestamp int64,
 ) {
-	common.IsHalted()
-
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -458,8 +455,6 @@ func CreateExternalIncentive(
 	if !(externalDuration == TIMESTAMP_90DAYS || externalDuration == TIMESTAMP_180DAYS || externalDuration == TIMESTAMP_365DAYS) {
 		panic(ufmt.Sprintf("[STAKER] staker.gno__CreateExternalIncentive() || externalDuration(%d) must be 90, 180, 365 days)", externalDuration))
 	}
-
-	poolRewardBalanceBefore := balanceOfByRegisterCall(rewardToken, GetOrigPkgAddr())
 
 	incentiveId := incentiveIdCompute(std.GetOrigCaller(), targetPoolPath, rewardToken, startTimestamp, endTimestamp, std.GetHeight())
 
@@ -574,8 +569,6 @@ func CreateExternalIncentive(
 //   - If reward token amount is not enough to refund
 //   - If the caller is neither the refundee nor the admin
 func EndExternalIncentive(_refundee, targetPoolPath, rewardToken string, startTimestamp, endTimestamp, height int64) {
-	common.IsHalted()
-
 	refundee := std.Address(_refundee)
 
 	incentiveId := incentiveIdCompute(refundee, targetPoolPath, rewardToken, startTimestamp, endTimestamp, height)
