@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	devOpsPct      uint64 = 3000 // 30%
+	devOpsPct      uint64 = 0 // 0%
 	gnsToDevOps    uint64
 	gnsToGovStaker uint64
 
@@ -35,14 +35,13 @@ func DistributeProtocolFee() {
 	tokens := GetRegisteredTokens()
 	for _, token := range tokens {
 		// default distribute protocol fee percent
-		// devOps 30%
-		// govStaker 70%
+		// govStaker 100%
 		// ...
 
 		balance := balanceOfByRegisterCall(token, consts.PROTOCOL_FEE_ADDR)
 		if balance > 0 {
-			toDevOps := balance * devOpsPct / 10000 // default 30%
-			toGovStaker := balance - toDevOps       // default 70%
+			toDevOps := balance * devOpsPct / 10000 // default 0%
+			toGovStaker := balance - toDevOps       // default 100%
 
 			if token == consts.GNS_PATH {
 				gnsToDevOps = toDevOps
@@ -51,8 +50,13 @@ func DistributeProtocolFee() {
 
 			accuToGovStaker[token] += toGovStaker
 
-			transferByRegisterCall(token, consts.DEV_OPS, toDevOps)
-			transferByRegisterCall(token, consts.GOV_STAKER_ADDR, toGovStaker)
+			if toDevOps > 0 {
+				transferByRegisterCall(token, consts.DEV_OPS, toDevOps)
+			}
+
+			if toGovStaker > 0 {
+				transferByRegisterCall(token, consts.GOV_STAKER_ADDR, toGovStaker)
+			}
 		}
 	}
 }
