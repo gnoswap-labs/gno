@@ -345,17 +345,17 @@ func tRunner(t *T, fn testingFunc, verbose bool) {
 		if t.verbose {
 			switch {
 			case t.Failed():
-				fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= FAIL: %s (%s)\n", t.name, t.dur)
+				fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= FAIL: %s (%s)\n", t.name, t.dur)
 			case t.skipped:
-				fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= SKIP: %s (%s)\n", t.name, t.dur)
+				fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= SKIP: %s (%s)\n", t.name, t.dur)
 			case t.verbose:
-				fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= PASS: %s (%s)\n", t.name, t.dur)
+				fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= PASS: %s (%s)\n", t.name, t.dur)
 			}
 		}
 	}()
 
 	if verbose {
-		fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= RUN   %s\n", t.name)
+		fmt.Fprintf(os.Stderr, "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= RUN   %s\n", t.name)
 	}
 
 	fn(t)
