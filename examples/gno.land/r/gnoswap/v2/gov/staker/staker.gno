@@ -20,7 +20,8 @@ type lockedGNS struct {
 
 var lockedAmount uint64
 
-const TIMESTAMP_7_DAYS = uint64(604800) // 7 days in seconds
+const TIMESTAMP_7_DAYS = uint64(30) // 30s
+// const TIMESTAMP_7_DAYS = uint64(604800) // 7 days in seconds
 
 var (
 	addrLockedGns = make(map[string][]lockedGNS)
@@ -55,9 +56,10 @@ func Delegate(to std.Address, amount uint64) {
 
 	std.Emit(
 		"Delegate",
-		"from", caller.String(),
-		"to", to.String(),
-		"amount", ufmt.Sprintf("%d", amount),
+		"m_origCaller", origCaller(),
+		"m_prevRealm", prevRealm(),
+		"p_to", to.String(),
+		"p_amount", ufmt.Sprintf("%d", amount),
 	)
 }
 
@@ -83,18 +85,20 @@ func Redelegate(from, to std.Address, amount uint64) {
 
 	std.Emit(
 		"Redelegate",
-		"from", from.String(),
-		"to", to.String(),
-		"amount", ufmt.Sprintf("%d", amount),
+		"m_origCaller", origCaller(),
+		"m_prevRealm", prevRealm(),
+		"p_from", from.String(),
+		"p_to", to.String(),
+		"p_amount", ufmt.Sprintf("%d", amount),
 	)
 }
 
-func Undelegate(to std.Address, amount uint64) {
+func Undelegate(from std.Address, amount uint64) {
 	en.MintAndDistributeGns()
 	calculateReward()
 
-	if !to.IsValid() {
-		panic(ufmt.Sprintf("invalid address %s to Undelegate", to.String()))
+	if !from.IsValid() {
+		panic(ufmt.Sprintf("invalid address %s to Undelegate", from.String()))
 	}
 
 	if amount < minimumAmount {
@@ -111,7 +115,7 @@ func Undelegate(to std.Address, amount uint64) {
 	xgns.Burn(a2u(caller), amount)
 
 	// actual undelegate
-	undelegate(to, amount)
+	undelegate(from, amount)
 
 	// lock up
 	userLocked := lockedGNS{
@@ -123,9 +127,10 @@ func Undelegate(to std.Address, amount uint64) {
 
 	std.Emit(
 		"Undelegate",
-		"from", caller.String(),
-		"to", to.String(),
-		"amount", ufmt.Sprintf("%d", amount),
+		"m_origCaller", origCaller(),
+		"m_prevRealm", prevRealm(),
+		"p_from", from.String(),
+		"p_amount", ufmt.Sprintf("%d", amount),
 	)
 }
 
@@ -140,14 +145,16 @@ func CollectUndelegated() uint64 {
 	}
 
 	// check if caller has any GNS to claim
+	collected := uint64(0)
 	for i, locked := range addrLockedGns[caller.String()] {
-		if uint64(time.Now().Unix()) >= locked.unlock { // passed 20 days
+		if uint64(time.Now().Unix()) >= locked.unlock && locked.amount > 0 { // passed 7 days
 			// transfer GNS to caller
 			gns.Transfer(a2u(caller), locked.amount)
 
 			std.Emit(
 				"CollectUndelegated",
-				"from", caller.String(),
+				"m_origCaller", origCaller(),
+				"m_prevRealm", prevRealm(),
 				"amount", ufmt.Sprintf("%d", locked.amount),
 			)
 
@@ -155,11 +162,11 @@ func CollectUndelegated() uint64 {
 			addrLockedGns[caller.String()] = append(addrLockedGns[caller.String()][:i], addrLockedGns[caller.String()][i+1:]...)
 
 			lockedAmount -= locked.amount
-			return locked.amount
+			collected += locked.amount
 		}
 	}
 
-	return 0
+	return collected
 }
 
 func CollectReward() {
@@ -181,7 +188,8 @@ func CollectReward() {
 
 		std.Emit(
 			"CollectReward",
-			"from", caller.String(),
+			"m_origCaller", origCaller(),
+			"m_prevRealm", prevRealm(),
 			"reward", "emission",
 			"amount", ufmt.Sprintf("%d", emissionReward),
 		)
@@ -206,7 +214,8 @@ func CollectReward() {
 
 		std.Emit(
 			"CollectReward",
-			"from", caller.String(),
+			"m_origCaller", origCaller(),
+			"m_prevRealm", prevRealm(),
 			"reward", "protocol_fee",
 			"token", tokenPath,
 			"amount", ufmt.Sprintf("%d", amount),

@@ -8,16 +8,22 @@ import (
 	"gno.land/p/demo/ufmt"
 
 	gs "gno.land/r/gnoswap/v2/gov/staker"
+
+	en "gno.land/r/gnoswap/v2/emission"
 )
 
+// GetProposals returns all proposals with necessary information.
 func GetProposals() string {
+	en.MintAndDistributeGns()
+	updateProposalsState()
+
 	if len(proposals) == 0 {
 		return ""
 	}
 
 	proposalsObj := metaNode()
 	proposalArr := json.ArrayNode("", nil)
-	for proposalId, proposal := range proposals {
+	for proposalId, _ := range proposals {
 		proposalObj := getProposalById(proposalId)
 		proposalArr.AppendArray(proposalObj)
 	}
@@ -26,8 +32,12 @@ func GetProposals() string {
 	return marshal(proposalsObj)
 }
 
+// GetProposalById returns a single proposal with necessary information.
 func GetProposalById(id uint64) string {
-	proposal, exist := proposals[id]
+	en.MintAndDistributeGns()
+	updateProposalsState()
+
+	_, exist := proposals[id]
 	if !exist {
 		return ""
 	}
@@ -41,6 +51,7 @@ func GetProposalById(id uint64) string {
 	return marshal(proposalsObj)
 }
 
+// helper function for GetProposals and GetProposalById
 func getProposalById(id uint64) *json.Node {
 	proposal, exist := proposals[id]
 	if !exist {
@@ -60,8 +71,12 @@ func getProposalById(id uint64) *json.Node {
 	return proposalObj
 }
 
+// GetVoteStatusFromProposalById returns the vote status(max, yes, no) of a proposal.
 func GetVoteStatusFromProposalById(id uint64) string {
-	proposal, exist := proposals[id]
+	en.MintAndDistributeGns()
+	updateProposalsState()
+
+	_, exist := proposals[id]
 	if !exist {
 		return ""
 	}
@@ -73,7 +88,17 @@ func GetVoteStatusFromProposalById(id uint64) string {
 	return marshal(votesObj)
 }
 
+// GetVotesByAddress returns all votes of an address.
+// included information:
+// - proposalId
+// - vote (yes/no)
+// - weight
+// - height
+// - timestamp
 func GetVotesByAddress(addr string) string {
+	en.MintAndDistributeGns()
+	updateProposalsState()
+
 	if _, exist := userVotes[addr]; !exist {
 		return ""
 	}
@@ -81,7 +106,7 @@ func GetVotesByAddress(addr string) string {
 	votesObj := metaNode()
 
 	votesArr := json.ArrayNode("", nil)
-	for proposalId, voteWeight := range userVotes[addr] {
+	for proposalId, _ := range userVotes[addr] {
 		voteObj := getVoteByAddressFromProposalById(addr, proposalId)
 		votesArr.AppendArray(voteObj)
 	}
@@ -90,7 +115,11 @@ func GetVotesByAddress(addr string) string {
 	return marshal(votesObj)
 }
 
+// GetVoteByAddressFromProposalById returns the vote of an address from a certain proposal.
 func GetVoteByAddressFromProposalById(addr string, id uint64) string {
+	en.MintAndDistributeGns()
+	updateProposalsState()
+
 	if _, exist := userVotes[addr]; !exist {
 		return ""
 	}
@@ -108,6 +137,7 @@ func GetVoteByAddressFromProposalById(addr string, id uint64) string {
 	return marshal(votesObj)
 }
 
+// helper function for GetVotesByAddress and GetVoteByAddressFromProposalById
 func getVoteByAddressFromProposalById(addr string, id uint64) *json.Node {
 	if _, exist := userVotes[addr]; !exist {
 		return nil
@@ -127,6 +157,7 @@ func getVoteByAddressFromProposalById(addr string, id uint64) *json.Node {
 	return voteObj
 }
 
+// getProposalExtraData returns the extra data of a proposal based on its type.
 func getProposalExtraData(proposalId uint64) string {
 	proposal, exist := proposals[proposalId]
 	if !exist {
@@ -144,11 +175,6 @@ func getProposalExtraData(proposalId uint64) string {
 
 	return ""
 }
-
-// text proposal doesn't have any extra data
-// func getTextProposalData() string {
-// 	return ""
-// }
 
 // community pool has three extra data
 // 1. to
@@ -180,6 +206,7 @@ func getParameterChangeProposalData() string {
 	return marshal(proposalObj)
 }
 
+// getProposalStatus returns the status of a proposal.
 func getProposalStatus(id uint64) string {
 	proposal, exist := proposals[id]
 	if !exist {
@@ -216,6 +243,7 @@ func getProposalStatus(id uint64) string {
 	return marshal(proposalObj)
 }
 
+// getProposalVotes returns the votes of a proposal.
 func getProposalVotes(id uint64) string {
 	proposal, exist := proposals[id]
 	if !exist {
