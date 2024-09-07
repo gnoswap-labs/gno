@@ -491,6 +491,7 @@ func updateProposalsState() {
 				proposal.ExecutionState.Rejected = true
 				proposal.ExecutionState.RejectedAt = now
 			}
+			proposal.ExecutionState.Upcoming = false
 			proposal.ExecutionState.Active = false
 		}
 
