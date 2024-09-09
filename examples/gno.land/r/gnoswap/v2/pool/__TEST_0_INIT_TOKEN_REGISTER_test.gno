@@ -23,6 +23,8 @@ import (
 	"gno.land/r/gnoswap/v2/consts"
 
 	pusers "gno.land/p/demo/users"
+
+	rr "gno.land/r/gnoswap/v2/router"
 )
 
 type FooToken struct{}
@@ -143,6 +145,14 @@ func init() {
 	RegisterGRC20Interface("gno.land/r/demo/wugnot", WugnotToken{})
 	RegisterGRC20Interface("gno.land/r/onbloc/obl", OBLToken{})
 	RegisterGRC20Interface("gno.land/r/gnoswap/v2/gns", GNSToken{})
+
+	rr.RegisterGRC20Interface("gno.land/r/onbloc/bar", BarToken{})
+	rr.RegisterGRC20Interface("gno.land/r/onbloc/foo", FooToken{})
+	rr.RegisterGRC20Interface("gno.land/r/onbloc/baz", BazToken{})
+	rr.RegisterGRC20Interface("gno.land/r/onbloc/qux", QuxToken{})
+	rr.RegisterGRC20Interface("gno.land/r/demo/wugnot", WugnotToken{})
+	rr.RegisterGRC20Interface("gno.land/r/onbloc/obl", OBLToken{})
+	rr.RegisterGRC20Interface("gno.land/r/gnoswap/v2/gns", GNSToken{})
 }
 
 func TestGetRegisteredTokens(t *testing.T) {
