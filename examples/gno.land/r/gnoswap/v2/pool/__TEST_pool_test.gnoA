@@ -1,19 +1,20 @@
 package pool
 
 import (
+	"encoding/base64"
 	"std"
 	"testing"
-	"encoding/base64"
-	"gno.land/p/demo/ufmt"
+
 	"gno.land/p/demo/json"
+	"gno.land/p/demo/ufmt"
 
 	"gno.land/r/onbloc/bar"
 	"gno.land/r/onbloc/baz"
 	"gno.land/r/onbloc/foo"
 
 	"gno.land/r/gnoswap/v2/consts"
-	pl "gno.land/r/gnoswap/v2/pool"
 	"gno.land/r/gnoswap/v2/gns"
+	pl "gno.land/r/gnoswap/v2/pool"
 
 	"gno.land/p/demo/testutils"
 )
@@ -191,10 +192,19 @@ func TestCreateWUGNOTWUGNOTPool(t *testing.T) {
 		gns.Approve(a2u(consts.POOL_ADDR), poolCreationFee)
 		std.TestSetRealm(gsaRealm)
 
-		CreatePool("gnot", "gno.land/r/demo/wugnot", fee500, "130621891405341611593710811006") // tick 10000
-		std.TestSkipHeights(1)
+		// origin check logic by auditor
+		// CreatePool("gnot", "gno.land/r/demo/wugnot", fee500, "130621891405341611593710811006") // tck 10000
+		// std.TestSkipHeights(1)
+		// shouldEQ(t, DoesPoolPathExist("gno.land/r/demo/wugnot:gno.land/r/demo/wugnot:500"), false)
 
-		shouldEQ(t, DoesPoolPathExist("gno.land/r/demo/wugnot:gno.land/r/demo/wugnot:500"), false)
+		// new check logic by r3v4 // check if it panicks
+		shouldPanic(
+			t,
+			func() {
+				CreatePool("gnot", "gno.land/r/demo/wugnot", fee500, "130621891405341611593710811006") // tck 10000
+			},
+		)
+
 	})
 }
 
