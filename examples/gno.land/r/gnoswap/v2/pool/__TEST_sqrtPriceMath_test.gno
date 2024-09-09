@@ -1,25 +1,12 @@
 package pool
 
 import (
-	"std"
 	"testing"
-
-	"gno.land/p/demo/json"
-
-	"gno.land/r/onbloc/bar"
-	"gno.land/r/onbloc/baz"
-	"gno.land/r/onbloc/foo"
 
 	"gno.land/r/gnoswap/v2/consts"
 
-	"gno.land/r/gnoswap/v2/gns"
-
-	"gno.land/p/demo/testutils"
-
 	i256 "gno.land/p/gnoswap/int256"
 	u256 "gno.land/p/gnoswap/uint256"
-
-	"gno.land/r/gnoswap/v2/common"
 )
 
 var (
@@ -725,7 +712,6 @@ func TestSwapComputation(t *testing.T) {
 	}
 }
 
-
 //===================For Test =================
 
 func SqrtPriceMathGetNextSqrtPriceFromAmount0RoundingUp(
@@ -805,6 +791,10 @@ func SqrtPriceMathGetNextSqrtPriceFromInput(
 	amountIn *u256.Uint, // uint256
 	zeroForOne bool, // bool
 ) *u256.Uint { // uint160
+	if sqrtPX96.IsZero() {
+		panic("sqrtPX96 should not be zero")
+	}
+
 	if zeroForOne {
 		return SqrtPriceMathGetNextSqrtPriceFromAmount0RoundingUp(sqrtPX96, liquidity, amountIn, true)
 	}
