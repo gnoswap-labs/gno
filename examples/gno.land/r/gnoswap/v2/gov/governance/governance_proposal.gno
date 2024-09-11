@@ -58,7 +58,7 @@ func ProposeText(
 		ProposalType: "TEXT",
 		ExecutionState: ExecutionState{
 			Created:   true,
-			CreatedAt: uint64(time.Now().Unix()),
+			CreatedAt: now,
 			Upcoming:  true,
 		},
 		Yea:           u256.Zero(),
