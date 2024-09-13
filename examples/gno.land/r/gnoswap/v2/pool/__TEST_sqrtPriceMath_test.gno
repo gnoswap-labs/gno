@@ -622,7 +622,7 @@ func TestSqrtPriceMathGetAmount0DeltaHelper_5(t *testing.T) {
 }
 
 func TestSqrtPriceMathGetAmount1DeltaHelper_1(t *testing.T) {
-	// returns 0 if liquidity is 0
+	// panic, if liquidity is 0
 
 	var got2 *u256.Uint
 	sqrtRatioAX96 = u256.MustFromDecimal("79228162514264337593543950336")  // encodePriceSqrt(1, 1) = 79228162514264337593543950336
@@ -643,7 +643,7 @@ func TestSqrtPriceMathGetAmount1DeltaHelper_2(t *testing.T) {
 
 	sqrtRatioAX96 = u256.MustFromDecimal("79228162514264337593543950336") // encodePriceSqrt(1, 1) = 79228162514264337593543950336
 	sqrtRatioBX96 = u256.MustFromDecimal("79228162514264337593543950336") // encodePriceSqrt(1, 1) = 79228162514264337593543950336
-	liquidity = u256.MustFromDecimal("0")
+	liquidity = u256.MustFromDecimal("1")                                 // previous was 0, but after patching 0 does panic, therefore to test value must not be 0
 	roundUp = true
 
 	expected = u256.Zero()
@@ -854,6 +854,10 @@ func SqrtPriceMathGetAmount1DeltaHelper(
 	liquidity *u256.Uint, // uint160
 	roundUp bool,
 ) *u256.Uint { // uint256
+	if liquidity.IsZero() {
+		panic("liquidity should not be zero")
+	}
+
 	if sqrtRatioAX96.Gt(sqrtRatioBX96) {
 		sqrtRatioAX96, sqrtRatioBX96 = sqrtRatioBX96, sqrtRatioAX96
 	}
