@@ -383,3 +383,22 @@ func TestTickNextInitializedTickWithinOneWordNextword(t *testing.T) {
 		shouldEQ(t, initialized, true)
 	})
 }
+
+func TestTickNextInitializedTickWithinOneWordBoundary(t *testing.T) {
+	t.Run("does not exceed boundary", func(t *testing.T) {
+		BeforeEachTest(t)
+		TickBitmapFlipTick_Helper(int32(-200), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(-55), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(-4), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(70), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(78), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(84), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(139), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(240), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(535), tickSpacing)
+
+		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(508), tickSpacing, false)
+		shouldEQ(t, next, int32(511))
+		shouldEQ(t, initialized, false)
+	})
+}
