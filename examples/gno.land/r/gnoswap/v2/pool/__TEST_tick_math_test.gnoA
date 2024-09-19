@@ -190,7 +190,7 @@ func TestTickMathGetTickAtSqrtRatio_1(t *testing.T) {
 	sqrtPriceX96.Sub(sqrtPriceX96, u256.One())
 	var rst int32
 
-	shouldPanic( // price의 범위를 확인하지 않음
+	shouldPanic(
 		t,
 		func() {
 			common.TickMathGetTickAtSqrtRatio(sqrtPriceX96)
@@ -203,7 +203,7 @@ func TestTickMathGetTickAtSqrtRatio_2(t *testing.T) {
 	var sqrtPriceX96 *u256.Uint = u256.MustFromDecimal(consts.MAX_SQRT_RATIO)
 	var rst int32
 
-	shouldPanic( // price의 범위를 확인하지 않음
+	shouldPanic(
 		t,
 		func() {
 			common.TickMathGetTickAtSqrtRatio(sqrtPriceX96)
