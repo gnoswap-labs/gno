@@ -331,9 +331,6 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 	println(" > unstakingFee", toGive-toUser)
 	println(" > left", left)
 
-	// UPDATE stakerGns Balance for calculate_pool_position_reward
-	lastCalculatedBalance = gnsBalance(consts.STAKER_ADDR) - externalGnsAmount() - externalDepositGnsAmount()
-
 	println("[ END ] CollectReward_INTERNAL", tokenId)
 	return poolPath
 }

@@ -9,6 +9,7 @@ import (
 
 	"gno.land/r/gnoswap/v2/gns"
 
+	en "gno.land/r/gnoswap/v2/emission"
 	pn "gno.land/r/gnoswap/v2/position"
 
 	u256 "gno.land/p/gnoswap/uint256"
@@ -67,8 +68,12 @@ type externalRewards struct {
 var positionExternal map[uint64]map[string]externalRewards = make(map[uint64]map[string]externalRewards)
 
 var (
-	lastCalculatedHeight  int64
-	lastCalculatedBalance uint64
+	lastCalculatedHeight int64
+)
+
+// internal
+var (
+	leftFromLast uint64
 )
 
 // XXX: need to improve nested iteration
@@ -151,20 +156,15 @@ func CalcPoolPosition() {
 	totalExternalGns += externalDepositGnsAmount()
 	println(" > CALC__totalExternalGns + externalDepositGnsAmount:", totalExternalGns)
 
-	// calculate pool
-	stakerGnsBalance := gnsBalance(consts.STAKER_ADDR)
-
-	println(" > CALC__stakerGnsBalance:", stakerGnsBalance)
-	println(" > CALC__externalGnsAmount:", totalExternalGns)
-
-	stakerGnsBalance -= totalExternalGns
-	println("CALC__stakerGnsBalance - externalGnsAmount", stakerGnsBalance)
-	println("CALC__lastCalculatedBalance:", lastCalculatedBalance)
-
-	mintedGnsAmount := stakerGnsBalance - lastCalculatedBalance
-	println("CALC__mintedGnsAmount:", mintedGnsAmount)
-
-	lastCalculatedBalance = stakerGnsBalance
+	// calculate internal gns emission amount
+	mintedGnsAmount := en.GetAccuDistributedAmountForStaker()
+	en.ClearAccuDistributedAmountForStaker()
+	println(" > CALC__[NEW] en.GetAccuDistributedAmountForStaker():", mintedGnsAmount)
+	println(" > CALC__[BEFORE] gnsBalance(consts.STAKER_ADDR):", gnsBalance(consts.STAKER_ADDR))
+	println(" > CALC_LEFT_FROM_LAST", leftFromLast)
+	mintedGnsAmount += leftFromLast
+	leftFromLast = 0
+	println(" > CALC__[NEW] mintedGnsAmount + leftFromLast:", mintedGnsAmount)
 
 	println("CALC__height:", height)
 	println("CALC__lastCalculatedHeight:", lastCalculatedHeight)
@@ -205,6 +205,13 @@ func CalcPoolPosition() {
 	println("CALC__height:", height)
 	println()
 
+	allTierAmount := tier1Amount + tier2Amount + tier3Amount
+	println("CALC__LEFT_mintedGnsAmount:", mintedGnsAmount)
+	println("CALC__LEFT_allTierAmount:", allTierAmount)
+	leftFromLast = mintedGnsAmount - allTierAmount
+	println("> left:", leftFromLast)
+	println()
+
 	println("[ START ] CALC__poolTiers DISTRIBUTE")
 
 	// 인터널 에미션 대상 풀 수만큼 반복
@@ -231,12 +238,13 @@ func CalcPoolPosition() {
 		println(" > CALC__AFTER_poolGns[poolPath]:", poolGns[poolPath])
 		println(" > CALC__AFTER_poolAccuGns[poolPath]:", poolAccuGns[poolPath])
 
-		// current block minted gns + left from last block distributed gns
+		// [current block minted gns] + left from last block distributed gns
 		poolCurrentBlockGns[poolPath] = tierAmount
 		println(" > CALC__poolCurrentBlockGns[poolPath]:", poolCurrentBlockGns[poolPath])
 
 		println(" > CALC__ADD_poolLastTmpGns[poolPath]:", poolLastTmpGns[poolPath])
 
+		// current block minted gns + [left from last block distributed gns]
 		poolCurrentBlockGns[poolPath] += poolLastTmpGns[poolPath]
 		println(" > CALC__AFTER_ADD", poolCurrentBlockGns[poolPath])
 
@@ -247,15 +255,14 @@ func CalcPoolPosition() {
 		println(" > CALC__poolPath:", poolPath)
 		println(" > CALC__totalStakedLiquidity:", totalStakedLiquidity.ToString())
 
+		// no position has been staked in this pool
 		if exist == false || totalStakedLiquidity.IsZero() {
 			println("  > CALC__ZERO_POOL", poolPath, "HAS TIER OF", internal.tier, "BUT NONE STAKED, SEND AMOUNT TO PROTOCOL FEE")
 			println("  > CALC__ZERO_poolGns[poolPath]:", poolGns[poolPath])
 
-			send := min(poolGns[poolPath], stakerGnsBalance-totalExternalGns)
-			println("  > CALC__ZERO_SEND_min(poolGns[poolPath], stakerGnsBalance-totalExternalGns", send)
-			println("  > CALC__BEFORE_STAKER_GNS:", stakerGnsBalance-totalExternalGns)
+			send := min(poolGns[poolPath], mintedGnsAmount)
+			println("  > CALC__ZERO_SEND_min(poolGns[poolPath], mintedGnsAmount", send)
 			println("  > CALC__BEFORE_FEE_GNS:", gnsBalance(consts.PROTOCOL_FEE_ADDR))
-			println("  > CALC__BEFORE_lastCalculatedBalance:", lastCalculatedBalance)
 
 			gns.Transfer(a2u(consts.PROTOCOL_FEE_ADDR), send)
 			std.Emit(
@@ -272,15 +279,13 @@ func CalcPoolPosition() {
 			poolGns[poolPath] = 0
 			poolCurrentBlockGns[poolPath] = 0
 
+			// XXX: remove??
 			// gns send happens, so update last calculated balance
-			_stakerGnsBalance := gnsBalance(consts.STAKER_ADDR)
-			lastCalculatedBalance = _stakerGnsBalance - totalExternalGns
 
-			println("  > CALC__AFTER_STAKER_GNS:", _stakerGnsBalance-totalExternalGns)
+			// println("  > CALC__AFTER_STAKER_GNS:", _stakerGnsBalance-totalExternalGns)
 			println("  > CALC__AFTER_FEE_GNS:", gnsBalance(consts.PROTOCOL_FEE_ADDR))
 			println("  > CALC__AFTER_poolGns[poolPath] = 0")
 			println("  > CALC__AFTER_poolCurrentBlockGns[poolPath] = 0")
-			println("  > CALC__AFTER_lastCalculatedBalance:", lastCalculatedBalance)
 			println("  > ----------------------- WAS EMPTY POOL")
 		}
 	}
@@ -341,8 +346,6 @@ func CalcPoolPosition() {
 	println("UPDATE FLAG")
 	lastCalculatedHeight = height
 	println(" > lastCalculatedHeight:", lastCalculatedHeight)
-	lastCalculatedBalance = gnsBalance(consts.STAKER_ADDR) - totalExternalGns // latest balance
-	println(" > lastCalculatedBalance:", lastCalculatedBalance)
 	println()
 
 	println("[ START ] CALC__FINAL")

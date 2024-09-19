@@ -6,6 +6,8 @@ import (
 
 	u256 "gno.land/p/gnoswap/uint256"
 	"gno.land/r/gnoswap/v2/consts"
+
+	"gno.land/p/demo/ufmt"
 )
 
 type warmUpAmount struct {
@@ -415,7 +417,25 @@ func rewardMathComputeExternalRewardAmount(tokenId uint64, incentiveId string) (
 			println()
 
 			lastCalculatedHeightU64 := uint64(positionsExternalLastCalculatedHeight[tokenId][incentiveId])
+			if outerMap, ok := positionsExternalLastCalculatedHeight[tokenId]; ok {
+				if value, ok := outerMap[incentiveId]; ok {
+					lastCalculatedHeightU64 = uint64(value)
+					println("> REWARD__EXTERNAL_lastCalculatedHeightU64_VAL:", lastCalculatedHeightU64)
+
+				} else {
+					// panic(ufmt.Sprintf("inner key[tokenId: %d] not found", tokenId))
+					// never calculated
+					positionsExternalLastCalculatedHeight[tokenId][incentiveId] = int64(stakedOrExternalStartedHeight)
+					lastCalculatedHeightU64 = uint64(stakedOrExternalStartedHeight)
+					println("> REWARD__EXTERNAL_lastCalculatedHeightU64_NONE:", lastCalculatedHeightU64)
+				}
+			} else {
+				panic(ufmt.Sprintf("outer key[incentiveId: %s] not found", incentiveId))
+			}
 			println("   > REWARD__EXTERNAL_lastCalculatedHeightU64:", lastCalculatedHeightU64)
+			println("     > tokenId:", tokenId)
+			println("     > incentiveId:", incentiveId)
+			println("     > rewardToken:", incentives[incentiveId].rewardToken)
 
 			avgExternalBlockAmountX96 := new(u256.Uint).Div(toDistributeX96, u256.NewUint(_currentHeightU64-lastCalculatedHeightU64))
 			println("   > REWARD__EXTERNAL_toDistirbuteX96:", toDistributeX96.ToString())

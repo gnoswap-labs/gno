@@ -1,5 +1,5 @@
 // external incentive + warm up period testing
-
+// - bar token
 package staker
 
 import (

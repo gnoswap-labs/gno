@@ -167,6 +167,22 @@ func ClearAccuDistributedAmount() {
 	toGovStakerAccu = 0
 }
 
+func GetAccuDistributedAmountForStaker() uint64 {
+	return toStakerAccu
+}
+
+func ClearAccuDistributedAmountForStaker() {
+	common.IsHalted()
+
+	prevRealm := std.PrevRealm().PkgPath()
+
+	if prevRealm != consts.STAKER_PATH {
+		panic("only staker can clear accumulated distributed amount")
+	}
+
+	toStakerAccu = 0
+}
+
 func GetAccuDistributedAmountForGovStaker() uint64 {
 	return toGovStakerAccu
 }
