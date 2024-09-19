@@ -358,7 +358,28 @@ func TestTickNextInitializedTickWithinOneWordRight(t *testing.T) {
 		TickBitmapFlipTick_Helper(int32(535), tickSpacing)
 
 		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(-257), tickSpacing, false)
-		shouldEQ(t, next, int32(-200)) // -1
-		shouldEQ(t, initialized, true) // false
+		shouldEQ(t, next, int32(-200))
+		shouldEQ(t, initialized, true)
+	})
+}
+
+func TestTickNextInitializedTickWithinOneWordNextword(t *testing.T) {
+	t.Run("returns the next initialized tick from the next word", func(t *testing.T) {
+		BeforeEachTest(t)
+		TickBitmapFlipTick_Helper(int32(-200), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(-55), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(-4), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(70), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(78), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(84), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(139), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(240), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(535), tickSpacing)
+
+		TickBitmapFlipTick_Helper(int32(340), tickSpacing)
+
+		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(328), tickSpacing, false)
+		shouldEQ(t, next, int32(340))
+		shouldEQ(t, initialized, true)
 	})
 }
