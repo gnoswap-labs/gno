@@ -341,3 +341,16 @@ func TestTickMathGetTickAtSqrtRatio_6(t *testing.T) {
 		shouldEQ(t, isLt, true)
 	}
 }
+
+func TestTickMathGetTickAtSqrtRatio_7(t *testing.T) {
+	// ratio closest to max tick
+	maxSqrtRatio := u256.MustFromDecimal(consts.MAX_SQRT_RATIO)
+	maxSqrtRatioSub1 := maxSqrtRatio.Sub(maxSqrtRatio, u256.One())
+
+	maxTick := consts.MAX_TICK
+	maxTickSub1 := maxTick - 1
+
+	result := common.TickMathGetTickAtSqrtRatio(maxSqrtRatio)
+
+	shouldEQ(t, result, maxTickSub1)
+}
