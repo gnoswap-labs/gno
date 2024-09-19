@@ -1,20 +1,7 @@
 package pool
 
 import (
-	"std"
 	"testing"
-
-	"gno.land/p/demo/json"
-
-	"gno.land/r/onbloc/bar"
-	"gno.land/r/onbloc/baz"
-	"gno.land/r/onbloc/foo"
-
-	"gno.land/r/gnoswap/v2/consts"
-
-	"gno.land/r/gnoswap/v2/gns"
-
-	"gno.land/p/demo/testutils"
 
 	i256 "gno.land/p/gnoswap/int256"
 	u256 "gno.land/p/gnoswap/uint256"
@@ -70,19 +57,16 @@ func TestAddDelta_3(t *testing.T) {
 func TestAddDelta_4(t *testing.T) {
 	// 2**128-15 + 15
 	x = u256.MustFromDecimal("340282366920938463463374607431768211441") // 340282366920938463463374607431768211441 = 2**128-15
-	if x.ToString() != "340282366920938463463374607431768211441" {
-		t.Errorf("u256 is failed !")
-	}
-
 	y = i256.NewInt(15)
-	got = LiquidityMathAddDelta(x, y)
-	expected = u256.MustFromDecimal("340282366920938463463374607431768211456") // 2**128
-	rst = got.Eq(expected)
 
-	rst = got.Eq(expected)
-	if !rst {
-		t.Errorf("Test Liquidity Math #4: 2**128-15 + 15 is failed")
-	}
+	shouldPanicWithMsg(
+		t,
+		func() {
+			LiquidityMathAddDelta(x, y)
+		},
+		`Over uint128 range`,
+	)
+
 }
 
 func TestAddDelta_5(t *testing.T) {

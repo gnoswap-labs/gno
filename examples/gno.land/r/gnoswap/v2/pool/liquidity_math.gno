@@ -3,6 +3,8 @@ package pool
 import (
 	i256 "gno.land/p/gnoswap/int256"
 	u256 "gno.land/p/gnoswap/uint256"
+
+	"gno.land/r/gnoswap/v2/consts"
 )
 
 func liquidityMathAddDelta(x *u256.Uint, y *i256.Int) *u256.Uint {
@@ -12,6 +14,7 @@ func liquidityMathAddDelta(x *u256.Uint, y *i256.Int) *u256.Uint {
 		if !(z.Lt(x)) {
 			panic("LS")
 		}
+		isInRangeFor128(z)
 		return z // z < x
 	}
 
@@ -20,5 +23,14 @@ func liquidityMathAddDelta(x *u256.Uint, y *i256.Int) *u256.Uint {
 	if !(z.Gte(x)) {
 		panic("LA")
 	}
+
+	isInRangeFor128(z)
 	return z // z >= x
+}
+
+func isInRangeFor128(x *u256.Uint) {
+	maxUint128 := u256.MustFromDecimal(consts.MAX_UINT128)
+	if x.Gt(maxUint128) {
+		panic("Over uint128 range")
+	}
 }
