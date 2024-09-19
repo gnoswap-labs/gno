@@ -1,23 +1,15 @@
 package pool
 
 import (
-	"gno.land/p/demo/json"
-
-	"std"
 	"testing"
-	"math"
-	"time"
-	"strconv"
-
-	"gno.land/p/demo/testutils"
 
 	"gno.land/r/gnoswap/v2/consts"
 )
 
 var (
 	tickSpacing = int32(1)
-	minTick = (consts.MIN_TICK / tickSpacing) * tickSpacing
-	maxTick = (consts.MAX_TICK / tickSpacing) * tickSpacing
+	minTick     = (consts.MIN_TICK / tickSpacing) * tickSpacing
+	maxTick     = (consts.MAX_TICK / tickSpacing) * tickSpacing
 )
 
 func BeforeEachTest(t *testing.T) {
@@ -56,7 +48,7 @@ func TestTickInit_3(t *testing.T) {
 func TestTickInit_4(t *testing.T) {
 	BeforeEachTest(t)
 	t.Run("is not changed by another flip to a different tick on another word", func(t *testing.T) {
-		TickBitmapFlipTick_Helper(int32(1) + int32(256), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(1)+int32(256), tickSpacing)
 		nextTick_res_1, bool_res_1 := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(257), tickSpacing, true)
 		nextTick_res_2, bool_res_2 := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(1), tickSpacing, true)
 		shouldEQ(t, bool_res_2, false)
@@ -73,9 +65,9 @@ func TestTickFlip_1(t *testing.T) {
 		shouldEQ(t, bool_res_2, false)
 		nextTick_res_3, bool_res_3 := IsInitialized_Helper(int32(-229), tickSpacing)
 		shouldEQ(t, bool_res_3, false)
-		nextTick_res_4, bool_res_4 := IsInitialized_Helper(int32(-230 + 256), tickSpacing)
+		nextTick_res_4, bool_res_4 := IsInitialized_Helper(int32(-230+256), tickSpacing)
 		shouldEQ(t, bool_res_4, false)
-		nextTick_res_5, bool_res_5 := IsInitialized_Helper(int32(-230 - 256), tickSpacing)
+		nextTick_res_5, bool_res_5 := IsInitialized_Helper(int32(-230-256), tickSpacing)
 		shouldEQ(t, bool_res_5, false)
 
 		TickBitmapFlipTick_Helper(int32(-230), tickSpacing)
@@ -85,9 +77,9 @@ func TestTickFlip_1(t *testing.T) {
 		shouldEQ(t, bool_res_7, false)
 		nextTick_res_8, bool_res_8 := IsInitialized_Helper(int32(-229), tickSpacing)
 		shouldEQ(t, bool_res_8, false)
-		nextTick_res_9, bool_res_9 := IsInitialized_Helper(int32(-230 + 256), tickSpacing)
+		nextTick_res_9, bool_res_9 := IsInitialized_Helper(int32(-230+256), tickSpacing)
 		shouldEQ(t, bool_res_9, false)
-		nextTick_res_10, bool_res_10 := IsInitialized_Helper(int32(-230 - 256), tickSpacing)
+		nextTick_res_10, bool_res_10 := IsInitialized_Helper(int32(-230-256), tickSpacing)
 		shouldEQ(t, bool_res_10, false)
 	})
 }
@@ -106,7 +98,7 @@ func TestTickFlip_2(t *testing.T) {
 		shouldEQ(t, bool_res_1, true)
 		nextTick_res_2, bool_res_2 := IsInitialized_Helper(int32(-229), tickSpacing)
 		shouldEQ(t, bool_res_2, false)
-		
+
 	})
 }
 
@@ -342,5 +334,38 @@ func TestTickLteEqTrue_7(t *testing.T) {
 		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(456), tickSpacing, true)
 		shouldEQ(t, next, int32(329))
 		shouldEQ(t, initialized, true)
+	})
+}
+
+func TestTickNextInitializedTickWithinOneWord(t *testing.T) {
+	/*
+		it('returns the next words initialized tick if on the right boundary', async () => {
+				const { next, initialized } = await tickBitmap.nextInitializedTickWithinOneWord(255, false);
+				expect_1.expect(next).to.eq(511);
+				expect_1.expect(initialized).to.eq(false);
+		});
+	*/
+	t.Run("returns the next words initialized tick if on the right boundary_255", func(t *testing.T) {
+		BeforeEachTest(t)
+		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(255), tickSpacing, false)
+		shouldEQ(t, next, int32(511))
+		shouldEQ(t, initialized, false)
+	})
+
+	t.Run("returns the next words initialized tick if on the right boundary_-257", func(t *testing.T) {
+		BeforeEachTest(t)
+		TickBitmapFlipTick_Helper(int32(-200), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(-55), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(-4), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(70), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(78), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(84), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(139), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(240), tickSpacing)
+		TickBitmapFlipTick_Helper(int32(535), tickSpacing)
+
+		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(-257), tickSpacing, false)
+		shouldEQ(t, next, int32(-200)) // -1
+		shouldEQ(t, initialized, true) // false
 	})
 }

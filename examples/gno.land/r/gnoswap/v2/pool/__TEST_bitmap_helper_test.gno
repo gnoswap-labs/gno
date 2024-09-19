@@ -51,28 +51,26 @@ func TickBitmapNextInitializedTickWithInOneWord_Helper(
 	lte bool,
 ) (int32, bool) {
 	compress := tick / tickSpacing
+
 	if tick < 0 && tick%tickSpacing != 0 {
 		compress--
 	}
 
 	if lte {
+
 		wordPos, bitPos := TickBitmapPosition_Helper(compress)
 
 		// mask := (1 << bitPos) - 1 + (1 << bitPos)
 		shift1LeftByBitPos := new(u256.Uint).Lsh(u256.NewUint(1), uint(bitPos))
-		println("-----------------")
-		println("shift1LeftByBitPos", shift1LeftByBitPos.ToString())
+
 		mask := shift1LeftByBitPos.Clone()
 		mask = new(u256.Uint).Sub(mask, u256.NewUint(1))
-		println("mask1", mask.ToString())
+
 		mask = new(u256.Uint).Add(mask, shift1LeftByBitPos.Clone())
-		println("mask2", mask.ToString())
+
 		tickBitmaps[wordPos] = tickBitmaps[wordPos].NilToZero()
-		println("tickBitmaps[wordPos]", tickBitmaps[wordPos].ToString())
+
 		masked := new(u256.Uint).And(tickBitmaps[wordPos], mask)
-		println("BitMathMostSignificantBit(masked)", plp.BitMathMostSignificantBit(masked))
-		println("bitPos", bitPos)
-		println("compress", compress)
 
 		initialized := !(masked.IsZero())
 
@@ -116,7 +114,7 @@ func BitwiseNotForUint256BitmapIndexing_Helper(x *u256.Uint) *u256.Uint {
 
 	// Create a mask with all bits set to 1
 	mask := u256.MustFromDecimal(consts.MAX_UINT256)
-	mask = new(u256.Uint).Sub(mask, u256.NewUint(1))
+	// mask = new(u256.Uint).Sub(mask, u256.NewUint(1))
 
 	// XOR with mask to perform bitwise NOT
 	// result := x ^ mask
