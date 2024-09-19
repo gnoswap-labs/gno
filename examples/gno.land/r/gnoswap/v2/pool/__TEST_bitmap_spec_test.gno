@@ -421,3 +421,13 @@ func TestTickNextInitializedTickWithinOneWordSkipEntire(t *testing.T) {
 		shouldEQ(t, initialized, false)
 	})
 }
+
+func TestTickNextInitializedTickWithinOneWordHalfWayEmptyWord(t *testing.T) {
+	t.Run("halfway through empty word", func(t *testing.T) {
+		BeforeEachTest(t)
+
+		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(900), tickSpacing, true)
+		shouldEQ(t, next, int32(768))
+		shouldEQ(t, initialized, false)
+	})
+}
