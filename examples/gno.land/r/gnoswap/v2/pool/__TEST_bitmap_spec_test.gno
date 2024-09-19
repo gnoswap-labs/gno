@@ -337,14 +337,7 @@ func TestTickLteEqTrue_7(t *testing.T) {
 	})
 }
 
-func TestTickNextInitializedTickWithinOneWord(t *testing.T) {
-	/*
-		it('returns the next words initialized tick if on the right boundary', async () => {
-				const { next, initialized } = await tickBitmap.nextInitializedTickWithinOneWord(255, false);
-				expect_1.expect(next).to.eq(511);
-				expect_1.expect(initialized).to.eq(false);
-		});
-	*/
+func TestTickNextInitializedTickWithinOneWordRight(t *testing.T) {
 	t.Run("returns the next words initialized tick if on the right boundary_255", func(t *testing.T) {
 		BeforeEachTest(t)
 		next, initialized := TickBitmapNextInitializedTickWithInOneWord_Helper(int32(255), tickSpacing, false)
