@@ -1,22 +1,11 @@
 package pool
 
 import (
-	"std"
 	"testing"
-	"time"
-
-	"gno.land/r/gnoswap/v2/gns"
-	"gno.land/r/onbloc/bar"
-	"gno.land/r/onbloc/foo"
 
 	"gno.land/r/gnoswap/v2/consts"
 
-	"gno.land/p/demo/testutils"
-
-	i256 "gno.land/p/gnoswap/int256"
 	u256 "gno.land/p/gnoswap/uint256"
-	pl "gno.land/r/gnoswap/v2/pool"
-	pn "gno.land/r/gnoswap/v2/position"
 
 	"gno.land/r/gnoswap/v2/common"
 )
@@ -34,7 +23,7 @@ func TestTickMathGetSqrtRatioAtTick_1(t *testing.T) {
 
 	tick = tick - 1
 
-	shouldPanic( // abs(tick)을 확인하지 않음
+	shouldPanic(
 		t,
 		func() {
 			common.TickMathGetSqrtRatioAtTick(tick)
@@ -50,7 +39,7 @@ func TestTickMathGetSqrtRatioAtTick_2(t *testing.T) {
 
 	tick = tick + 1
 
-	shouldPanic( // abs(tick)을 확인하지 않음
+	shouldPanic(
 		t,
 		func() {
 			common.TickMathGetSqrtRatioAtTick(tick)
@@ -292,5 +281,63 @@ func TestTickMathGetTickAtSqrtRatio_Result(t *testing.T) {
 		sqrtPriceX96 = u256.MustFromDecimal(ratio)
 		rst = common.TickMathGetTickAtSqrtRatio(sqrtPriceX96)
 		shouldEQ(t, rst, expectedResults[i])
+	}
+}
+
+func TestTickMathGetTickAtSqrtRatio_6(t *testing.T) {
+	ratios := []string{
+		"4295128739", // MIN
+		"79228162514264337593543950336000000",
+		"79228162514264337593543950336000",
+		"9903520314283042199192993792",
+		"28011385487393069959365969113",
+		"56022770974786139918731938227",
+		"79228162514264337593543950336",
+		"112045541949572279837463876454",
+		"224091083899144559674927752909",
+		"633825300114114700748351602688",
+		"79228162514264337593543950",
+		"79228162514264337593543",
+		"1461446703485210103287273052203988822378723970341", // MAX
+	}
+
+	jsResults := []int32{
+		-887272,
+		276324,
+		138162,
+		-41591,
+		-20796,
+		-6932,
+		-1,
+		6931,
+		20795,
+		41590,
+		-138163,
+		-276325,
+		887272,
+	}
+
+	for i, ratio := range ratios {
+		// is at most off by 1
+		jsResult := jsResults[i]
+		result := common.TickMathGetTickAtSqrtRatio(u256.MustFromDecimal(ratio))
+		absDiff := result - jsResult
+		if absDiff < 0 {
+			absDiff = -1 * absDiff
+		}
+		shouldEQ(t, bool(absDiff <= 1), true)
+
+		// ratio is between the tick and tick+1
+		tick := common.TickMathGetTickAtSqrtRatio(u256.MustFromDecimal(ratio))
+		ratioOfTick := common.TickMathGetSqrtRatioAtTick(tick)
+		ratioOfTickPlusOne := common.TickMathGetSqrtRatioAtTick(tick + 1)
+
+		// expect(ratio).to.be.gte(ratioOfTick)
+		isGte := u256.MustFromDecimal(ratio).Cmp(ratioOfTick) >= 0
+		shouldEQ(t, isGte, true)
+
+		// expect(ratio).to.be.lt(ratioOfTickPlusOne)
+		isLt := u256.MustFromDecimal(ratio).Cmp(ratioOfTickPlusOne) < 0
+		shouldEQ(t, isLt, true)
 	}
 }
