@@ -15,9 +15,9 @@ import (
 	"gno.land/r/onbloc/bar"
 	"gno.land/r/onbloc/qux"
 
-	"gno.land/r/demo/wugnot"
 	"gno.land/r/gnoswap/v2/gns"
-	"gno.land/r/onbloc/obl"
+
+	"gno.land/r/demo/wugnot"
 )
 
 func init() {
@@ -82,32 +82,45 @@ func TestStakeAndGetBack(t *testing.T) {
 	//================ Stake GNFT Token =================
 	gnft.TransferFrom(a2u(gsa), a2u(consts.STAKER_ADDR), tid(lpTokenId))
 	StakeToken(lpTokenId)
-	gnft.TransferFrom(a2u(consts.STAKER_ADDR), a2u(gsa), tid(lpTokenId))
 	owner := gnft.OwnerOf(tid(lpTokenId))
-	if a2u(owner) != a2u(gsa) {
+	if owner != consts.STAKER_ADDR {
 		t.Errorf("expected owner to be %s, got %s", a2u(gsa), a2u(owner))
 	}
-	std.TestSkipHeights(1)
 
-	//================ Control GNFT Token Liquidity (Burn) =================
-	pn.DecreaseLiquidity(
-		lpTokenId,
-		100,
-		"0",
-		"0",
-		time.Now().Unix()+1000,
-		false,
+	shouldPanicWithMsg(
+		t,
+		func() {
+			std.TestSetOrigCaller(gsa)
+			std.TestSetRealm(gsaRealm)
+			gnft.TransferFrom(a2u(consts.STAKER_ADDR), a2u(gsa), tid(lpTokenId))
+		},
+		"caller is not token owner or approved",
+	)
+
+	// due to permission fix, unlikely before, decrease liquidity will panic
+	// ================ Control GNFT Token Liquidity (Burn) =================
+	shouldPanic(
+		t,
+		func() {
+			pn.DecreaseLiquidity(
+				lpTokenId,
+				100,
+				"0",
+				"0",
+				time.Now().Unix()+1000,
+				false,
+			)
+		},
 	)
 
 	//================ Collect Reward From Position =================
 	pn.CollectFee(lpTokenId)
 
 	//================ Collect Reward From Staker =================
-	CollectReward(lpTokenId, false)
+	CollectReward(lpTokenId)
 
 	//================ Unstake GNFT Token =================
-	gnft.TransferFrom(a2u(gsa), a2u(consts.STAKER_ADDR), tid(lpTokenId))
-	UnstakeToken(lpTokenId, false)
+	UnstakeToken(lpTokenId)
 }
 
 func TestMintAndStakeAndGetBack(t *testing.T) {
@@ -145,25 +158,29 @@ func TestMintAndStakeAndGetBack(t *testing.T) {
 		"1",             // amount1Min
 		max_timeout,
 	)
-	gnft.TransferFrom(a2u(consts.STAKER_ADDR), a2u(gsa), tid(lpTokenId))
 
-	//================ Control GNFT Token Liquidity (Burn) =================
-	pn.DecreaseLiquidity(
-		lpTokenId,
-		100,
-		"0",
-		"0",
-		time.Now().Unix()+1000,
-		false,
+	// due to permission fix, unlikely before, decrease liquidity will panic
+	// ================ Control GNFT Token Liquidity (Burn) =================
+	shouldPanic(
+		t,
+		func() {
+			pn.DecreaseLiquidity(
+				lpTokenId,
+				100,
+				"0",
+				"0",
+				time.Now().Unix()+1000,
+				false,
+			)
+		},
 	)
 
 	//================ Collect Reward From Position =================
 	pn.CollectFee(lpTokenId)
 
 	//================ Collect Reward From Staker =================
-	CollectReward(lpTokenId, false)
+	CollectReward(lpTokenId)
 
 	//================ Unstake GNFT Token =================
-	gnft.TransferFrom(a2u(gsa), a2u(consts.STAKER_ADDR), tid(lpTokenId))
-	UnstakeToken(lpTokenId, false)
+	UnstakeToken(lpTokenId)
 }
