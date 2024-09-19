@@ -1,26 +1,14 @@
 package pool
 
 import (
-	"std"
 	"testing"
 
-	"gno.land/p/demo/json"
-
-	"gno.land/r/onbloc/bar"
-	"gno.land/r/onbloc/baz"
-	"gno.land/r/onbloc/foo"
-
 	"gno.land/r/gnoswap/v2/consts"
-
-	"gno.land/r/gnoswap/v2/gns"
-
-	"gno.land/p/demo/testutils"
 
 	i256 "gno.land/p/gnoswap/int256"
 	u256 "gno.land/p/gnoswap/uint256"
 
 	plp "gno.land/p/gnoswap/pool"
-	"gno.land/r/gnoswap/v2/common"
 )
 
 var (
@@ -221,6 +209,27 @@ func TestSwapMathComputeSwapStepStr_8(t *testing.T) {
 	shouldEQ(t, feeAmount_String, "1")
 }
 
+func TestSwapMathComputeSwapStepStr_9(t *testing.T) {
+	price = u256.MustFromDecimal("79228162514264337593543950336")
+	priceTarget = u256.MustFromDecimal("792281625142643375935439503360")
+	liquidity = u256.MustFromDecimal("2000000000000000000")
+	amountIn_i256 = i256.MustFromDecimal("-1000000000000000000")
+	fee = 600
+
+	sqrtQ_String, amountIn_String, amountOut_String, feeAmount_String := plp.SwapMathComputeSwapStepStr(price, priceTarget, liquidity, amountIn_i256, fee)
+	sqrtQ := u256.MustFromDecimal(sqrtQ_String)
+	shouldEQ(t, amountIn_String, "2000000000000000000")
+	shouldEQ(t, feeAmount_String, "1200720432259356")
+	shouldEQ(t, amountOut_String, "1000000000000000000")
+
+	priceAfterWholeOutputAmount := SqrtPriceMathGetNextSqrtPriceFromOutput(price, liquidity, u256.MustFromDecimal("1000000000000000000"), false)
+
+	isLt := sqrtQ.Cmp(priceTarget) < 0
+	shouldEQ(t, isLt, true)
+
+	shouldEQ(t, sqrtQ.ToString(), priceAfterWholeOutputAmount.ToString())
+}
+
 //===================For Test =================
 
 func SqrtPriceMathGetNextSqrtPriceFromAmount0RoundingUp(
@@ -301,8 +310,8 @@ func SqrtPriceMathGetNextSqrtPriceFromInput(
 	zeroForOne bool, // bool
 ) *u256.Uint { // uint160
 	if sqrtPX96.IsZero() {
-			panic("sqrtPX96 should not be zero")
-		}
+		panic("sqrtPX96 should not be zero")
+	}
 
 	if liquidity.IsZero() {
 		panic("liquidity should not be zero")
