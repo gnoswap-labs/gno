@@ -186,7 +186,7 @@ func TestMakePositionOutRange(t *testing.T) {
 		gsa.String(),
 	)
 	shouldEQ(t, amount0, "70000")
-	shouldEQ(t, amount1, "-69775")
+	shouldEQ(t, amount1, "-69773")
 	std.TestSkipHeights(1)
 
 	// check if position is in range
