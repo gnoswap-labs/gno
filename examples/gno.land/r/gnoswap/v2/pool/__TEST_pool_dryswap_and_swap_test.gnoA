@@ -37,8 +37,13 @@ func TestDrySwap_ZeroForOneTrue_AmountSpecified_Positive_16000(t *testing.T) {
 	std.TestSetOrigCaller(gsa)
 
 	// no mint == no liquidity => swap will fail
-	_, _, ok := DrySwap(fooPath, barPath, fee500, true, "16000", consts.MIN_PRICE)
-	shouldEQ(t, ok, false)
+	shouldPanicWithMsg(
+		t,
+		func() {
+			DrySwap(fooPath, barPath, fee500, true, "16000", consts.MIN_PRICE)
+		},
+		`liquidity should not be zero`,
+	)
 
 	// not enough mint == swap will fail
 	std.TestSetRealm(gsaRealm)
@@ -48,9 +53,13 @@ func TestDrySwap_ZeroForOneTrue_AmountSpecified_Positive_16000(t *testing.T) {
 
 	std.TestSetRealm(posRealm)
 	std.TestSetOrigCaller(gsa)
-	Mint(fooPath, barPath, fee500, consts.POSITION_ADDR.String(), -tickUpper, -tickLower, "10")
-	_, _, ok = DrySwap(fooPath, barPath, fee500, true, "16000", consts.MIN_PRICE)
-	shouldEQ(t, ok, false)
+	shouldPanicWithMsg(
+		t,
+		func() {
+			DrySwap(fooPath, barPath, fee500, true, "16000", consts.MIN_PRICE)
+		},
+		`liquidity should not be zero`,
+	)
 
 	std.TestSetRealm(gsaRealm)
 
