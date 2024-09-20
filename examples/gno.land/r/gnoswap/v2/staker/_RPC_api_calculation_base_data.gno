@@ -421,24 +421,6 @@ func GetExternalDepositGnsAmount() uint64 {
 	return externalDepositGnsAmount()
 }
 
-func GetStakerGnsBalance() uint64 {
-	en.MintAndDistributeGns()
-
-	return gnsBalance(consts.STAKER_ADDR)
-}
-
-func GetStakerEmissionGnsBalance() uint64 {
-	en.MintAndDistributeGns()
-
-	return gnsBalance(consts.STAKER_ADDR) - externalGnsAmount() - externalDepositGnsAmount()
-}
-
-func GetLastCalculatedBalance() uint64 {
-	en.MintAndDistributeGns()
-
-	return lastCalculatedBalance
-}
-
 func GetLastCalculatedHeight() int64 {
 	en.MintAndDistributeGns()
 
@@ -455,16 +437,6 @@ func GetPositionLiquidity(tokenId uint64) string {
 	en.MintAndDistributeGns()
 
 	return pn.PositionGetPositionLiquidity(tokenId).ToString()
-}
-
-func GetMintedGnsAmount() uint64 {
-	en.MintAndDistributeGns()
-
-	// not a global variable
-	// return mintedGnsAmount
-
-	// formula: stakerGnsBalance - lastCalculatedBalance
-	return gnsBalance(consts.STAKER_ADDR) - GetLastCalculatedBalance()
 }
 
 func GetNumPoolTiers() string {
@@ -519,20 +491,22 @@ func GetNecessary() string {
 	externalGnsBalance := GetExternalGnsAmount()
 	externalDepositGnsAmount := GetExternalDepositGnsAmount()
 
-	gnsBalance := GetStakerGnsBalance()
-
 	numPoolTiers := GetNumPoolTiers()
 	tiersRatio := GetTiersRatio()
+
+	mintedGnsAmount := en.GetAccuDistributedAmountForStaker()
+	mintedGnsAmount += leftFromLast
+
+	lastCalculatedHeight := GetLastCalculatedHeight()
 
 	response := json.ObjectNode("", map[string]*json.Node{
 		"height":                  json.StringNode("height", ufmt.Sprintf("%d", height)),
 		"now":                     json.StringNode("now", ufmt.Sprintf("%d", now)),
 		"blockGenerationInterval": json.StringNode("blockGenerationInterval", ufmt.Sprintf("%d", consts.BLOCK_GENERATION_INTERVAL)),
 		"lastCalculatedHeight":    json.StringNode("lastCalculatedHeight", ufmt.Sprintf("%d", lastCalculatedHeight)),
-		"lastCalculatedBalance":   json.StringNode("lastCalculatedBalance", ufmt.Sprintf("%d", lastCalculatedBalance)),
+		"mintedGnsAmount":         json.StringNode("mintedGnsAmount", ufmt.Sprintf("%d", mintedGnsAmount)),
 		"externalGnsBalance":      json.StringNode("externalGnsBalance", ufmt.Sprintf("%d", externalGnsBalance)),
 		"depositGnsAmount":        json.StringNode("depositGnsAmount", ufmt.Sprintf("%d", externalDepositGnsAmount)),
-		"gnsBalance":              json.StringNode("gnsBalance", ufmt.Sprintf("%d", gnsBalance)),
 		"numPoolTiers":            json.StringNode("numPoolTiers", numPoolTiers),
 		"tiersRatio":              json.StringNode("tiersRatio", tiersRatio),
 		"warmUpPeriods":           json.StringNode("warmUpPeriods", GetWarmUpPeriods()),
@@ -563,7 +537,8 @@ func GetSingleData() string {
 	externalGnsBalance := GetExternalGnsAmount()
 	externalDepositGnsAmount := GetExternalDepositGnsAmount()
 
-	gnsBalance := GetStakerGnsBalance()
+	mintedGnsAmount := en.GetAccuDistributedAmountForStaker()
+	mintedGnsAmount += leftFromLast
 
 	numPoolTiers := GetNumPoolTiers()
 	tiersRatio := GetTiersRatio()
@@ -574,8 +549,7 @@ func GetSingleData() string {
 		//
 		"blockGenerationInterval": json.StringNode("blockGenerationInterval", ufmt.Sprintf("%d", consts.BLOCK_GENERATION_INTERVAL)),
 		"lastCalculatedHeight":    json.StringNode("lastCalculatedHeight", ufmt.Sprintf("%d", lastCalculatedHeight)),
-		"lastCalculatedBalance":   json.StringNode("lastCalculatedBalance", ufmt.Sprintf("%d", lastCalculatedBalance)),
-		"externalGnsBalance":      json.StringNode("externalGnsBalance", ufmt.Sprintf("%d", externalGnsBalance)),
+		"mintedGnsAmount":         json.StringNode("mintedGnsAmount", ufmt.Sprintf("%d", mintedGnsAmount)),
 		"depositGnsAmount":        json.StringNode("depositGnsAmount", ufmt.Sprintf("%d", externalDepositGnsAmount)),
 		"gnsBalance":              json.StringNode("gnsBalance", ufmt.Sprintf("%d", gnsBalance)),
 		"numPoolTiers":            json.StringNode("numPoolTiers", numPoolTiers),

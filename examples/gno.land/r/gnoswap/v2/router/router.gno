@@ -51,6 +51,7 @@ func SwapRoute(
 	}
 
 	en.MintAndDistributeGns()
+	sr.CalculateLiquidity()
 	sr.CalcPoolPosition()
 
 	amountSpecified := i256.MustFromDecimal(_amountSpecified)
@@ -108,6 +109,8 @@ func SwapRoute(
 		"amountOut", amountOut,
 		"amountOutWithoutFee", resultAmountOut.ToString(),
 	)
+
+	sr.CalculateLiquidity() // position's range might change, therefore need to recalculate
 
 	return amountIn, amountOut
 }

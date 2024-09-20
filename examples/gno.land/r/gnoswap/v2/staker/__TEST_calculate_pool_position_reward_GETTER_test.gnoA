@@ -282,20 +282,11 @@ func TestGetStakerEmissionGnsBalance(t *testing.T) {
 	shouldEQ(t, res, uint64(21404110))
 }
 
-func TestGetLastCalculatedBalance(t *testing.T) {
-	res := GetLastCalculatedBalance()
-	shouldEQ(t, res, uint64(10702055))
-}
-
 func TestGetLastCalculatedHeight(t *testing.T) {
 	res := GetLastCalculatedHeight()
 	shouldEQ(t, res, int64(129))
 }
 
-func TestGetMintedGnsAmount(t *testing.T) {
-	res := GetMintedGnsAmount()
-	shouldEQ(t, res, uint64(10702055))
-}
 
 func TestGetNumPoolTiers(t *testing.T) {
 	res := GetNumPoolTiers()

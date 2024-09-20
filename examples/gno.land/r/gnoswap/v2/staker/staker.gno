@@ -45,7 +45,7 @@ const (
 
 	MAX_UNIX_EPOCH_TIME = 253402300799 // 9999-12-31 23:59:59
 
-	MUST_EXISTS_IN_TIER_1 = "gno.land/r/demo/wugnot:gno.land/r/gnoswap/v2/gns:3000"
+	MUST_EXISTS_IN_TIER_1 = "gno.land/r/demo/wugnot:gno.land/r/gnoswap/v2/gns:3000" // XXX: change this string if contract version changes
 )
 
 func init() {
@@ -76,6 +76,7 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 	common.IsHalted()
 
 	en.MintAndDistributeGns()
+	CalculateLiquidity()
 	CalcPoolPosition()
 
 	// check whether tokenId already staked or not
@@ -84,10 +85,11 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 		panic(ufmt.Sprintf("[STAKER] staker.gno__StakeToken() || tokenId(%d) already staked", tokenId))
 	}
 
+	owner := gnft.OwnerOf(tid(tokenId))
 	// if caller is owner
-	callerIsOwner := gnft.OwnerOf(tid(tokenId)) == std.GetOrigCaller()
+	callerIsOwner := owner == std.GetOrigCaller()
 	// stakerIsOwner
-	stakerIsOwner := gnft.OwnerOf(tid(tokenId)) == GetOrigPkgAddr()
+	stakerIsOwner := owner == GetOrigPkgAddr()
 	if !(callerIsOwner || stakerIsOwner) {
 		panic(ufmt.Sprintf("[STAKER] staker.gno__StakeToken() || Neither Caller(%s) or Staker(%s) is not owner of tokenId(%d)", std.GetOrigCaller(), GetOrigPkgAddr(), tokenId))
 	}
@@ -253,6 +255,9 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 				"amount", uint64ToStr(toUser),
 				"unwrapResult", boolToStr(unwrapResult),
 			)
+
+			// debug
+			println("COLLECTED_EXTERNAL_REWARD", tokenId, external.tokenPath, fullAmount, toGive, toUser, incentiveId)
 		}
 	}
 	println("[ END ] CollectReward_EXTERNAL", tokenId)
@@ -323,6 +328,7 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 		"unstakingFee", uint64ToStr(toGive-toUser),
 		"left", uint64ToStr(left),
 	)
+	println("COLLECTED_INTERNAL_REWARD", tokenId, consts.GNS_PATH, fullAmount, toGive, toUser)
 
 	// DEBUG
 	println(" > fullAmount", fullAmount)
@@ -352,6 +358,7 @@ func UnstakeToken(tokenId uint64, unwrapResult bool) (string, string, string) { 
 	common.IsHalted()
 
 	en.MintAndDistributeGns()
+	CalculateLiquidity()
 	CalcPoolPosition()
 
 	// unstaked status
@@ -561,7 +568,7 @@ func CreateExternalIncentive(
 // EndExternalIncentive ends the external incentive and refunds the remaining reward
 //
 // Parameters:
-//   - _refundee	     (string): The address of the refundee
+//   - _refundee	    (string): The address of the refundee
 //   - targetPoolPath (string): The path of the pool associated with the incentive
 //   - rewardToken    (string): The token path of the reward token
 //   - startTimestamp (int64): The start timestamp of the incentive
