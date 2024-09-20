@@ -89,7 +89,7 @@ func sqrtPriceMathGetNextSqrtPriceFromInput(
 	}
 
 	if liquidity.IsZero() {
-		panic("liquidity should not be zero")
+		panic("pool_sqrtPriceMathGetNextSqrtPriceFromInput_liquidity should not be zero")
 	}
 
 	if zeroForOne {
@@ -105,7 +105,7 @@ func sqrtPriceMathGetNextSqrtPriceFromOutput(
 	zeroForOne bool, // bool
 ) *u256.Uint { // uint160
 	if liquidity.IsZero() {
-		panic("liquidity should not be zero")
+		panic("pool_sqrtPriceMathGetNextSqrtPriceFromOutput_liquidity should not be zero")
 	}
 
 	if zeroForOne {
@@ -148,7 +148,7 @@ func sqrtPriceMathGetAmount1DeltaHelper(
 	roundUp bool,
 ) *u256.Uint { // uint256
 	if liquidity.IsZero() {
-		panic("liquidity should not be zero")
+		panic("pool_sqrtPriceMathGetAmount1DeltaHelper_liquidity should not be zero")
 	}
 
 	if sqrtRatioAX96.Gt(sqrtRatioBX96) {
