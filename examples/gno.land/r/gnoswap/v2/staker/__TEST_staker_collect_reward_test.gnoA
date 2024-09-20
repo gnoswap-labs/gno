@@ -32,8 +32,6 @@ func init() {
 	poolTiers["gno.land/r/onbloc/bar:gno.land/r/onbloc/qux:500"] = InternalTier{
 		tier:           1,
 		startTimestamp: time.Now().Unix(),
-		startHeight:    std.GetHeight(),
-		updateHeight:   std.GetHeight(),
 	}
 }
 
@@ -68,7 +66,7 @@ func TestPositionMint01(t *testing.T) {
 
 	std.TestSkipHeights(1)
 
-	shouldEQ(t, lpTokenId, 1)
+	shouldEQ(t, lpTokenId, uint64(1))
 	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), std.GetOrigCaller()) // gsa
 	shouldEQ(t, amount0, "368")
 	shouldEQ(t, amount1, "1000")
@@ -101,7 +99,7 @@ func TestPositionMint02(t *testing.T) {
 
 	std.TestSkipHeights(1)
 
-	shouldEQ(t, lpTokenId, 2)
+	shouldEQ(t, lpTokenId, uint64(2))
 	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), std.GetOrigCaller()) // gsa
 	shouldEQ(t, amount0, "3979")
 	shouldEQ(t, amount1, "5000")
@@ -116,6 +114,8 @@ func TestCreateExternalIncentive(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
 	obl.Approve(a2u(consts.STAKER_ADDR), uint64(10_000_000_000))
 	std.TestSkipHeights(1)
+
+	gns.Approve(a2u(consts.STAKER_ADDR), depositGnsAmount)
 
 	// obl token isnt't allowed for external reward, so panic
 	shouldPanicWithMsg(
@@ -134,6 +134,7 @@ func TestCreateExternalIncentive(t *testing.T) {
 
 	// allow obl to be used as external reward token
 	AddToken(oblPath)
+	gns.Approve(a2u(consts.STAKER_ADDR), depositGnsAmount)
 
 	CreateExternalIncentive(
 		"gno.land/r/onbloc/bar:gno.land/r/onbloc/qux:500", // targetPoolPath
@@ -175,17 +176,17 @@ func TestCollectReward01_External(t *testing.T) {
 	// before claim
 	oblOld := obl.BalanceOf(a2u(gsa))
 	std.TestSkipHeights(1)
-	shouldEQ(t, oblOld, 99999000000000)
+	shouldEQ(t, oblOld, uint64(99999000000000))
 
 	std.TestSetRealm(stkRealm)
 	std.TestSetOrigCaller(gsa)
-	CollectReward(1) // GNFT tokenId
+	CollectReward(1, true) // GNFT tokenId
 
 	std.TestSkipHeights(1) // not enough time to claim external reward
 
 	oblNew := obl.BalanceOf(a2u(gsa))
 	std.TestSkipHeights(1)
-	shouldEQ(t, oblNew, 99999000000000)
+	shouldEQ(t, oblNew, uint64(99999000000000))
 }
 
 func TestUnstakeToken01(t *testing.T) {
@@ -193,33 +194,33 @@ func TestUnstakeToken01(t *testing.T) {
 	std.TestSkipHeights(900) //  enough time to claim external reward
 
 	// check reward balance before unstake
-	shouldEQ(t, gns.BalanceOf(a2u(gsa)), 100000002318056) // internal
-	shouldEQ(t, obl.BalanceOf(a2u(gsa)), 99999000000000)  // external
+	shouldEQ(t, gns.BalanceOf(a2u(gsa)), uint64(99999002318056)) // internal
+	shouldEQ(t, obl.BalanceOf(a2u(gsa)), uint64(99999000000000)) // external
 
 	response := ApiGetRewardsByLpTokenId(1)
 	shouldEQ(t, response, `{"stat":{"height":1041,"timestamp":1234569726},"response":[{"lpTokenId":1,"address":"g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c","rewards":[{"incentiveType":"INTERNAL","incentiveId":"","targetPoolPath":"gno.land/r/onbloc/bar:gno.land/r/onbloc/qux:500","rewardTokenPath":"gno.land/r/gnoswap/v2/gns","rewardTokenAmount":445623695,"stakeTimestamp":1234567914,"stakeHeight":135,"incentiveStart":1234567914},{"incentiveType":"EXTERNAL","incentiveId":"ZzFsbXZycnJyNGVyMnVzODRoMjczMnNydTc2Yzl6bDJudmtuaGE4Yzpnbm8ubGFuZC9yL29uYmxvYy9iYXI6Z25vLmxhbmQvci9vbmJsb2MvcXV4OjUwMDpnbm8ubGFuZC9yL29uYmxvYy9vYmw6MTIzNDU2OTYwMDoxMjQyMzQ1NjAwOjEzMw==","targetPoolPath":"gno.land/r/onbloc/bar:gno.land/r/onbloc/qux:500","rewardTokenPath":"gno.land/r/onbloc/obl","rewardTokenAmount":743,"stakeTimestamp":1234567914,"stakeHeight":135,"incentiveStart":1234569600}]}]}`)
 
-	UnstakeToken(1) // GNFT tokenId
+	UnstakeToken(1, false) // GNFT tokenId
 	std.TestSkipHeights(1)
 
 	shouldEQ(t, gnft.OwnerOf(tid(1)), gsa)
 
 	// check reward balance after unstake
-	shouldEQ(t, gns.BalanceOf(a2u(gsa)), 100000443485515)
-	shouldEQ(t, obl.BalanceOf(a2u(gsa)), 99999000000736)
+	shouldEQ(t, gns.BalanceOf(a2u(gsa)), uint64(99999443485515))
+	shouldEQ(t, obl.BalanceOf(a2u(gsa)), uint64(99999000000736))
 }
 
 func TestUnstakeToken02(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
-	UnstakeToken(2) // GNFT tokenId
+	UnstakeToken(2, true) // GNFT tokenId
 
 	std.TestSkipHeights(1)
 
 	shouldEQ(t, gnft.OwnerOf(tid(2)), gsa)
 
 	// check reward
-	shouldEQ(t, gns.BalanceOf(a2u(gsa)), 100002894600370) // internal
-	shouldEQ(t, obl.BalanceOf(a2u(gsa)), 99999000004890)  // external
+	shouldEQ(t, gns.BalanceOf(a2u(gsa)), uint64(100001894600370)) // internal
+	shouldEQ(t, obl.BalanceOf(a2u(gsa)), uint64(99999000004890))  // external
 }
 
 func TestEndExternalIncentive(t *testing.T) {

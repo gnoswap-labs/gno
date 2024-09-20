@@ -9,8 +9,6 @@ import (
 type InternalTier struct {
 	tier           uint64
 	startTimestamp int64
-	startHeight    int64
-	updateHeight   int64
 }
 
 type ExternalIncentive struct {
@@ -23,6 +21,7 @@ type ExternalIncentive struct {
 	rewardPerBlockX96 *u256.Uint
 	refundee          std.Address
 	createdHeight     int64
+	depositGnsAmount  uint64
 }
 
 type Deposit struct {

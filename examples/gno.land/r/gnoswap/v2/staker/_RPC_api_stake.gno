@@ -67,6 +67,14 @@ type ResponseApiGetStakes struct {
 
 func ApiGetRewards() string {
 	en.MintAndDistributeGns()
+
+	println()
+	println()
+	a := GetNecessary()
+	println(a)
+	println()
+	println()
+
 	CalcPoolPosition()
 
 	lpTokenRewards := []LpTokenReward{}
@@ -75,7 +83,12 @@ func ApiGetRewards() string {
 		rewards := []Reward{}
 
 		// get internal gns reward
-		_, internalGNS := rewardMathComputeInternalRewardAmount(tokenId)
+		internalWarmUpAmount, exist := positionsInternalWarmUpAmount[tokenId]
+		if !exist {
+			continue
+		}
+		internalGNS := internalWarmUpAmount.give30 + internalWarmUpAmount.give50 + internalWarmUpAmount.give70 + internalWarmUpAmount.full100
+
 		if internalGNS > 0 {
 			rewards = append(rewards, Reward{
 				IncentiveType:     "INTERNAL",
@@ -99,7 +112,11 @@ func ApiGetRewards() string {
 				continue
 			}
 
-			_, externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId)
+			externalWarmUpAmount, exist := positionsExternalWarmUpAmount[tokenId][incentiveId]
+			if !exist {
+				continue
+			}
+			externalReward := externalWarmUpAmount.give30 + externalWarmUpAmount.give50 + externalWarmUpAmount.give70 + externalWarmUpAmount.full100
 			if externalReward >= 0 {
 				rewards = append(rewards, Reward{
 					IncentiveType:     "EXTERNAL",
@@ -178,7 +195,12 @@ func ApiGetRewardsByLpTokenId(targetLpTokenId uint64) string {
 		rewards := []Reward{}
 
 		// get internal gns reward
-		_, internalGNS := rewardMathComputeInternalRewardAmount(tokenId)
+		internalWarmUpAmount, exist := positionsInternalWarmUpAmount[tokenId]
+		if !exist {
+			continue
+		}
+		internalGNS := internalWarmUpAmount.give30 + internalWarmUpAmount.give50 + internalWarmUpAmount.give70 + internalWarmUpAmount.full100
+
 		if internalGNS > 0 {
 			rewards = append(rewards, Reward{
 				IncentiveType:     "INTERNAL",
@@ -202,7 +224,11 @@ func ApiGetRewardsByLpTokenId(targetLpTokenId uint64) string {
 				continue
 			}
 
-			_, externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId)
+			externalWarmUpAmount, exist := positionsExternalWarmUpAmount[tokenId][incentiveId]
+			if !exist {
+				continue
+			}
+			externalReward := externalWarmUpAmount.give30 + externalWarmUpAmount.give50 + externalWarmUpAmount.give70 + externalWarmUpAmount.full100
 			if externalReward > 0 {
 				rewards = append(rewards, Reward{
 					IncentiveType:     "EXTERNAL",
@@ -279,7 +305,12 @@ func ApiGetRewardsByAddress(targetAddress string) string {
 		rewards := []Reward{}
 
 		// get internal gns reward
-		_, internalGNS := rewardMathComputeInternalRewardAmount(tokenId)
+		internalWarmUpAmount, exist := positionsInternalWarmUpAmount[tokenId]
+		if !exist {
+			continue
+		}
+		internalGNS := internalWarmUpAmount.give30 + internalWarmUpAmount.give50 + internalWarmUpAmount.give70 + internalWarmUpAmount.full100
+
 		if internalGNS > 0 {
 			rewards = append(rewards, Reward{
 				IncentiveType:     "INTERNAL",
@@ -303,7 +334,11 @@ func ApiGetRewardsByAddress(targetAddress string) string {
 				continue
 			}
 
-			_, externalReward := rewardMathComputeExternalRewardAmount(tokenId, incentiveId)
+			externalWarmUpAmount, exist := positionsExternalWarmUpAmount[tokenId][incentiveId]
+			if !exist {
+				continue
+			}
+			externalReward := externalWarmUpAmount.give30 + externalWarmUpAmount.give50 + externalWarmUpAmount.give70 + externalWarmUpAmount.full100
 			rewards = append(rewards, Reward{
 				IncentiveType:     "EXTERNAL",
 				IncentiveId:       incentiveId,
@@ -374,6 +409,7 @@ func ApiGetStakes() string {
 			Owner:          deposit.owner,
 			NumberOfStakes: deposit.numberOfStakes,
 			StakeTimestamp: deposit.stakeTimestamp,
+			StakeHeight:    deposit.stakeHeight,
 			TargetPoolPath: deposit.targetPoolPath,
 		})
 	}
@@ -402,6 +438,7 @@ func ApiGetStakes() string {
 			"owner":          json.StringNode("owner", stake.Owner.String()),
 			"numberOfStakes": json.NumberNode("numberOfStakes", float64(stake.NumberOfStakes)),
 			"stakeTimestamp": json.NumberNode("stakeTimestamp", float64(stake.StakeTimestamp)),
+			"stakeHeight":    json.NumberNode("stakeHeight", float64(stake.StakeHeight)),
 			"targetPoolPath": json.StringNode("targetPoolPath", stake.TargetPoolPath),
 		})
 		responses.AppendArray(_stakeNode)
@@ -436,6 +473,7 @@ func ApiGetStakesByLpTokenId(targetLpTokenId uint64) string {
 			Owner:          deposit.owner,
 			NumberOfStakes: deposit.numberOfStakes,
 			StakeTimestamp: deposit.stakeTimestamp,
+			StakeHeight:    deposit.stakeHeight,
 			TargetPoolPath: deposit.targetPoolPath,
 		})
 	}
@@ -464,6 +502,7 @@ func ApiGetStakesByLpTokenId(targetLpTokenId uint64) string {
 			"owner":          json.StringNode("owner", stake.Owner.String()),
 			"numberOfStakes": json.NumberNode("numberOfStakes", float64(stake.NumberOfStakes)),
 			"stakeTimestamp": json.NumberNode("stakeTimestamp", float64(stake.StakeTimestamp)),
+			"stakeHeight":    json.NumberNode("stakeHeight", float64(stake.StakeHeight)),
 			"targetPoolPath": json.StringNode("targetPoolPath", stake.TargetPoolPath),
 		})
 		responses.AppendArray(_stakeNode)
@@ -498,6 +537,7 @@ func ApiGetStakesByAddress(targetAddress string) string {
 			Owner:          deposit.owner,
 			NumberOfStakes: deposit.numberOfStakes,
 			StakeTimestamp: deposit.stakeTimestamp,
+			StakeHeight:    deposit.stakeHeight,
 			TargetPoolPath: deposit.targetPoolPath,
 		})
 	}
@@ -526,6 +566,7 @@ func ApiGetStakesByAddress(targetAddress string) string {
 			"owner":          json.StringNode("owner", stake.Owner.String()),
 			"numberOfStakes": json.NumberNode("numberOfStakes", float64(stake.NumberOfStakes)),
 			"stakeTimestamp": json.NumberNode("stakeTimestamp", float64(stake.StakeTimestamp)),
+			"stakeHeight":    json.NumberNode("stakeHeight", float64(stake.StakeHeight)),
 			"targetPoolPath": json.StringNode("targetPoolPath", stake.TargetPoolPath),
 		})
 		responses.AppendArray(_stakeNode)

@@ -9,6 +9,8 @@ import (
 	"gno.land/r/demo/users"
 
 	pusers "gno.land/p/demo/users"
+
+	"gno.land/r/gnoswap/v2/common"
 )
 
 var (
@@ -68,6 +70,8 @@ func GetApproved(tid grc721.TokenID) (std.Address, bool) {
 // Setters
 
 func Approve(user pusers.AddressOrName, tid grc721.TokenID) {
+	common.IsHalted()
+
 	err := gnft.Approve(users.Resolve(user), tid)
 	if err != nil {
 		panic(err.Error())
@@ -75,6 +79,8 @@ func Approve(user pusers.AddressOrName, tid grc721.TokenID) {
 }
 
 func SetApprovalForAll(user pusers.AddressOrName, approved bool) {
+	common.IsHalted()
+
 	err := gnft.SetApprovalForAll(users.Resolve(user), approved)
 	if err != nil {
 		panic(err.Error())
@@ -82,6 +88,8 @@ func SetApprovalForAll(user pusers.AddressOrName, approved bool) {
 }
 
 func TransferFrom(from, to pusers.AddressOrName, tid grc721.TokenID) {
+	common.IsHalted()
+
 	err := gnft.TransferFrom(users.Resolve(from), users.Resolve(to), tid)
 	if err != nil {
 		panic(err.Error())
@@ -90,6 +98,8 @@ func TransferFrom(from, to pusers.AddressOrName, tid grc721.TokenID) {
 
 // Admin
 func Mint(to pusers.AddressOrName, tid grc721.TokenID) grc721.TokenID {
+	common.IsHalted()
+
 	caller := std.PrevRealm().Addr()
 	assertIsAdmin(caller)
 
@@ -103,6 +113,8 @@ func Mint(to pusers.AddressOrName, tid grc721.TokenID) grc721.TokenID {
 }
 
 func Burn(tid grc721.TokenID) {
+	common.IsHalted()
+
 	caller := std.PrevRealm().Addr()
 	assertIsAdmin(caller)
 	err := gnft.Burn(tid)
@@ -112,6 +124,8 @@ func Burn(tid grc721.TokenID) {
 }
 
 func SetAdmin(newAdmin pusers.AddressOrName) {
+	common.IsHalted()
+
 	caller := std.PrevRealm().Addr()
 	assertIsAdmin(caller)
 	admin = users.Resolve(newAdmin)
@@ -145,30 +159,32 @@ func Exists(tid grc721.TokenID) bool {
 }
 
 func SetTokenURI(tid grc721.TokenID) {
+	common.IsHalted()
+
 	// rand instance
-	seed1 := uint64(time.Now().Unix() + int64(TotalSupply()))
-	seed2 := uint64(time.Now().UnixNano() + int64(TotalSupply()))
+	seed1 := uint64(time.Now().Unix())
+	seed2 := uint64(time.Now().UnixNano())
 	pcg := rand.NewPCG(seed1, seed2)
 	r := rand.New(pcg)
 
 	tokenURI := genImageURI(r)
 
-	ok, err := gnft.SetTokenURI(tid, grc721.TokenURI(tokenURI))
-	if !ok {
-		panic(err.Error())
+	ok, _ := gnft.SetTokenURI(tid, grc721.TokenURI(tokenURI))
+	if ok {
+		std.Emit(
+			"GNOSWAP",
+			"m_origCaller", std.GetOrigCaller().String(),
+			"m_prevRealm", std.PrevRealm().PkgPath(),
+			"p_tokenId", string(tid),
+			"tokenURI", tokenURI,
+			"func", "SetTokenURI",
+		)
 	}
-
-	std.Emit(
-		"GNOSWAP",
-		"m_origCaller", std.GetOrigCaller().String(),
-		"m_prevRealm", std.PrevRealm().PkgPath(),
-		"p_tokenId", string(tid),
-		"tokenURI", tokenURI,
-		"SetTokenURI", "SetTokenURI",
-	)
 }
 
 func SetTokenURILast() {
+	common.IsHalted()
+
 	origCaller := std.GetOrigCaller()
 
 	// rand instance
@@ -181,19 +197,17 @@ func SetTokenURILast() {
 	for _, tid := range usersNFT {
 		tokenURI := genImageURI(r)
 
-		ok, err := gnft.SetTokenURI(tid, grc721.TokenURI(tokenURI))
-		if !ok {
-			panic(err.Error())
+		ok, _ := gnft.SetTokenURI(tid, grc721.TokenURI(tokenURI))
+		if ok {
+			std.Emit(
+				"GNOSWAP",
+				"m_origCaller", std.GetOrigCaller().String(),
+				"m_prevRealm", std.PrevRealm().PkgPath(),
+				"p_tokenId", string(tid),
+				"tokenURI", tokenURI,
+				"func", "SetTokenURILast",
+			)
 		}
-
-		std.Emit(
-			"GNOSWAP",
-			"m_origCaller", std.GetOrigCaller().String(),
-			"m_prevRealm", std.PrevRealm().PkgPath(),
-			"p_tokenId", string(tid),
-			"tokenURI", tokenURI,
-			"SetTokenURILast", "SetTokenURILast",
-		)
 	}
 
 	delete(userMinted, origCaller)

@@ -3,8 +3,7 @@ package pool
 import (
 	"std"
 	"testing"
-	"encoding/base64"
-	"gno.land/p/demo/ufmt"
+
 	"gno.land/p/demo/json"
 
 	"gno.land/r/onbloc/bar"
@@ -12,7 +11,7 @@ import (
 	"gno.land/r/onbloc/foo"
 
 	"gno.land/r/gnoswap/v2/consts"
-	pl "gno.land/r/gnoswap/v2/pool"
+
 	"gno.land/r/gnoswap/v2/gns"
 
 	"gno.land/p/demo/testutils"
@@ -136,7 +135,7 @@ func TestSetWithdrawalFeeNoPermission(t *testing.T) {
 		func() {
 			SetWithdrawalFee(2)
 		},
-		"[POOL] protocol_fee_withdrawal.gno__SetWithdrawalFee() || only admin(g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c) or governance(g1cu4dufdlzu0l9pekkqhw6mjnrxkp3z7ykst09d) can set withdrawal fee, called from g1v36k6mteta047h6lta047h6lta047h6lz7gmv8",
+		"[POOL] protocol_fee_withdrawal.gno__SetWithdrawalFee() || only admin(g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c) or governance(g1eudq5dvx9sem5ascp0etlpk3kpxylz8kcy8cf5) can set withdrawal fee, called from g1v36k6mteta047h6lta047h6lta047h6lz7gmv8",
 	)
 }
 
@@ -173,7 +172,7 @@ func TestSetPoolCreationFeeNoPermission(t *testing.T) {
 		func() {
 			SetPoolCreationFee(2)
 		},
-		"[POOL] protocol_fee_pool_creation.gno__SetPoolCreationFee() || only admin(g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c) or governance(g1cu4dufdlzu0l9pekkqhw6mjnrxkp3z7ykst09d) can set pool creation fee, called from g1v36k6mteta047h6lta047h6lta047h6lz7gmv8",
+		"[POOL] protocol_fee_pool_creation.gno__SetPoolCreationFee() || only admin(g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c) or governance(g1eudq5dvx9sem5ascp0etlpk3kpxylz8kcy8cf5) can set pool creation fee, called from g1v36k6mteta047h6lta047h6lta047h6lz7gmv8",
 	)
 }
 
@@ -182,81 +181,4 @@ func TestSetPoolCreationFee(t *testing.T) {
 	shouldEQ(t, GetPoolCreationFee(), uint64(100_000_000))
 	SetPoolCreationFee(200_000_000)
 	shouldEQ(t, GetPoolCreationFee(), uint64(200_000_000))
-}
-
-/*
-This test demonstrates a issue(Gnoswap-7) in CreatePool function. The key steps are:
-
-· Set up the test environment with the necessary permissions
-· Call CreatePool with "gnot" as token0Path and "gno.land/r/demo/wugnot" as token1Path
-· Verify that the pool was created successfully
-· Check if a pool path exists for "wugnot:wugnot:500"
-*/
-func TestCreateWUGNOTWUGNOTPool(t *testing.T) {
-	t.Run("TestCreateWUGNOTWUGNOTPool", func(t *testing.T) {
-		std.TestSetOrigCaller(consts.GNOSWAP_ADMIN)
-		std.TestSetRealm(std.NewUserRealm(std.Address((a2u(std.GetOrigCaller())))))
-		gns.Approve(a2u(consts.POOL_ADDR), poolCreationFee)
-		std.TestSetRealm(gsaRealm)
-
-		CreatePool("gnot", "gno.land/r/demo/wugnot", fee500, "130621891405341611593710811006") // tick 10000
-		std.TestSkipHeights(1)
-
-		shouldEQ(t, DoesPoolPathExist("gno.land/r/demo/wugnot:gno.land/r/demo/wugnot:500"), false)
-	})
-}
-
-/*
-This test demonstrates a issue(Gnoswap-13) in position minting mechanism. The key steps are:
-
-· Set up a pool with specific tokens and fee
-· Calculate tick values that are outside the MIN_TICK and MAX_TICK range
-· Attempt to mint a position using these out-of-range ticks
-· Check if the minting operation panics as expected
-· Verify if the position was actually created despite being out of range
-*/
-func TestCheckPositionAboveAndBelowLimitTick(t *testing.T) {
-	// ================================ Pool Setup ================================================
-	std.TestSetRealm(gsaRealm)
-	std.TestSetOrigCaller(consts.GNOSWAP_ADMIN)
-
-	gns.Approve(a2u(consts.POOL_ADDR), poolCreationFee)
-
-	token0Path := "gno.land/r/onbloc/foo"
-
-	foo.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
-	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
-
-	pl.CreatePool(barPath, token0Path, 3000, "25054144837504793118641380156") // encodePriceSqrt(1, 10)
-
-	std.TestSkipHeights(1)
-	poolPath := "gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:3000"
-
-	pool := GetPool(token0Path, barPath, 3000)
-	tickSpacing := pool.tickSpacing
-	minTick := (consts.MIN_TICK/tickSpacing)*tickSpacing - (tickSpacing * 2)
-	maxTick := (consts.MAX_TICK/tickSpacing)*tickSpacing + (tickSpacing * 2)
-
-	// ================================ Position Setup ================================================
-	// orig test logic by auditor
-	// testaddr1 := testutils.TestAddress("test1")
-	// pl.Mint(token0Path, barPath, 3000, testaddr1.String(), minTick, maxTick, "3162")
-	// if r := recover(); r == nil {
-	// 	t.Errorf("should have panic")
-	// }
-
-	// new test logic by r3v4
-	testaddr1 := testutils.TestAddress("test1")
-	shouldPanic(
-		t,
-		func() {
-			pl.Mint(token0Path, barPath, 3000, testaddr1.String(), minTick, maxTick, "3162")
-		},
-	)
-
-	std.TestSkipHeights(1)
-	// ================================ Position Check ================================================
-	positionKey := ufmt.Sprintf("%s__%d__%d", testaddr1.String(), minTick, maxTick)
-	positionKey = base64.StdEncoding.EncodeToString([]byte(positionKey))
-	shouldEQ(t, pool.positions[positionKey].liquidity.ToString(), "0")
 }

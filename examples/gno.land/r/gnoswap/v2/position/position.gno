@@ -47,6 +47,7 @@ func Mint(
 	deadline int64,
 	mintTo string,
 ) (uint64, string, string, string) { // tokenId, liquidity, amount0, amount1 ( *u256.Uint x3 )
+	common.IsHalted()
 	en.MintAndDistributeGns()
 
 	if common.GetLimitCaller() {
@@ -210,6 +211,7 @@ func IncreaseLiquidity(
 	_amount1Min string, // uint256
 	deadline int64,
 ) (uint64, string, string, string, string) { // tokenId, liquidity, amount0, amount1, poolPath
+	common.IsHalted()
 	en.MintAndDistributeGns()
 
 	amount0Desired := u256.MustFromDecimal(_amount0Desired)
@@ -339,6 +341,7 @@ func DecreaseLiquidity(
 	deadline int64,
 	unwrapResult bool,
 ) (uint64, string, string, string, string, string, string) { // tokenId, liquidity, fee0, fee1, amount0, amount1, poolPath
+	common.IsHalted()
 	en.MintAndDistributeGns()
 
 	isNormalRange := liquidityRatio >= 1 && liquidityRatio <= 100
@@ -372,6 +375,7 @@ func DecreaseLiquidity(
 		"fee1", fee1.ToString(),
 		"amount0", amount0.ToString(),
 		"amount1", amount1.ToString(),
+		"unwrapResult", boolToStr(unwrapResult),
 	)
 
 	return tokenId, liquidity.ToString(), fee0.ToString(), fee1.ToString(), amount0.ToString(), amount1.ToString(), poolPath
@@ -396,7 +400,7 @@ func decreaseLiquidity(params DecreaseLiquidityParams) (uint64, *u256.Uint, *u25
 	checkDeadline(params.deadline)
 
 	// BEFORE DECREASE LIQUIDITY, COLLECT FEE FIRST
-	_, fee0Str, fee1Str, _ := CollectFee(params.tokenId)
+	_, fee0Str, fee1Str, _, _, _ := CollectFee(params.tokenId, params.unwrapResult)
 	fee0 := u256.MustFromDecimal(fee0Str)
 	fee1 := u256.MustFromDecimal(fee1Str)
 
@@ -487,39 +491,6 @@ func decreaseLiquidity(params DecreaseLiquidityParams) (uint64, *u256.Uint, *u25
 	return params.tokenId, liquidityToRemove, fee0, fee1, amount0, amount1, position.poolKey
 }
 
-func verifyTokenIdAndOwnership(tokenId uint64) {
-	if !exists(tokenId) {
-		panic(ufmt.Sprintf("[POSITION] position.gno__decreaseLiquidity() || tokenId(%d) doesn't exist", tokenId))
-	}
-	owner := gnft.OwnerOf(tid(tokenId))
-	if owner != std.GetOrigCaller() {
-		panic(ufmt.Sprintf("[POSITION] position.gno__decreaseLiquidity() || only owner can decrease liquidity__owner(%s) == std.GetOrigCaller(%s)", owner, std.GetOrigCaller()))
-	}
-}
-
-func calculateLiquidityToRemove(positionLiquidity *u256.Uint, liquidityRatio uint64) *u256.Uint {
-	liquidityToRemove := new(u256.Uint).Mul(positionLiquidity, u256.NewUint(liquidityRatio))
-	liquidityToRemove = new(u256.Uint).Div(liquidityToRemove, u256.NewUint(100))
-	if positionLiquidity.Lt(liquidityToRemove) || liquidityRatio == 100 {
-		return positionLiquidity
-	}
-	return liquidityToRemove
-}
-
-func verifyBurnedAmounts(burnedAmount0, burnedAmount1, amount0Min, amount1Min *u256.Uint) {
-	if !(burnedAmount0.Gte(amount0Min) && burnedAmount1.Gte(amount1Min)) {
-		panic(ufmt.Sprintf("[POSITION] position.gno__decreaseLiquidity() || burnedAmount0(%s) >= amount0Min(%s) && burnedAmount1(%s) >= amount1Min(%s)", burnedAmount0.ToString(), amount0Min.ToString(), burnedAmount1.ToString(), amount1Min.ToString()))
-	}
-}
-
-func handleUnwrap(pToken0, pToken1 string, unwrapResult bool, userOldWugnotBalance uint64) {
-	if (pToken0 == consts.WRAPPED_WUGNOT || pToken1 == consts.WRAPPED_WUGNOT) && unwrapResult {
-		userNewWugnotBalance := wugnot.BalanceOf(a2u(std.GetOrigCaller()))
-		leftOver := userNewWugnotBalance - userOldWugnotBalance
-		unwrap(leftOver)
-	}
-}
-
 // Repositiomn adjusts the position of an existing liquidity token
 // by changing its price range and liquidity amount.
 func Reposition(
@@ -531,6 +502,7 @@ func Reposition(
 	_amount0Min string, // *u256.Uint
 	_amount1Min string, // *u256.Uint
 ) (uint64, string, int32, int32, string, string) { // tokenId, liquidity, tickLower, tickUpper, amount0, amount1
+	common.IsHalted()
 	en.MintAndDistributeGns()
 
 	// verify tokenId exists
@@ -596,6 +568,12 @@ func Reposition(
 	position.liquidity = liquidity
 	position.feeGrowthInside0LastX128 = feeGrowthInside0LastX128
 	position.feeGrowthInside1LastX128 = feeGrowthInside1LastX128
+	// OBS: do not reset feeGrowthInside1LastX128 and feeGrowthInside1LastX128 to zero
+	// if so, ( decrease 100% -> reposition )
+	// > at this point, that position will have unclaimedFee which isn't intended
+	// position.feeGrowthInside0LastX128 = u256.Zero()
+	// position.feeGrowthInside1LastX128 = u256.Zero()
+
 	position.tokensOwed0 = u256.Zero()
 	position.tokensOwed1 = u256.Zero()
 	position.burned = false
@@ -626,7 +604,8 @@ func Reposition(
 // Panics:
 //   - position doesn't exist
 //   - caller is not owner or approved
-func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, afterFee0, afterFee1, poolPath
+func CollectFee(tokenId uint64, unwrapResult bool) (uint64, string, string, string, string, string) { // tokenId, afterFee0, afterFee1, poolPath, origFee0, origFee1
+	common.IsHalted()
 	en.MintAndDistributeGns()
 
 	// verify tokenId
@@ -662,14 +641,18 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, a
 
 	tokensOwed0 := position.tokensOwed0
 	tokensOwed1 := position.tokensOwed1
+
 	{
 		diff := new(u256.Uint).Sub(feeGrowthInside0LastX128, position.feeGrowthInside0LastX128)
 		mulDiv := u256.MulDiv(diff, position.liquidity, u256.MustFromDecimal(consts.Q128))
+
 		tokensOwed0 = new(u256.Uint).Add(tokensOwed0, mulDiv)
 	}
+
 	{
 		diff := new(u256.Uint).Sub(feeGrowthInside1LastX128, position.feeGrowthInside1LastX128)
 		mulDiv := u256.MulDiv(diff, position.liquidity, u256.MustFromDecimal(consts.Q128))
+
 		tokensOwed1 = new(u256.Uint).Add(tokensOwed1, mulDiv)
 	}
 
@@ -701,6 +684,17 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, a
 	// handle withdrawal fee
 	withoutFee0, withoutFee1 := pl.HandleWithdrawalFee(tokenId, token0, amount0, token1, amount1, position.poolKey)
 
+	// UNWRAP
+	pToken0, pToken1, _ := poolKeyDivide(position.poolKey)
+	if (pToken0 == consts.WUGNOT_PATH || pToken1 == consts.WUGNOT_PATH) && unwrapResult {
+		userNewWugnot := wugnot.BalanceOf(a2u(std.GetOrigCaller()))
+		unwrapAmount := userNewWugnot - userWugnot
+
+		if unwrapAmount > 0 {
+			unwrap(unwrapAmount)
+		}
+	}
+
 	std.Emit(
 		"GNOSWAP",
 		"m_callType", callType(),
@@ -710,20 +704,10 @@ func CollectFee(tokenId uint64) (uint64, string, string, string) { // tokenId, a
 		"fee0", withoutFee0,
 		"fee1", withoutFee1,
 		"poolPath", position.poolKey,
+		"unwrapResult", boolToStr(unwrapResult),
 	)
 
-	// UNWRAP
-	pToken0, pToken1, _ := poolKeyDivide(position.poolKey)
-	if pToken0 == consts.WUGNOT_PATH || pToken1 == consts.WUGNOT_PATH {
-		userNewWugnot := wugnot.BalanceOf(a2u(std.GetOrigCaller()))
-		unwrapAmount := userNewWugnot - userWugnot
-
-		if unwrapAmount > 0 {
-			unwrap(unwrapAmount)
-		}
-	}
-
-	return tokenId, withoutFee0, withoutFee1, position.poolKey
+	return tokenId, withoutFee0, withoutFee1, position.poolKey, amount0, amount1
 }
 
 func calculateTokensOwed(
@@ -772,5 +756,38 @@ func burnPosition(tokenId uint64) {
 func isAuthorizedForToken(tokenId uint64) {
 	if !(isApprovedOrOwner(std.PrevRealm().Addr(), tokenId)) {
 		panic(ufmt.Sprintf("[POSITION] position.gno__isAuthorizedForToken() || caller(%s) is not approved or owner of tokenId(%d)", std.PrevRealm().Addr(), tokenId))
+	}
+}
+
+func verifyTokenIdAndOwnership(tokenId uint64) {
+	if !exists(tokenId) {
+		panic(ufmt.Sprintf("[POSITION] position.gno__verifyTokenIdAndOwnership() || tokenId(%d) doesn't exist", tokenId))
+	}
+	owner := gnft.OwnerOf(tid(tokenId))
+	if owner != std.GetOrigCaller() {
+		panic(ufmt.Sprintf("[POSITION] position.gno__verifyTokenIdAndOwnership() || only owner can decrease liquidity__owner(%s) == std.GetOrigCaller(%s)", owner, std.GetOrigCaller()))
+	}
+}
+
+func calculateLiquidityToRemove(positionLiquidity *u256.Uint, liquidityRatio uint64) *u256.Uint {
+	liquidityToRemove := new(u256.Uint).Mul(positionLiquidity, u256.NewUint(liquidityRatio))
+	liquidityToRemove = new(u256.Uint).Div(liquidityToRemove, u256.NewUint(100))
+	if positionLiquidity.Lt(liquidityToRemove) || liquidityRatio == 100 {
+		return positionLiquidity
+	}
+	return liquidityToRemove
+}
+
+func verifyBurnedAmounts(burnedAmount0, burnedAmount1, amount0Min, amount1Min *u256.Uint) {
+	if !(burnedAmount0.Gte(amount0Min) && burnedAmount1.Gte(amount1Min)) {
+		panic(ufmt.Sprintf("[POSITION] position.gno__verifyBurnedAmounts() || burnedAmount0(%s) >= amount0Min(%s) && burnedAmount1(%s) >= amount1Min(%s)", burnedAmount0.ToString(), amount0Min.ToString(), burnedAmount1.ToString(), amount1Min.ToString()))
+	}
+}
+
+func handleUnwrap(pToken0, pToken1 string, unwrapResult bool, userOldWugnotBalance uint64) {
+	if (pToken0 == consts.WRAPPED_WUGNOT || pToken1 == consts.WRAPPED_WUGNOT) && unwrapResult {
+		userNewWugnotBalance := wugnot.BalanceOf(a2u(std.GetOrigCaller()))
+		leftOver := userNewWugnotBalance - userOldWugnotBalance
+		unwrap(leftOver)
 	}
 }

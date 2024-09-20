@@ -16,6 +16,7 @@ import (
 	"gno.land/r/demo/wugnot"
 
 	en "gno.land/r/gnoswap/v2/emission"
+	sr "gno.land/r/gnoswap/v2/staker"
 )
 
 // SwapRoute swaps the input token to the output token and returns the result amount
@@ -39,8 +40,10 @@ func SwapRoute(
 	quoteArr string, // []int
 	_tokenAmountLimit string, // uint256
 ) (string, string) { // tokneIn, tokenOut
+	common.IsHalted()
+
 	if swapType != "EXACT_IN" && swapType != "EXACT_OUT" {
-		panic("[ROUTER] Unknown swapType")
+		panic("[ROUTER] router.gno__SwapRoute() || Unknown swapType")
 	}
 
 	if common.GetLimitCaller() && std.PrevRealm().PkgPath() != "" {
@@ -48,6 +51,7 @@ func SwapRoute(
 	}
 
 	en.MintAndDistributeGns()
+	sr.CalcPoolPosition()
 
 	amountSpecified := i256.MustFromDecimal(_amountSpecified)
 	tokenAmountLimit := u256.MustFromDecimal(_tokenAmountLimit)
@@ -57,11 +61,37 @@ func SwapRoute(
 
 	validateInput(amountSpecified, swapType, routes, quotes)
 
-	userOldWugnotBalance, _ := handleGNOT(inputToken, outputToken, _amountSpecified)
+	if swapType == "EXACT_OUT" {
+		amountSpecified = i256.Zero().Neg(amountSpecified)
+	}
+
+	var userBeforeWugnotBalance uint64
+	var userWrappedWugnot uint64
+	if inputToken == consts.GNOT || outputToken == consts.GNOT {
+		userBeforeWugnotBalance = wugnot.BalanceOf(a2u(std.GetOrigCaller()))
+
+		sent := std.GetOrigSend()
+		ugnotSentByUser := uint64(sent.AmountOf("ugnot"))
+		if ugnotSentByUser > 0 {
+			wrap(ugnotSentByUser)
+		}
+
+		userWrappedWugnot = ugnotSentByUser
+	}
 
 	resultAmountIn, resultAmountOut := processRoutes(routes, quotes, amountSpecified, swapType)
 
-	amountIn, amountOut := finalizeSwap(inputToken, outputToken, resultAmountIn, resultAmountOut, swapType, tokenAmountLimit, userOldWugnotBalance)
+	amountIn, amountOut := finalizeSwap(
+		inputToken,
+		outputToken,
+		resultAmountIn,
+		resultAmountOut,
+		swapType,
+		tokenAmountLimit,
+		userBeforeWugnotBalance,
+		userWrappedWugnot,
+		amountSpecified.Abs(), // if swap type is EXACT_OUT, compare with this value to see user can actually receive this amount
+	)
 
 	std.Emit(
 		"GNOSWAP",
@@ -104,26 +134,6 @@ func validateInput(amountSpecified *i256.Int, swapType string, routes, quotes []
 	if quotesSum != 100 {
 		panic("[ROUTER] Quote sum is not 100")
 	}
-}
-
-func handleGNOT(inputToken, outputToken, _amountSpecified string) (uint64, uint64) {
-	userOldWugnotBalance := uint64(0)
-	if inputToken == consts.GNOT {
-		sent := std.GetOrigSend()
-		ugnotSentByUser := uint64(sent.AmountOf("ugnot"))
-
-		i256AmountSpecified := i256.MustFromDecimal(_amountSpecified)
-		u64AmountSpecified := i256AmountSpecified.Uint64()
-		if ugnotSentByUser != u64AmountSpecified {
-			panic("[ROUTER] Invalid amount of ugnot sent by user")
-		}
-
-		wrap(ugnotSentByUser)
-		userOldWugnotBalance = wugnot.BalanceOf(a2u(std.GetOrigCaller()))
-	} else if outputToken == consts.GNOT {
-		userOldWugnotBalance = wugnot.BalanceOf(a2u(std.GetOrigCaller()))
-	}
-	return userOldWugnotBalance, 0
 }
 
 func processRoutes(routes, quotes []string, amountSpecified *i256.Int, swapType string) (*u256.Uint, *u256.Uint) {
@@ -170,24 +180,39 @@ func handleSingleSwap(route string, amountSpecified *i256.Int, isDry bool) (*u25
 	return singleSwap(singleParams)
 }
 
-func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOut *u256.Uint, swapType string, tokenAmountLimit *u256.Uint, userOldWugnotBalance uint64) (string, string) {
+func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOut *u256.Uint, swapType string, tokenAmountLimit *u256.Uint, userBeforeWugnotBalance, userWrappedWugnot uint64, amountSpecified *u256.Uint) (string, string) {
+	if swapType == "EXACT_OUT" && resultAmountOut.Lt(amountSpecified) {
+		panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too few received for user (expected minimum: %s, actual: %s, swapType: %s)", amountSpecified.ToString(), resultAmountOut.ToString(), swapType))
+	}
+
 	afterFee := handleSwapFee(outputToken, resultAmountOut, false)
 
 	userNewWugnotBalance := wugnot.BalanceOf(a2u(std.GetOrigCaller()))
 	if inputToken == consts.GNOT {
-		unwrap(userNewWugnotBalance)
+		totalBefore := userBeforeWugnotBalance + userWrappedWugnot
+		spend := totalBefore - userNewWugnotBalance
+
+		if spend > userWrappedWugnot {
+			// used existing wugnot
+			panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too much wugnot spent (wrapped: %d, spend: %d)", userWrappedWugnot, spend))
+		}
+
+		// unwrap left amount
+		toUnwrap := userWrappedWugnot - spend
+		unwrap(toUnwrap)
+
 	} else if outputToken == consts.GNOT {
-		userRecvWugnot := uint64(userNewWugnotBalance - userOldWugnotBalance)
+		userRecvWugnot := uint64(userNewWugnotBalance - userBeforeWugnotBalance - userWrappedWugnot)
 		unwrap(userRecvWugnot)
 	}
 
 	if swapType == "EXACT_IN" {
 		if !tokenAmountLimit.Lte(afterFee) {
-			panic(ufmt.Sprintf("[ROUTER] Too few received for user (expected minimum: %s, actual: %s)", tokenAmountLimit.ToString(), afterFee.ToString()))
+			panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too few received for user (expected minimum: %s, actual: %s, swapType: %s)", tokenAmountLimit.ToString(), afterFee.ToString(), swapType))
 		}
 	} else {
 		if !resultAmountIn.Lte(tokenAmountLimit) {
-			panic(ufmt.Sprintf("[ROUTER] Too much spent for user (expected maximum: %s, actual: %s)", tokenAmountLimit.ToString(), resultAmountIn.ToString()))
+			panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too much spent for user (expected maximum: %s, actual: %s, swapType: %s)", tokenAmountLimit.ToString(), resultAmountIn.ToString(), swapType))
 		}
 	}
 

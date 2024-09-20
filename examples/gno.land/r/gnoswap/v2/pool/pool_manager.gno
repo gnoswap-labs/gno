@@ -9,6 +9,7 @@ import (
 
 	"gno.land/r/gnoswap/v2/common"
 	"gno.land/r/gnoswap/v2/consts"
+
 	en "gno.land/r/gnoswap/v2/emission"
 
 	"gno.land/r/gnoswap/v2/gns"
@@ -49,33 +50,25 @@ func CreatePool(
 	fee uint32,
 	_sqrtPriceX96 string, // uint256
 ) {
+	common.IsHalted()
 	en.MintAndDistributeGns()
 
 	if token0Path == token1Path {
 		panic(ufmt.Sprintf("[POOl] pool_manager.gno__CreatePool() || expected token0Path(%s) != token1Path(%s)", token0Path, token1Path))
 	}
 
-	// wrap first
 	if token0Path == consts.GNOT {
 		token0Path = consts.WRAPPED_WUGNOT
 	} else if token1Path == consts.GNOT {
 		token1Path = consts.WRAPPED_WUGNOT
 	}
 
-	// then check if token0Path == token1Path
-	if token0Path == token1Path {
-		panic(ufmt.Sprintf("[POOl] pool_manager.gno__CreatePool() || expected token0Path(%s) != token1Path(%s)", token0Path, token1Path))
-	}
-
 	sqrtPriceX96 := u256.MustFromDecimal(_sqrtPriceX96)
 
 	if token1Path < token0Path {
-		panic(ufmt.Sprintf("[POOl] pool_manager.gno__CreatePool() || expected token0Path(%s) < token1Path(%s)", token0Path, token1Path))
-
-		// or we can adjust
-		// token0Path, token1Path = token1Path, token0Path
-		// tick := -(common.TickMathGetTickAtSqrtRatio(sqrtPriceX96))
-		// sqrtPriceX96 = common.TickMathGetSqrtRatioAtTick(tick)
+		token0Path, token1Path = token1Path, token0Path
+		tick := -(common.TickMathGetTickAtSqrtRatio(sqrtPriceX96))
+		sqrtPriceX96 = common.TickMathGetSqrtRatioAtTick(tick)
 	}
 
 	// check tickSpacing for fee
