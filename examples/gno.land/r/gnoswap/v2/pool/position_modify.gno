@@ -45,6 +45,7 @@ func (pool *Pool) modifyPosition(params ModifyPositionParams) (PositionInfo, *i2
 				common.TickMathGetSqrtRatioAtTick(params.tickUpper),
 				params.liquidityDelta,
 			)
+			println("_amount0Str", _amount0Str)
 			amount0 = i256.MustFromDecimal(_amount0Str)
 
 			_amount1Str := plp.SqrtPriceMathGetAmount1DeltaStr(
@@ -52,6 +53,7 @@ func (pool *Pool) modifyPosition(params ModifyPositionParams) (PositionInfo, *i2
 				pool.slot0.sqrtPriceX96,
 				params.liquidityDelta,
 			)
+			println("_amount1Str", _amount1Str)
 			amount1 = i256.MustFromDecimal(_amount1Str)
 
 			pool.liquidity = liquidityMathAddDelta(liquidityBefore, params.liquidityDelta)
