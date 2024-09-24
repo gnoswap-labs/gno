@@ -9,24 +9,6 @@ import (
 	u256 "gno.land/p/gnoswap/uint256"
 )
 
-// var (
-// 	got            *u256.Uint
-// 	sqrtPX96       *u256.Uint
-// 	liquidity      *u256.Uint
-// 	liquidity_i256 *i256.Int
-// 	amountIn       *u256.Uint
-// 	amountOut      *u256.Uint
-// 	zeroForOne     bool
-// 	roundUp        bool
-// 	expected       *u256.Uint
-// 	Q128           *u256.Uint
-// 	MaxUint256     *u256.Uint
-// 	MaxUint256Sub1 *u256.Uint
-// 	rst            bool
-// 	sqrtRatioAX96  *u256.Uint
-// 	sqrtRatioBX96  *u256.Uint
-// )
-
 func TestGetNextSqrtPriceFromInput_1(t *testing.T) {
 	// fails if price is zero
 	sqrtPX96 := u256.Zero()
