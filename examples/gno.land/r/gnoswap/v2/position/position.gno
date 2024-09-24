@@ -52,7 +52,7 @@ func Mint(
 
 	if common.GetLimitCaller() {
 		// only user or staker can call
-		isUserCalled := std.IsOriginCall()
+		isUserCalled := std.PrevRealm().PkgPath() == ""
 		isStakerCalled := std.PrevRealm().Addr() == consts.STAKER_ADDR
 		if !(isUserCalled || isStakerCalled) {
 			panic("POSITION] position.gno__Mint() || only user or staker can call")
