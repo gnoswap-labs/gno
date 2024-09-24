@@ -73,7 +73,7 @@ func TestMulDiv_5(t *testing.T) {
 	}
 }
 
-func TestMulDiv_6(t *testing.T) { //@Louis - Failed
+func TestMulDiv_6(t *testing.T) {
 	denom := NewUint(100)
 
 	// accurate without phantom overflow #1
