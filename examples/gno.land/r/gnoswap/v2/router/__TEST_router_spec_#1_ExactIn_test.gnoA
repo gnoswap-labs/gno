@@ -74,7 +74,6 @@ func TestPositionMint(t *testing.T) {
 	// shouldEQ(t, poolTick, int32(0)) // got -1, expected 0
 }
 
-// XXX SHOULD PASS, BUT FAIL
 func TestExactInputSinglePool(t *testing.T) {
 	// 0 -> 1
 	pool := pl.GetPool(barPath, bazPath, FEE_MEDIUM)
