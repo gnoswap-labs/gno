@@ -14,7 +14,6 @@ const (
 )
 
 func TestTickMathGetSqrtRatioAtTick_1(t *testing.T) {
-	z
 	// throws for too low
 
 	var tick int32 = MIN_TICK
