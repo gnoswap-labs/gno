@@ -21,7 +21,7 @@ func TestCreatePool(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
 
 	gns.Approve(a2u(consts.POOL_ADDR), pl.GetPoolCreationFee())
-	pl.CreatePool(barPath, bazPath, fee500, common.TickMathGetSqrtRatioAtTick(-10000).ToString())
+	pl.CreatePool(barPath, bazPath, fee500, common.TickMathGetSqrtRatioAtTick(10000).ToString())
 
 	jsonStr := pl.ApiGetPools()
 	root, err := json.Unmarshal([]byte(jsonStr))

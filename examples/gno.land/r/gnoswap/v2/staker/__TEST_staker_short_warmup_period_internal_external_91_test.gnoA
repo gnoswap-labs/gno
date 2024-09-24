@@ -175,6 +175,7 @@ func TestCheckCurrentReward(t *testing.T) {
 }
 
 func TestMakePositionOutRange(t *testing.T) {
+	std.TestSetRealm(rouRealm)
 	amount0, amount1 := pl.Swap(
 		barPath,
 		quxPath,
@@ -207,6 +208,7 @@ func TestCheckReward(t *testing.T) {
 }
 
 func TestMakePositionInRange(t *testing.T) {
+	std.TestSetRealm(rouRealm)
 	amount0, amount1 := pl.Swap(
 		barPath,
 		quxPath,
