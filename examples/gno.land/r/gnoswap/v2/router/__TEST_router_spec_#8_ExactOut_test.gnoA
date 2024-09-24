@@ -44,7 +44,7 @@ func TestPositionMint(t *testing.T) {
 	pn.Mint(bazPath, fooPath, uint32(3000), int32(-887220), int32(887220), "1000000", "1000000", "0", "0", max_timeout, gsa.String())
 }
 
-func TestSwapRouteBarfooExactOut(t *testing.T) {
+func TestSwapRouteFooBarExactOut(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
 
 	bar.Approve(a2u(consts.ROUTER_ADDR), 1000000)
