@@ -30,6 +30,12 @@ func init() {
 
 func TotalSupply() uint64 { return token.TotalSupply() }
 
+func CirculatingSupply() uint64 {
+	// supply for minted by governance
+	// DOES NOT INCLUDE launchpad minted xgns
+	return token.TotalSupply() - token.BalanceOf(std.Address(consts.LAUNCHPAD_ADDR))
+}
+
 func BalanceOf(owner pusers.AddressOrName) uint64 {
 	ownerAddr := users.Resolve(owner)
 	return token.BalanceOf(ownerAddr)
@@ -58,10 +64,10 @@ func Render(path string) string {
 func Mint(to pusers.AddressOrName, amount uint64) {
 	common.IsHalted()
 
-	// only gov staker contract can call Mint
+	// only (gov staker) or (launchpad) contract can call Mint
 	caller := std.PrevRealm().Addr()
-	if caller != consts.GOV_STAKER_ADDR {
-		panic("only gov staker contract can call Mint")
+	if caller != consts.GOV_STAKER_ADDR && caller != consts.LAUNCHPAD_ADDR {
+		panic("only (gov staker) or (launchpad) contract can call Mint")
 	}
 
 	checkErr(banker.Mint(users.Resolve(to), amount))
