@@ -30,10 +30,13 @@ func init() {
 
 func TotalSupply() uint64 { return token.TotalSupply() }
 
-func CirculatingSupply() uint64 {
-	// supply for minted by governance
-	// DOES NOT INCLUDE launchpad minted xgns
-	return token.TotalSupply() - token.BalanceOf(std.Address(consts.LAUNCHPAD_ADDR))
+func VotingSupply() uint64 {
+	total := token.TotalSupply() // this is entire amount of xGNS minted
+
+	// this is amount of xGNS held by launchpad
+	// this xGNS doesn't participate in voting
+	launchpad := token.BalanceOf(consts.LAUNCHPAD_ADDR)
+	return total - launchpad
 }
 
 func BalanceOf(owner pusers.AddressOrName) uint64 {
