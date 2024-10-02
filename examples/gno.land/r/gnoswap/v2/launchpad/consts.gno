@@ -6,14 +6,14 @@ const (
 
 // pool tier
 const (
-	TIMESTAMP_180DAYS = 180 * 24 * 60 * 60
-	TIMESTAMP_90DAYS  = 90 * 24 * 60 * 60
-	TIMESTAMP_30DAYS  = 30 * 24 * 60 * 60
+	TIMESTAMP_180DAYS = uint64(180 * 24 * 60 * 60)
+	TIMESTAMP_90DAYS  = uint64(90 * 24 * 60 * 60)
+	TIMESTAMP_30DAYS  = uint64(30 * 24 * 60 * 60)
 )
 
 // claim wait duration for pool tier
 const (
-	TIMESTAMP_14DAYS = 14 * 24 * 60 * 60 // for 180 days
-	TIMESTAMP_7DAYS  = 7 * 24 * 60 * 60  // for 90 days
-	TIMESTAMP_3DAYS  = 3 * 24 * 60 * 60  // for 30 days
+	TIMESTAMP_14DAYS = uint64(14 * 24 * 60 * 60) // for 180 days
+	TIMESTAMP_7DAYS  = uint64(7 * 24 * 60 * 60)  // for 90 days
+	TIMESTAMP_3DAYS  = uint64(3 * 24 * 60 * 60)  // for 30 days
 )

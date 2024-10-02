@@ -2,10 +2,12 @@ package launchpad
 
 import (
 	"std"
+
+	u256 "gno.land/p/gnoswap/uint256"
 )
 
 type Project struct {
-	id            string // 'tokenPath_createdHeight'
+	id            string // 'tokenPath:createdHeight'
 	tokenPath     string
 	depositAmount uint64
 	recipient     std.Address // string
@@ -15,8 +17,8 @@ type Project struct {
 	tier30Ratio uint64
 	tier30      Tier
 
-	tier60      Tier
-	tier60Ratio uint64
+	tier90      Tier
+	tier90Ratio uint64
 
 	tier180      Tier
 	tier180Ratio uint64
@@ -28,21 +30,27 @@ type Project struct {
 	startTime uint64
 
 	// statistics
-	totalDepositAmount uint64
-	totalParticipant   uint64
+	// won't be decreased
+	totalDepositAmount   uint64
+	totalParticipant     uint64
+	totalCollectedAmount uint64
 }
 
 type Tier struct {
-	id                string // 'tokenPath_createdHeight_duration'
-	claimWaitDuration uint64
-	tierAmount        uint64
+	id                     string // '{projectId}:duration' // duartion == 30, 90, 180
+	collectWaitDuration    uint64
+	tierAmount             uint64
+	tierAmountPerSecondX96 *u256.Uint
 
 	// start height/time is same as the project
 	// endHeight uint64 // XXX: estimate ??
 	endTime uint64
 
+	// actual data
+	// unlikely projects' totalDepositAmount or totalParticipant
+	// below data will be decreased
 	depositAmount uint64
-	participant   uint64 // auto increment
+	participant   uint64
 }
 
 type Condition struct {
@@ -51,10 +59,22 @@ type Condition struct {
 }
 
 type Deposit struct {
-	proejctId     string      //
-	tier          string      // instead of tierId
-	depositor     std.Address // string
-	amount        uint64
+	id string // 'projectId:tier:depositor:height'
+
+	projectId string      //
+	tier      string      // 30, 60, 180 // instead of tierId
+	depositor std.Address // string
+	amount    uint64
+
 	depositHeight uint64
 	depositAt     uint64 // timestamp
+
+	// deposit
+	depositCollectHeight uint64
+	depositCollectAt     uint64 // timestamp
+
+	// reward collect
+	rewardAmount        uint64
+	rewardCollectHeight uint64
+	rewardCollectAt     uint64 // timestamp
 }

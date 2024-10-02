@@ -219,3 +219,10 @@ func prevRealm() string {
 func a2u(addr std.Address) pusers.AddressOrName {
 	return pusers.AddressOrName(addr)
 }
+
+func minU64(x, y uint64) uint64 {
+	if x < y {
+		return x
+	}
+	return y
+}

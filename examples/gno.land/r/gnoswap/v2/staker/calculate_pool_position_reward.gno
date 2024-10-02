@@ -291,7 +291,7 @@ func CalcPoolPosition() {
 	println("[ START ] CALC__deposits ITERATION")
 
 	// 전체 포지션 반복
-	for tokenId, deposit := range deposits {
+	for tokenId, deposit := range deposits { // 찐 대상만
 		poolPath := deposit.targetPoolPath
 		poolCurrentBlockAmount := poolCurrentBlockGns[poolPath]
 		println(" > CALC__tokenId:", tokenId)
