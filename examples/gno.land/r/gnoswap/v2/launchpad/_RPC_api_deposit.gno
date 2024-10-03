@@ -2,42 +2,34 @@ package launchpad
 
 import (
 	"std"
-	"time"
-
-	"gno.land/p/demo/json"
-	"gno.land/p/demo/ufmt"
 )
 
-func ApiGetProjectStatisticsByProjectId(projectId string) string {
-	project, exist := projects[projectId]
-	if !exist {
-		return ""
+func ApiGetClaimableDepositByAddress(address string) uint64 {
+	addr := std.Address(address)
+	if !addr.IsValid() {
+		return 0
 	}
 
-	totalDepositAmount := project.totalDepositAmount
-	actualDepositAmount := project.actualDepositAmount
+	gnsToUser := uint64(0)
+	for _, depositId := range depositsByUser[address] {
+		deposit := deposits[depositId]
 
-	totalParticipant := project.totalParticipant
-	actualParticipant := project.actualParticipant
+		project, exist := projects[deposit.projectId]
+		if !exist {
+			continue
+		}
 
-	totalCollectedAmount := project.totalCollectedAmount
+		tier := getTier(project, deposit.tier)
+		if checkTierActive(project, tier) {
+			continue
+		}
 
-	projectObj := metaNode()
-	projectObj.AppendObject("totalDepositAmount", json.StringNode("totalDepositAmount", ufmt.Sprintf("%d", totalDepositAmount)))
-	projectObj.AppendObject("actualDepositAmount", json.StringNode("actualDepositAmount", ufmt.Sprintf("%d", actualDepositAmount)))
-	projectObj.AppendObject("totalParticipant", json.StringNode("totalParticipant", ufmt.Sprintf("%d", totalParticipant)))
-	projectObj.AppendObject("actualParticipant", json.StringNode("actualParticipant", ufmt.Sprintf("%d", actualParticipant)))
-	projectObj.AppendObject("totalCollectedAmount", json.StringNode("totalCollectedAmount", ufmt.Sprintf("%d", totalCollectedAmount)))
+		if deposit.depositCollectHeight != 0 {
+			continue
+		}
 
-	return marshal(projectObj)
-}
+		gnsToUser += deposit.amount // not reward amount, but deposit amount
+	}
 
-func metaNode() *json.Node {
-	height := std.GetHeight()
-	now := time.Now().Unix()
-
-	metaObj := json.ObjectNode("", nil)
-	metaObj.AppendObject("height", json.StringNode("height", ufmt.Sprintf("%d", height)))
-	metaObj.AppendObject("now", json.StringNode("now", ufmt.Sprintf("%d", now)))
-	return metaObj
+	return gnsToUser
 }
