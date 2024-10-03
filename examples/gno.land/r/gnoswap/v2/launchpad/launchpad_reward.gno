@@ -4,6 +4,8 @@ import (
 	"std"
 	"time"
 
+	"gno.land/p/demo/ufmt"
+
 	u256 "gno.land/p/gnoswap/uint256"
 
 	gs "gno.land/r/gnoswap/v2/gov/staker"
@@ -74,6 +76,14 @@ func CollectReward() {
 				println("token:", projectToken, "reward:", deposit.rewardAmount)
 				toUser[projectToken] += deposit.rewardAmount
 			}
+
+			std.Emit(
+				"CollectReward",
+				"m_origCaller", origCaller(),
+				"m_prevRealm", prevRealm(),
+				"depositId", depositId,
+				"amount", ufmt.Sprintf("%d", deposit.rewardAmount),
+			)
 		}
 
 		// update project
@@ -93,8 +103,6 @@ func CollectReward() {
 		// println("amount:", amount)
 		transferByRegisterCall(tokenPath, std.PrevRealm().Addr(), amount)
 	}
-
-	// XXX: emit event
 }
 
 // CollectRewardByProjectId collects reward from entire deposit of certain project by caller
@@ -157,6 +165,15 @@ func CollectRewardByProjectId(projectId string) uint64 {
 				println("token:", project.tokenPath, "reward:", deposit.rewardAmount)
 				toUser += deposit.rewardAmount
 			}
+
+			std.Emit(
+				"CollectRewardByProjectId",
+				"m_origCaller", origCaller(),
+				"m_prevRealm", prevRealm(),
+				"p_projectId", projectId,
+				"depositId", depositId,
+				"amount", ufmt.Sprintf("%d", deposit.rewardAmount),
+			)
 		}
 
 		// update project
@@ -245,6 +262,15 @@ func CollectRewardByProjectTier(tierId string) uint64 {
 					toUser += deposit.rewardAmount
 				}
 			}
+
+			std.Emit(
+				"CollectRewardByProjectTier",
+				"m_origCaller", origCaller(),
+				"m_prevRealm", prevRealm(),
+				"p_tierId", tierId,
+				"depositId", depositId,
+				"amount", ufmt.Sprintf("%d", deposit.rewardAmount),
+			)
 		}
 
 		// update project
@@ -316,6 +342,14 @@ func CollectRewardByDepositId(depositId string) uint64 {
 
 			toUser += deposit.rewardAmount
 		}
+
+		std.Emit(
+			"CollectRewardByDepositId",
+			"m_origCaller", origCaller(),
+			"m_prevRealm", prevRealm(),
+			"p_depositId", depositId,
+			"amount", ufmt.Sprintf("%d", deposit.rewardAmount),
+		)
 
 		// update project
 		project.totalCollectedAmount += deposit.rewardAmount
