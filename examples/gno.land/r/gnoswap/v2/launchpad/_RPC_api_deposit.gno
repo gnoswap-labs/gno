@@ -2,34 +2,42 @@ package launchpad
 
 import (
 	"std"
+	"time"
+
+	"gno.land/p/demo/json"
+	"gno.land/p/demo/ufmt"
 )
 
-func ApiGetClaimableDepositByAddress(address string) uint64 {
-	addr := std.Address(address)
-	if !addr.IsValid() {
-		return 0
+func ApiGetProjectStatisticsByProjectId(projectId string) string {
+	project, exist := projects[projectId]
+	if !exist {
+		return ""
 	}
 
-	gnsToUser := uint64(0)
-	for _, depositId := range depositsByUser[address] {
-		deposit := deposits[depositId]
+	totalDepositAmount := project.totalDepositAmount
+	actualDepositAmount := project.actualDepositAmount
 
-		project, exist := projects[deposit.projectId]
-		if !exist {
-			continue
-		}
+	totalParticipant := project.totalParticipant
+	actualParticipant := project.actualParticipant
 
-		tier := getTier(project, deposit.tier)
-		if checkTierActive(project, tier) {
-			continue
-		}
+	totalCollectedAmount := project.totalCollectedAmount
 
-		if deposit.depositCollectHeight != 0 {
-			continue
-		}
+	projectObj := metaNode()
+	projectObj.AppendObject("totalDepositAmount", json.StringNode("totalDepositAmount", ufmt.Sprintf("%d", totalDepositAmount)))
+	projectObj.AppendObject("actualDepositAmount", json.StringNode("actualDepositAmount", ufmt.Sprintf("%d", actualDepositAmount)))
+	projectObj.AppendObject("totalParticipant", json.StringNode("totalParticipant", ufmt.Sprintf("%d", totalParticipant)))
+	projectObj.AppendObject("actualParticipant", json.StringNode("actualParticipant", ufmt.Sprintf("%d", actualParticipant)))
+	projectObj.AppendObject("totalCollectedAmount", json.StringNode("totalCollectedAmount", ufmt.Sprintf("%d", totalCollectedAmount)))
 
-		gnsToUser += deposit.amount // not reward amount, but deposit amount
-	}
+	return marshal(projectObj)
+}
 
-	return gnsToUser
+func metaNode() *json.Node {
+	height := std.GetHeight()
+	now := time.Now().Unix()
+
+	metaObj := json.ObjectNode("", nil)
+	metaObj.AppendObject("height", json.StringNode("height", ufmt.Sprintf("%d", height)))
+	metaObj.AppendObject("now", json.StringNode("now", ufmt.Sprintf("%d", now)))
+	return metaObj
 }
