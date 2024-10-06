@@ -29,6 +29,9 @@ func b64Encode(data string) string {
 }
 
 func origCaller() string {
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	// TODO :
+	// - Check if PrevRealm().Addr() is the same as GetOrigCaller()
 	return std.GetOrigCaller().String()
 }
 

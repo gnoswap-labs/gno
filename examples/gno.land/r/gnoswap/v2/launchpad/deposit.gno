@@ -61,8 +61,11 @@ func DepositGns(
 	calculateDepositReward()
 
 	// gns will be locked in `launchpad` contract
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	// TODO :
+	// 1. Need to check if PrevRealm().Addr() is same with GetOrigCaller
 	gns.TransferFrom(
-		a2u(std.GetOrigCaller()),
+		a2u(std.PrevRealm().Addr()),
 		a2u(std.Address(consts.LAUNCHPAD_ADDR)),
 		amount,
 	)
@@ -87,7 +90,8 @@ func DepositGns(
 	projects[projectId] = project
 
 	// deposit History
-	depositor := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	depositor := std.PrevRealm().Addr()
 	depositorStr := depositor.String()
 	depositId := projectId + ":" + tierStr + ":" + depositorStr + ":" + ufmt.Sprintf("%d", std.GetHeight())
 	depositToHistory := Deposit{
@@ -137,7 +141,8 @@ func DepositGns(
 func CollectDepositGns() uint64 {
 	calculateDepositReward() // uncomment this line if L#176 `CollectReward` is removed
 
-	caller := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 	callerStr := caller.String()
 	userDeposits := depositsByUser[callerStr]
 
@@ -225,7 +230,8 @@ func checkDepositConditions(project Project) {
 			continue
 		} else {
 			// check balance
-			balance := balanceOfByRegisterCall(condition.tokenPath, std.GetOrigCaller())
+			// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+			balance := balanceOfByRegisterCall(condition.tokenPath, std.PrevRealm().Addr())
 			if balance < condition.minAmount {
 				panic(ufmt.Sprintf("insufficient balance(%d) for token(%s)", balance, condition.tokenPath))
 			}

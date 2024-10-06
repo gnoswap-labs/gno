@@ -50,6 +50,10 @@ func HandleWithdrawalFee(
 	feeAmount1 := new(u256.Uint).Mul(amount1, u256.NewUint(withdrawalFee))
 	feeAmount1 = new(u256.Uint).Div(feeAmount1, u256.NewUint(10000))
 
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	// TODO :
+	// 1. inuput parameter has address of origin caller and use it instaed of GetOrigialCaller()
+	// 2. std.GetOrigCaller function is called 4 times, so use address variable instead of function call
 	ok := transferFromByRegisterCall(token0Path, std.GetOrigCaller(), consts.PROTOCOL_FEE_ADDR, feeAmount0.Uint64())
 	if !ok {
 		panic(ufmt.Sprintf("[POOL] withdrawal_fee.gno__HandleWithdrawalFee() || expected transferFromByRegisterCall(%s, %s, %s, %s) == true", token0Path, std.GetOrigCaller(), consts.PROTOCOL_FEE_ADDR, feeAmount0))

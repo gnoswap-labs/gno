@@ -42,7 +42,8 @@ func boolToStr(b bool) string {
 }
 
 func origCaller() string {
-	return std.GetOrigCaller().String()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	return std.PrevRealm().Addr().String()
 }
 
 func prevRealm() string {

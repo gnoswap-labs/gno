@@ -31,6 +31,10 @@ func handleSwapFee(
 	feeAmount.Div(feeAmount, u256.NewUint(10000))
 	feeAmountUint64 := feeAmount.Uint64()
 
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	// TODO :
+	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
+	// 2. use address variable instead of function call like std.GetOrigCaller()
 	if !isDry {
 		if outputToken == consts.GNOT { // unwrap if coin
 			// wugnot: buyer > router

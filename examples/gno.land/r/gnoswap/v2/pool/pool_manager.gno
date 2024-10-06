@@ -92,8 +92,10 @@ func CreatePool(
 		panic(ufmt.Sprintf("[POOl] pool_manager.gno__CreatePool() || expected poolPath(%s) not to exist", poolPath))
 	}
 
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	prevCallerAddress := std.PrevRealm().Addr()
 	if !exist {
-		gns.TransferFrom(a2u(std.GetOrigCaller()), a2u(consts.PROTOCOL_FEE_ADDR), poolCreationFee)
+		gns.TransferFrom(a2u(prevCallerAddress), a2u(consts.PROTOCOL_FEE_ADDR), poolCreationFee)
 		std.Emit(
 			"GNOSWAP_PROTOCOL_FEE",
 			"m_callType", callType(),

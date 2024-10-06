@@ -68,7 +68,8 @@ func SwapRoute(
 	var userBeforeWugnotBalance uint64
 	var userWrappedWugnot uint64
 	if inputToken == consts.GNOT || outputToken == consts.GNOT {
-		userBeforeWugnotBalance = wugnot.BalanceOf(a2u(std.GetOrigCaller()))
+		// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+		userBeforeWugnotBalance = wugnot.BalanceOf(a2u(std.PrevRealm().Addr()))
 
 		if swapType == "EXACT_IN" && inputToken == consts.GNOT {
 			sent := std.GetOrigSend()
@@ -195,6 +196,9 @@ func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOu
 
 	afterFee := handleSwapFee(outputToken, resultAmountOut, false)
 
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	// TODO :
+	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
 	userNewWugnotBalance := wugnot.BalanceOf(a2u(std.GetOrigCaller()))
 	if inputToken == consts.GNOT {
 		totalBefore := userBeforeWugnotBalance + userWrappedWugnot
@@ -229,6 +233,9 @@ func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOu
 }
 
 func handleMultiSwap(swapType string, route string, numHops int, amountSpecified *i256.Int, isDry bool) (*u256.Uint, *u256.Uint) {
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	// TODO :
+	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
 	switch swapType {
 	case "EXACT_IN":
 		input, output, fee := getDataForMultiPath(route, 0) // first data

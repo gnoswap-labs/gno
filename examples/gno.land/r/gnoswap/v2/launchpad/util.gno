@@ -209,7 +209,10 @@ func b64Encode(data string) string {
 }
 
 func origCaller() string {
-	return std.GetOrigCaller().String()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	// TODO :
+	// Check if PrevRealm().Addr() is the same as GetOrigCaller()
+	return std.PrevRealm().Addr().String()
 }
 
 func prevRealm() string {

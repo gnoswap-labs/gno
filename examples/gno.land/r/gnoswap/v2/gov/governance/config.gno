@@ -74,6 +74,9 @@ func Reconfigure(
 
 	prev := std.PrevRealm().PkgPath()
 	if !(prev == "" || (prev == consts.GOV_GOVERNANCE_PATH)) {
+		// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
+		// TODO :
+		// - Change GetOrigCaller to something correctly
 		panic(
 			ufmt.Sprintf(
 				"Reconfigure can only be called by the governance contract, but was called by orig(%s), prev(%s), curr(%s)",

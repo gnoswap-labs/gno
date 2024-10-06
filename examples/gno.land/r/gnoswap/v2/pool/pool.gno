@@ -53,10 +53,18 @@ func Mint(
 	)
 
 	if amount0.Gt(i256.Zero()) {
+		// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+		// TODO :
+		// 1. when this function is called, input parameter has address of token owner
+		// 2. in this line, std.PrevRealm() is Position contract, not token owner
 		pool.transferFromAndVerify(std.GetOrigCaller(), consts.POOL_ADDR, pool.token0Path, amount0, true)
 	}
 
 	if amount1.Gt(i256.Zero()) {
+		// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+		// TODO :
+		// 1. when this function is called, input parameter has address of token owner
+		// 2. in this line, std.PrevRealm() is Position contract, not token owner
 		pool.transferFromAndVerify(std.GetOrigCaller(), consts.POOL_ADDR, pool.token1Path, amount1, false)
 	}
 

@@ -259,7 +259,8 @@ func getYearlyBlockForTimestampMs(ms int64) int64 {
 }
 
 func origCaller() string {
-	return std.GetOrigCaller().String()
+	// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
+	return std.PrevRealm().Addr().String()
 }
 
 func prevRealm() string {

@@ -171,9 +171,10 @@ func SetTokenURI(tid grc721.TokenID) {
 
 	ok, _ := gnft.SetTokenURI(tid, grc721.TokenURI(tokenURI))
 	if ok {
+		// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
 		std.Emit(
 			"GNOSWAP",
-			"m_origCaller", std.GetOrigCaller().String(),
+			"m_origCaller", std.PrevRealm().Addr().String(),
 			"m_prevRealm", std.PrevRealm().PkgPath(),
 			"p_tokenId", string(tid),
 			"tokenURI", tokenURI,
@@ -185,7 +186,8 @@ func SetTokenURI(tid grc721.TokenID) {
 func SetTokenURILast() {
 	common.IsHalted()
 
-	origCaller := std.GetOrigCaller()
+	// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
+	origCaller := std.PrevRealm().Addr()
 
 	// rand instance
 	seed1 := uint64(time.Now().Unix())
@@ -199,9 +201,10 @@ func SetTokenURILast() {
 
 		ok, _ := gnft.SetTokenURI(tid, grc721.TokenURI(tokenURI))
 		if ok {
+			// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
 			std.Emit(
 				"GNOSWAP",
-				"m_origCaller", std.GetOrigCaller().String(),
+				"m_origCaller", std.PrevRealm().Addr().String(),
 				"m_prevRealm", std.PrevRealm().PkgPath(),
 				"p_tokenId", string(tid),
 				"tokenURI", tokenURI,

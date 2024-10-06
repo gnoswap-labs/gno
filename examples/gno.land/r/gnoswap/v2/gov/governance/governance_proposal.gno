@@ -46,7 +46,8 @@ func ProposeText(
 	en.MintAndDistributeGns()
 	updateProposalsState()
 
-	proposer := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	proposer := std.PrevRealm().Addr()
 
 	enough := checkEnoughXGnsToPropose(proposer)
 	if !enough {
@@ -103,7 +104,8 @@ func ProposeCommunityPoolSpend(
 	en.MintAndDistributeGns()
 	updateProposalsState()
 
-	proposer := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	proposer := std.PrevRealm().Addr()
 
 	enough := checkEnoughXGnsToPropose(proposer)
 	if !enough {
@@ -167,7 +169,8 @@ func ProposeParameterChange(
 	en.MintAndDistributeGns()
 	updateProposalsState()
 
-	proposer := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	proposer := std.PrevRealm().Addr()
 
 	enough := checkEnoughXGnsToPropose(proposer)
 	if !enough {
@@ -258,7 +261,8 @@ func Vote(proposalId uint64, yes bool) string {
 	now := uint64(time.Now().Unix())
 	votingStartTime := proposal.ExecutionState.CreatedAt + config.VotingStartDelay
 
-	voter := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	voter := std.PrevRealm().Addr()
 
 	if now < votingStartTime {
 		panic(ufmt.Sprintf("voting has not started yet. Current time: %d, Voting start time: %d", now, votingStartTime))
@@ -351,7 +355,8 @@ func Cancel(proposalId uint64) {
 		panic(ufmt.Sprintf("voting has already started for proposal %d", proposalId))
 	}
 
-	caller := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 	if caller != proposal.Proposer {
 		// If the caller is not the proposer, check if the proposer's stake has fallen below the threshold
 		enough := checkEnoughXGnsToPropose(proposal.Proposer)
@@ -456,12 +461,13 @@ func Execute(proposalId uint64) {
 	proposal.ExecutionState.Active = false
 	proposals[proposalId] = proposal
 
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	std.Emit(
 		"Executed",
 		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_proposalId", ufmt.Sprintf("%d", proposalId),
-		"executor", std.GetOrigCaller().String(),
+		"executor", std.PrevRealm().Addr().String(),
 	)
 }
 

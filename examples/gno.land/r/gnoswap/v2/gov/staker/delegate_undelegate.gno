@@ -15,7 +15,8 @@ var (
 )
 
 func delegate(to std.Address, amount uint64) {
-	caller := std.GetOrigCaller()
+	// myunghwan	, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 
 	if delegatedFromTo[caller.String()] == nil {
 		delegatedFromTo[caller.String()] = make(map[string]uint64)
@@ -47,7 +48,8 @@ func delegate(to std.Address, amount uint64) {
 }
 
 func undelegate(to std.Address, amount uint64) {
-	caller := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 
 	_, exist := delegatedFromTo[caller.String()]
 	if !exist {

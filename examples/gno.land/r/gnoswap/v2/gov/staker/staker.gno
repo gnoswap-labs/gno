@@ -43,7 +43,8 @@ func Delegate(to std.Address, amount uint64) {
 		panic(ufmt.Sprintf("minimum amount to delegate is %d (requested:%d)", minimumAmount, amount))
 	}
 
-	caller := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 
 	// GNS // caller -> GovStaker
 	gns.TransferFrom(a2u(caller), a2u(std.CurrentRealm().Addr()), amount)
@@ -79,7 +80,8 @@ func Redelegate(from, to std.Address, amount uint64) {
 		panic(ufmt.Sprintf("minimum amount to re-delegate is %d (requested:%d)", minimumAmount, amount))
 	}
 
-	caller := std.GetOrigCaller()
+	// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 
 	if xgns.BalanceOf(a2u(caller)) < amount {
 		panic("not enough xGNS staked")
@@ -109,7 +111,8 @@ func Undelegate(from std.Address, amount uint64) {
 		panic(ufmt.Sprintf("minimum amount to undelegate is %d (requested:%d)", minimumAmount, amount))
 	}
 
-	caller := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 
 	if xgns.BalanceOf(a2u(caller)) < amount {
 		panic("not enough xGNS staked")
@@ -142,7 +145,8 @@ func CollectUndelegated() uint64 {
 	en.MintAndDistributeGns()
 	calculateReward()
 
-	caller := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 
 	if len(addrLockedGns[caller.String()]) == 0 {
 		return 0
@@ -178,7 +182,8 @@ func CollectReward() {
 	calculateReward()
 
 	// GNS EMISSION
-	caller := std.GetOrigCaller()
+	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 	emissionReward := userEmissionReward[caller.String()]
 	if emissionReward > 0 {
 		if gns.BalanceOf(a2u(std.CurrentRealm().Addr())) < emissionReward {

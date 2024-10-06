@@ -30,7 +30,8 @@ func GetRegisteredTokens() []string {
 }
 
 func RegisterGRC20Interface(pkgPath string, igrc20 GRC20Interface) {
-	caller := std.GetOrigCaller()
+	// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 	if caller != consts.TOKEN_REGISTER {
 		panic(ufmt.Sprintf("[COMMUNITY_POOL] token_register.gno__RegisterGRC20Interface() || unauthorized address(%s) to register", caller.String()))
 	}
@@ -47,7 +48,8 @@ func RegisterGRC20Interface(pkgPath string, igrc20 GRC20Interface) {
 
 func UnregisterGRC20Interface(pkgPath string) {
 	// only admin can unregister
-	caller := std.GetOrigCaller()
+	// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
+	caller := std.PrevRealm().Addr()
 	if caller != consts.TOKEN_REGISTER {
 		panic(ufmt.Sprintf("[COMMUNITY_POOL] token_register.gno__UnregisterGRC20Interface() || unauthorized address(%s) to unregister", caller.String()))
 	}
