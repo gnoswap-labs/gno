@@ -59,7 +59,7 @@ func TestMintPosition01InRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	std.TestSetOrigSend(std.Coins{{"ugnot", 0}}, nil)
 
@@ -111,11 +111,11 @@ func TestSwap1(t *testing.T) {
 		consts.WUGNOT_PATH,
 		consts.GNS_PATH,
 		fee500,
-		gsa.String(),
+		gsa,
 		true,
 		"1234567",
 		consts.MIN_PRICE,
-		gsa.String(),
+		gsa,
 	)
 
 	shouldEQ(t, amount0, "1234567")

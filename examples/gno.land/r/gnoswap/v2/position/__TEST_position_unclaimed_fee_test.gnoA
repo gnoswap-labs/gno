@@ -43,7 +43,7 @@ func TestMintPosition01InRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position Mint [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_tickLower 12000} {p_tickUpper 14000} {tokenId 3} {liquidity 957388253} {amount0 50000000} {amount1 0}]}
 
@@ -69,7 +69,7 @@ func TestMintPosition02LowerRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position Mint [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_tickLower 12000} {p_tickUpper 14000} {tokenId 3} {liquidity 957388253} {amount0 50000000} {amount1 0}]}
 
@@ -95,7 +95,7 @@ func TestMintPosition03UpperRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position Mint [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_tickLower 12000} {p_tickUpper 14000} {tokenId 3} {liquidity 957388253} {amount0 50000000} {amount1 0}]}
 
@@ -133,11 +133,11 @@ func TestSwap1(t *testing.T) {
 		barPath,
 		fooPath,
 		fee500,
-		gsa.String(),
+		gsa,
 		true,
 		"1234567",
 		consts.MIN_PRICE,
-		gsa.String(),
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/pool Swap [{m_callType INDIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm gno.land/r/gnoswap/v2/router} {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_zeroForOne true} {p_amountSpecified 1234567} {p_sqrtPriceLimitX96 4295128740} {p_payer g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {p_recipient g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {amount0 1234567} {amount1 -3332779} {protocol_fee0 0} {protocol_fee1 0} {swap_fee 618}]}
 
@@ -162,11 +162,11 @@ func TestSwap2(t *testing.T) {
 		barPath,
 		fooPath,
 		fee500,
-		gsa.String(),
+		gsa,
 		true,
 		"20000000", //
 		consts.MIN_PRICE,
-		gsa.String(),
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/pool Swap [{m_callType INDIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm gno.land/r/gnoswap/v2/router} {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_zeroForOne true} {p_amountSpecified 20000000} {p_sqrtPriceLimitX96 4295128740} {p_payer g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {p_recipient g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {amount0 20000000} {amount1 -48647018} {protocol_fee0 0} {protocol_fee1 0} {swap_fee 10001}]}
 
@@ -191,11 +191,11 @@ func TestSwap3(t *testing.T) {
 		fooPath,
 		barPath,
 		fee500,
-		gsa.String(),
+		gsa,
 		false,
 		"20000000", //
 		consts.MAX_PRICE,
-		gsa.String(),
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/pool Swap [{m_callType INDIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm gno.land/r/gnoswap/v2/router} {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_zeroForOne false} {p_amountSpecified 20000000} {p_sqrtPriceLimitX96 1461446703485210103287273052203988822378723970341} {p_payer g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {p_recipient g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {amount0 -8692001} {amount1 20000000} {protocol_fee0 0} {protocol_fee1 0} {swap_fee 10001}]}
 

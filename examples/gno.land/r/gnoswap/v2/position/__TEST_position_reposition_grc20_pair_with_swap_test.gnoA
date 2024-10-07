@@ -38,7 +38,7 @@ func TestMintPosition01InRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(1))
@@ -76,7 +76,7 @@ func TestMintPosition02InRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(2))
@@ -114,7 +114,7 @@ func TestMintPosition03InRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(3))
@@ -146,11 +146,11 @@ func TestSwap1(t *testing.T) {
 		barPath,
 		fooPath,
 		fee500,
-		gsa.String(),
+		gsa,
 		true,
 		"1234567",
 		consts.MIN_PRICE,
-		gsa.String(),
+		gsa,
 	)
 
 	shouldEQ(t, amount0, "1234567")
@@ -292,11 +292,11 @@ func TestSwap2(t *testing.T) {
 		barPath,
 		fooPath,
 		fee500,
-		gsa.String(),
+		gsa,
 		true,
 		"1234567",
 		consts.MIN_PRICE,
-		gsa.String(),
+		gsa,
 	)
 
 	shouldEQ(t, amount0, "1234567")

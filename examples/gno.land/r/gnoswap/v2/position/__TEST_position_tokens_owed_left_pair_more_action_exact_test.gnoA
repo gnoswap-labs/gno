@@ -42,7 +42,7 @@ func TestMintPosition01(t *testing.T) {
 		"1",
 		"1",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	std.TestSkipHeights(10)
 
@@ -119,7 +119,7 @@ func TestMintPosition02(t *testing.T) {
 		"8412783",
 		"4967538",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	std.TestSkipHeights(10)
 
@@ -158,7 +158,7 @@ func TestMintPosition03(t *testing.T) {
 		"39800000",
 		"23500902",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	std.TestSkipHeights(10)
 
@@ -221,7 +221,7 @@ func TestMintPosition04(t *testing.T) {
 		"5073191",
 		"2867352",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 	std.TestSkipHeights(10)
 

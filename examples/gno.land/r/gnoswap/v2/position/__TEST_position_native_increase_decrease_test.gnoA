@@ -56,7 +56,7 @@ func TestMintPosition(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
-		gsa.String(),
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(1))

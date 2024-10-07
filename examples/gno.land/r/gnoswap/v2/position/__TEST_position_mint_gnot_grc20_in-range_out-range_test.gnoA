@@ -57,17 +57,17 @@ func TestOneSideOnlyGrc20WithoutSend(t *testing.T) {
 
 	std.TestSetOrigCaller(fresh01)
 	tokenId, liquidity, amount0, amount1 := Mint(
-		consts.GNS_PATH,  // token0
-		consts.GNOT,      // token1
-		fee500,           // fee
-		12000,            // tickLower
-		14000,            // tickUpper
-		"10000000",       // amount0Desired
-		"10000000",       // amount1Desired
-		"0",              // amount0Min
-		"0",              // amount1Min
-		max_timeout,      // deadline
-		fresh01.String(), // operator
+		consts.GNS_PATH, // token0
+		consts.GNOT,     // token1
+		fee500,          // fee
+		12000,           // tickLower
+		14000,           // tickUpper
+		"10000000",      // amount0Desired
+		"10000000",      // amount1Desired
+		"0",             // amount0Min
+		"0",             // amount1Min
+		max_timeout,     // deadline
+		fresh01,         // operator
 	)
 }
 
@@ -86,17 +86,17 @@ func TestOneSideOnlyGrc20WithSend0Coin(t *testing.T) {
 
 	std.TestSetOrigCaller(fresh01)
 	tokenId, liquidity, amount0, amount1 := Mint(
-		consts.GNS_PATH,  // token0
-		consts.GNOT,      // token1
-		fee500,           // fee
-		12000,            // tickLower
-		14000,            // tickUpper
-		"10000000",       // amount0Desired
-		"10000000",       // amount1Desired
-		"0",              // amount0Min
-		"0",              // amount1Min
-		max_timeout,      // deadline
-		fresh01.String(), // operator
+		consts.GNS_PATH, // token0
+		consts.GNOT,     // token1
+		fee500,          // fee
+		12000,           // tickLower
+		14000,           // tickUpper
+		"10000000",      // amount0Desired
+		"10000000",      // amount1Desired
+		"0",             // amount0Min
+		"0",             // amount1Min
+		max_timeout,     // deadline
+		fresh01,         // operator
 	)
 }
 
@@ -116,17 +116,17 @@ func TestOneSideOnlyUgnot(t *testing.T) {
 
 	std.TestSetOrigCaller(fresh01)
 	tokenId, liquidity, amount0, amount1 := Mint(
-		consts.GNS_PATH,  // token0
-		consts.GNOT,      // token1
-		fee500,           // fee
-		6000,             // tickLower
-		8000,             // tickUpper
-		"90000000",       // amount0Desired
-		"90000000",       // amount1Desired
-		"0",              // amount0Min
-		"0",              // amount1Min
-		max_timeout,      // deadline
-		fresh01.String(), // operator
+		consts.GNS_PATH, // token0
+		consts.GNOT,     // token1
+		fee500,          // fee
+		6000,            // tickLower
+		8000,            // tickUpper
+		"90000000",      // amount0Desired
+		"90000000",      // amount1Desired
+		"0",             // amount0Min
+		"0",             // amount1Min
+		max_timeout,     // deadline
+		fresh01,         // operator
 	)
 
 	// send 100_000_000
@@ -152,17 +152,17 @@ func TestBothWithFresh(t *testing.T) {
 
 	std.TestSetOrigCaller(fresh02)
 	tokenId, liquidity, amount0, amount1 := Mint(
-		consts.GNS_PATH,  // token0
-		consts.GNOT,      // token1
-		fee500,           // fee
-		6000,             // tickLower
-		16000,            // tickUpper
-		"70000000",       // amount0Desired
-		"70000000",       // amount1Desired
-		"0",              // amount0Min
-		"0",              // amount1Min
-		max_timeout,      // deadline
-		fresh02.String(), // operator
+		consts.GNS_PATH, // token0
+		consts.GNOT,     // token1
+		fee500,          // fee
+		6000,            // tickLower
+		16000,           // tickUpper
+		"70000000",      // amount0Desired
+		"70000000",      // amount1Desired
+		"0",             // amount0Min
+		"0",             // amount1Min
+		max_timeout,     // deadline
+		fresh02,         // operator
 	)
 
 	// send 100_000_000
@@ -188,7 +188,7 @@ func TestBothWithFreshButNoSend(t *testing.T) {
 	shouldPanic(
 		t,
 		func() {
-			Mint(consts.GNS_PATH, consts.GNOT, fee500, 6000, 16000, "70000000", "70000000", "0", "0", max_timeout, fresh02.String())
+			Mint(consts.GNS_PATH, consts.GNOT, fee500, 6000, 16000, "70000000", "70000000", "0", "0", max_timeout, fresh02)
 		},
 	)
 }
