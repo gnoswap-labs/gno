@@ -32,7 +32,6 @@ func init() {
 
 func TestCreateProject(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
-	std.TestSetOrigCaller(gsa)
 
 	obl.Approve(a2u(consts.LAUNCHPAD_ADDR), uint64(1_000_000_000))
 	std.TestSkipHeights(1)
@@ -50,12 +49,11 @@ func TestCreateProject(t *testing.T) {
 	)
 	shouldEQ(t, projectId, `gno.land/r/onbloc/obl:124`)
 	std.TestSkipHeights(1)
-
 }
 
 func TestDepositGnsToTier30_User01(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
-	std.TestSetOrigCaller(gsa)
+
 	gns.Transfer(a2u(user01), uint64(1_000_000)) // to deposit
 	// transfer some grc20 tokens to bypass project condition
 	foo.Transfer(a2u(user01), uint64(10))
@@ -73,7 +71,7 @@ func TestDepositGnsToTier30_User01(t *testing.T) {
 
 func TestDepositGnsToTier30_User02(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
-	std.TestSetOrigCaller(gsa)
+
 	gns.Transfer(a2u(user02), uint64(9_000_000)) // to deposit
 	// transfer some grc20 tokens to bypass project condition
 	foo.Transfer(a2u(user02), uint64(10))

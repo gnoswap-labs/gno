@@ -39,8 +39,9 @@ func CreateProject(
 	tier180Ratio uint64, // 70
 	startTime uint64,
 ) string { // projectId
+	assertUserCall()
+
 	// only admin can create project
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	if std.PrevRealm().Addr() != consts.GNOSWAP_ADMIN {
 		panic("only admin can create project")
 	}
@@ -76,7 +77,6 @@ func CreateProject(
 		panic("invalid start time, can not start project in past")
 	}
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	transferFromByRegisterCall(
 		tokenPath,
 		std.PrevRealm().Addr(),
@@ -161,7 +161,7 @@ func CreateProject(
 //
 // returns amount
 func RefundProject(projectId string) uint64 {
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	assertUserCall()
 	caller := std.PrevRealm().Addr()
 	project, exist := projects[projectId]
 	if !exist {
