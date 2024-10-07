@@ -74,8 +74,7 @@ func CreatePool(
 	if token1Path < token0Path {
 		panic(ufmt.Sprintf("[POOl] pool_manager.gno__CreatePool() || expected token0Path(%s) < token1Path(%s)", token0Path, token1Path))
 
-		// or we can adjust
-
+		// XXX: or we can adjust
 		// token0Path, token1Path = token1Path, token0Path
 		// tick := -(common.TickMathGetTickAtSqrtRatio(sqrtPriceX96))
 		// sqrtPriceX96 = common.TickMathGetSqrtRatioAtTick(tick)
@@ -92,14 +91,11 @@ func CreatePool(
 		panic(ufmt.Sprintf("[POOl] pool_manager.gno__CreatePool() || expected poolPath(%s) not to exist", poolPath))
 	}
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	prevCallerAddress := std.PrevRealm().Addr()
 	if !exist {
-		gns.TransferFrom(a2u(prevCallerAddress), a2u(consts.PROTOCOL_FEE_ADDR), poolCreationFee)
+		gns.TransferFrom(a2u(std.PrevRealm().Addr()), a2u(consts.PROTOCOL_FEE_ADDR), poolCreationFee)
 		std.Emit(
 			"GNOSWAP_PROTOCOL_FEE",
 			"m_callType", callType(),
-			"m_origCaller", origCaller(),
 			"m_prevRealm", prevRealm(),
 			"poolPath", poolPath,
 			"reason", "pool_creation",
@@ -113,7 +109,6 @@ func CreatePool(
 		std.Emit(
 			"GNOSWAP",
 			"m_callType", callType(),
-			"m_origCaller", origCaller(),
 			"m_prevRealm", prevRealm(),
 			"p_poolPath", poolPath,
 		)

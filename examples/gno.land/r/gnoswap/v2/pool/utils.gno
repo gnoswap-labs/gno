@@ -41,11 +41,6 @@ func boolToStr(b bool) string {
 	return "false"
 }
 
-func origCaller() string {
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	return std.PrevRealm().Addr().String()
-}
-
 func prevRealm() string {
 	return std.PrevRealm().PkgPath()
 }
@@ -56,4 +51,14 @@ func callType() string {
 	}
 
 	return "INDIRECT"
+}
+
+func isUserCall() bool {
+	return std.PrevRealm().IsUser()
+}
+
+func assertUserCall() {
+	if !isUserCall() {
+		panic("must be called by user")
+	}
 }
