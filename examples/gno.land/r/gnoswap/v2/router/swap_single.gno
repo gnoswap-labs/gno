@@ -7,9 +7,6 @@ import (
 )
 
 func singleSwap(params SingleSwapParams) (*u256.Uint, *u256.Uint) { // amountIn, amountOut
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if the caller is the owner of the tokenIn
 	amountIn, amountOut := _swap(
 		params.amountSpecified,
 		std.PrevRealm().Addr(), // if single swap => user will recieve

@@ -31,14 +31,10 @@ func handleSwapFee(
 	feeAmount.Div(feeAmount, u256.NewUint(10000))
 	feeAmountUint64 := feeAmount.Uint64()
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
-	// 2. use address variable instead of function call like std.GetOrigCaller()
 	if !isDry {
 		if outputToken == consts.GNOT { // unwrap if coin
 			// wugnot: buyer > router
-			transferFromByRegisterCall(outputToken, std.GetOrigCaller(), consts.ROUTER_ADDR, feeAmountUint64)
+			transferFromByRegisterCall(outputToken, std.PrevRealm().Addr(), consts.ROUTER_ADDR, feeAmountUint64)
 
 			// ugnot: wugnot > router
 			wugnot.Withdraw(feeAmountUint64)
@@ -49,21 +45,19 @@ func handleSwapFee(
 			std.Emit(
 				"GNOSWAP_PROTOCOL_FEE",
 				"m_callType", callType(),
-				"m_origCaller", origCaller(),
 				"m_prevRealm", prevRealm(),
 				"reason", "router_fee",
 				"token", "ugnot",
 				"amount", strconv.FormatUint(feeAmountUint64, 10),
 			)
 		} else { // just transfer if grc20
-			ok := transferFromByRegisterCall(outputToken, std.GetOrigCaller(), consts.PROTOCOL_FEE_ADDR, feeAmountUint64)
+			ok := transferFromByRegisterCall(outputToken, std.PrevRealm().Addr(), consts.PROTOCOL_FEE_ADDR, feeAmountUint64)
 			if !ok {
-				panic(ufmt.Sprintf("[ROUTER] protocol_fee_swap.gno__handleSwapFee() || expected transferFromByRegisterCall(%s, %s, %s, %d) == true", outputToken, std.GetOrigCaller(), consts.PROTOCOL_FEE_ADDR, feeAmountUint64))
+				panic(ufmt.Sprintf("[ROUTER] protocol_fee_swap.gno__handleSwapFee() || expected transferFromByRegisterCall(%s, %s, %s, %d) == true", outputToken, std.PrevRealm().Addr(), consts.PROTOCOL_FEE_ADDR, feeAmountUint64))
 			}
 			std.Emit(
 				"GNOSWAP_PROTOCOL_FEE",
 				"m_callType", callType(),
-				"m_origCaller", origCaller(),
 				"m_prevRealm", prevRealm(),
 				"reason", "router_fee",
 				"token", outputToken,
@@ -105,7 +99,6 @@ func SetSwapFee(fee uint64) {
 	std.Emit(
 		"GNOSWAP",
 		"m_callType", callType(),
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_fee", uint64ToStr(fee),
 	)

@@ -25,15 +25,11 @@ func wrap(ugnotAmount uint64) {
 	wugnot.Deposit() // ROUTER HAS WUGNOT
 
 	// SEND WUGNOT: ROUTER -> USER
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
-	wugnot.Transfer(a2u(std.GetOrigCaller()), ugnotAmount)
+	wugnot.Transfer(a2u(std.PrevRealm().Addr()), ugnotAmount)
 
 	std.Emit(
 		"GNOSWAP",
 		"m_callType", callType(),
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_ugnotAmount", uint64ToStr(ugnotAmount),
 	)
@@ -44,26 +40,19 @@ func unwrap(wugnotAmount uint64) {
 		return
 	}
 
-	// SEND WUGNOT: USER ->
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
-	wugnot.TransferFrom(a2u(std.GetOrigCaller()), a2u(consts.ROUTER_ADDR), wugnotAmount)
+	// SEND WUGNOT: USER -> ROUTER
+	wugnot.TransferFrom(a2u(std.PrevRealm().Addr()), a2u(consts.ROUTER_ADDR), wugnotAmount)
 
 	// UNWRAP IT
 	wugnot.Withdraw(wugnotAmount)
 
 	// SEND GNOT: ROUTER -> USER
 	banker := std.GetBanker(std.BankerTypeRealmSend)
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
-	banker.SendCoins(consts.ROUTER_ADDR, std.GetOrigCaller(), std.Coins{{"ugnot", int64(wugnotAmount)}})
+	banker.SendCoins(consts.ROUTER_ADDR, std.PrevRealm().Addr(), std.Coins{{"ugnot", int64(wugnotAmount)}})
 
 	std.Emit(
 		"GNOSWAP",
 		"m_callType", callType(),
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_wugnotAmount", uint64ToStr(wugnotAmount),
 	)

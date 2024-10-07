@@ -30,8 +30,14 @@ func GetRegisteredTokens() []string {
 	return tokens
 }
 
+// RegisterGRC20Interface registers a GRC20 token interface
+//
+// Panics:
+//   - caller is not the admin
+//   - token already registered
 func RegisterGRC20Interface(pkgPath string, igrc20 GRC20Interface) {
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	assertUserCall()
+
 	caller := std.PrevRealm().Addr()
 	if caller != consts.TOKEN_REGISTER {
 		panic(ufmt.Sprintf("[ROUTER] token_register.gno__RegisterGRC20Interface() || unauthorized address(%s) to register", caller.String()))
@@ -41,14 +47,19 @@ func RegisterGRC20Interface(pkgPath string, igrc20 GRC20Interface) {
 
 	_, found := registered[pkgPath]
 	if found {
-		panic(ufmt.Sprintf("[ROUTER] router_register.gno__RegisterGRC20Interface() || pkgPath(%s) already registered", pkgPath))
+		panic(ufmt.Sprintf("[ROUTER] token_register.gno__RegisterGRC20Interface() || pkgPath(%s) already registered", pkgPath))
 	}
 
 	registered[pkgPath] = igrc20
 }
 
+// UnregisterGRC20Interface unregisters a GRC20 token interface
+//
+// Panics:
+//   - caller is not the admin
 func UnregisterGRC20Interface(pkgPath string) {
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
+	assertUserCall()
+
 	caller := std.PrevRealm().Addr()
 	if caller != consts.TOKEN_REGISTER {
 		panic(ufmt.Sprintf("[ROUTER] token_register.gno__UnregisterGRC20Interface() || unauthorized address(%s) to unregister", caller.String()))

@@ -12,7 +12,6 @@ import (
 func multiSwap(params SwapParams, currentPoolIndex, numPools int, swapPath string) (*u256.Uint, *u256.Uint) { // firstAmountIn, lastAmountOut
 	firstAmountIn := u256.Zero()
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	payer := std.PrevRealm().Addr() // user
 
 	for {
@@ -22,7 +21,7 @@ func multiSwap(params SwapParams, currentPoolIndex, numPools int, swapPath strin
 		if currentPoolIndex < numPools {
 			recipient = consts.ROUTER_ADDR
 		} else {
-			recipient = params.recipient // user ~= std.GetOrigCaller()
+			recipient = params.recipient
 		}
 
 		amountIn, amountOut := _swap(
@@ -99,15 +98,12 @@ func multiSwapNegative(params SwapParams, numPools int, swapPath string) (*u256.
 
 	// PROCESS FORWARD INFO
 	currentPoolIndex = len(swapInfo)
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
-	payer := std.GetOrigCaller() // first payer ~= user
+	payer := std.PrevRealm().Addr() // first payer ≈ user
 	for {
 		var recipient std.Address
 		currentPoolIndex--
 		if currentPoolIndex == 0 {
-			recipient = std.GetOrigCaller() // params.recipient // user ~= std.GetOrigCaller()
+			recipient = std.PrevRealm().Addr() // params.recipient ≈ user
 		} else {
 			recipient = consts.ROUTER_ADDR
 		}
@@ -141,7 +137,6 @@ func multiSwapNegative(params SwapParams, numPools int, swapPath string) (*u256.
 func multiSwapDry(params SwapParams, currentPoolIndex, numPool int, swapPath string) (*u256.Uint, *u256.Uint) { // firstAmountIn, lastAmountOut
 	firstAmountIn := u256.Zero()
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	payer := std.PrevRealm().Addr() // user
 
 	for {

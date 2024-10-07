@@ -68,7 +68,6 @@ func SwapRoute(
 	var userBeforeWugnotBalance uint64
 	var userWrappedWugnot uint64
 	if inputToken == consts.GNOT || outputToken == consts.GNOT {
-		// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 		userBeforeWugnotBalance = wugnot.BalanceOf(a2u(std.PrevRealm().Addr()))
 
 		if swapType == "EXACT_IN" && inputToken == consts.GNOT {
@@ -105,7 +104,6 @@ func SwapRoute(
 	std.Emit(
 		"GNOSWAP",
 		"m_callType", callType(),
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_input", inputToken,
 		"p_output", outputToken,
@@ -196,10 +194,7 @@ func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOu
 
 	afterFee := handleSwapFee(outputToken, resultAmountOut, false)
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
-	userNewWugnotBalance := wugnot.BalanceOf(a2u(std.GetOrigCaller()))
+	userNewWugnotBalance := wugnot.BalanceOf(a2u(std.PrevRealm().Addr()))
 	if inputToken == consts.GNOT {
 		totalBefore := userBeforeWugnotBalance + userWrappedWugnot
 		spend := totalBefore - userNewWugnotBalance
@@ -233,9 +228,6 @@ func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOu
 }
 
 func handleMultiSwap(swapType string, route string, numHops int, amountSpecified *i256.Int, isDry bool) (*u256.Uint, *u256.Uint) {
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// 1. Check if GetOrigCaller() is same as PrevRealm().Addr()
 	switch swapType {
 	case "EXACT_IN":
 		input, output, fee := getDataForMultiPath(route, 0) // first data
@@ -243,7 +235,7 @@ func handleMultiSwap(swapType string, route string, numHops int, amountSpecified
 			tokenIn:         input,
 			tokenOut:        output,
 			fee:             fee,
-			recipient:       std.GetOrigCaller(),
+			recipient:       std.PrevRealm().Addr(),
 			amountSpecified: amountSpecified,
 		}
 
@@ -258,7 +250,7 @@ func handleMultiSwap(swapType string, route string, numHops int, amountSpecified
 			tokenIn:         input,
 			tokenOut:        output,
 			fee:             fee,
-			recipient:       std.GetOrigCaller(),
+			recipient:       std.PrevRealm().Addr(),
 			amountSpecified: amountSpecified,
 		}
 

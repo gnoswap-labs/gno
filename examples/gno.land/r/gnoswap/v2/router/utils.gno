@@ -105,3 +105,13 @@ func callType() string {
 func uint64ToStr(i uint64) string {
 	return strconv.FormatInt(int64(i), 10)
 }
+
+func isUserCall() bool {
+	return std.PrevRealm().IsUser()
+}
+
+func assertUserCall() {
+	if !isUserCall() {
+		panic("must be called by user")
+	}
+}
