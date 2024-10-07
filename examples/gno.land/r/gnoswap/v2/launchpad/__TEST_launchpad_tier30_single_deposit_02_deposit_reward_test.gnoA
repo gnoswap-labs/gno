@@ -61,7 +61,6 @@ func TestDepositGnsToTier30(t *testing.T) {
 	bar.Transfer(a2u(user01), uint64(10))
 
 	std.TestSetRealm(user01Realm)
-	std.TestSetOrigCaller(user01)
 	gns.Approve(a2u(consts.LAUNCHPAD_ADDR), uint64(1_000_000))
 
 	// skip some blocks to make project active
@@ -73,7 +72,6 @@ func TestDepositGnsToTier30(t *testing.T) {
 
 func TestCollectReward(t *testing.T) {
 	std.TestSetRealm(user01Realm)
-	std.TestSetOrigCaller(user01)
 
 	t.Run("claim reward before 30 days", func(t *testing.T) {
 		CollectReward()

@@ -39,7 +39,6 @@ func init() {
 	}
 
 	// set pool create fee to 0 for testing
-	std.TestSetOrigCaller(gsa)
 	std.TestSetRealm(gsaRealm)
 	pl.SetPoolCreationFee(0)
 
@@ -86,7 +85,7 @@ func TestPositionMintFooBar01(t *testing.T) {
 	std.TestSkipHeights(1)
 
 	shouldEQ(t, lpTokenId, uint64(1))
-	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), std.GetOrigCaller()) // gsa
+	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), gsa)
 	shouldEQ(t, amount0, "1000")
 	shouldEQ(t, amount1, "368")
 
@@ -120,7 +119,7 @@ func TestPositionMintFooBar02(t *testing.T) {
 	std.TestSkipHeights(1)
 
 	shouldEQ(t, lpTokenId, uint64(2))
-	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), std.GetOrigCaller()) // gsa
+	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), gsa)
 	shouldEQ(t, amount0, "5000")
 	shouldEQ(t, amount1, "3979")
 
@@ -154,7 +153,7 @@ func TestPositionMintBazQux01(t *testing.T) {
 	std.TestSkipHeights(1)
 
 	shouldEQ(t, lpTokenId, uint64(3))
-	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), std.GetOrigCaller()) // gsa
+	shouldEQ(t, gnft.OwnerOf(tid(lpTokenId)), gsa)
 	shouldEQ(t, amount0, "3979")
 	shouldEQ(t, amount1, "5000")
 
@@ -215,11 +214,11 @@ func TestCreateExternalIncentiveFooBySomeoneElse(t *testing.T) {
 	newFooForTest := foo.BalanceOf(a2u(testAddr))
 	shouldEQ(t, newFooForTest-oldFooForTest, uint64(5_000_000_000))
 
-	std.TestSetOrigCaller(gsa)
+	
 	std.TestSetRealm(gsaRealm)
 	gns.Transfer(a2u(testAddr), depositGnsAmount)
 
-	std.TestSetOrigCaller(testAddr)
+	
 	std.TestSetRealm(testRealm)
 	foo.Approve(a2u(consts.STAKER_ADDR), 5_000_000_000)
 
@@ -238,7 +237,6 @@ func TestCreateExternalIncentiveFooBySomeoneElse(t *testing.T) {
 }
 
 func TestCreateExternalIncentiveGns(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
 	std.TestSetRealm(gsaRealm)
 	gns.Approve(a2u(consts.STAKER_ADDR), depositGnsAmount+10_000_000_000)
 	std.TestSkipHeights(1)
@@ -395,7 +393,7 @@ func TestGetUnstakingFee(t *testing.T) {
 
 func TestSetUnstakingFeeNoPermission(t *testing.T) {
 	dummy := testutils.TestAddress("dummy")
-	std.TestSetOrigCaller(dummy)
+	std.TestSetRealm(std.NewUserRealm(dummy))
 
 	shouldPanicWithMsg(
 		t,
@@ -407,7 +405,7 @@ func TestSetUnstakingFeeNoPermission(t *testing.T) {
 }
 
 func TestSetUnstakingFeeOutOfRange(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	shouldPanicWithMsg(
 		t,
@@ -419,7 +417,7 @@ func TestSetUnstakingFeeOutOfRange(t *testing.T) {
 }
 
 func TestSetUnstakingFee(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 	shouldEQ(t, GetUnstakingFee(), uint64(100))
 	SetUnstakingFee(30)
 	shouldEQ(t, GetUnstakingFee(), uint64(30))
@@ -433,7 +431,6 @@ func TestApiGetExternalIncentivesOrig(t *testing.T) {
 }
 
 func TestApiGetExternalIncentivesAfterCollectReward(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
 	std.TestSetRealm(gsaRealm)
 
 	CollectReward(1, false)

@@ -43,7 +43,7 @@ func TestPositionMint(t *testing.T) {
 }
 
 func TestDrySwapRouteBarQuxExactIn(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		barPath,    // inputToken

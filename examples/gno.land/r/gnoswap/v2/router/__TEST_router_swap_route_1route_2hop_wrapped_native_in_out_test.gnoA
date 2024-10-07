@@ -80,7 +80,7 @@ func TestPositionMintQuxGnot(t *testing.T) {
 }
 
 func TestDrySwapRouteBarGnotExactIn(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		barPath,               // inputToken
@@ -94,7 +94,7 @@ func TestDrySwapRouteBarGnotExactIn(t *testing.T) {
 }
 
 func TestDrySwapRouteBarGnotExactOut(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		barPath,               // inputToken
@@ -108,7 +108,7 @@ func TestDrySwapRouteBarGnotExactOut(t *testing.T) {
 }
 
 func TestDrySwapRouteGnotBarExactIn(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		consts.WRAPPED_WUGNOT, // intputToken
@@ -122,7 +122,7 @@ func TestDrySwapRouteGnotBarExactIn(t *testing.T) {
 }
 
 func TestDrySwapRouteGnotBarExactOut(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		consts.WRAPPED_WUGNOT, // intputToken

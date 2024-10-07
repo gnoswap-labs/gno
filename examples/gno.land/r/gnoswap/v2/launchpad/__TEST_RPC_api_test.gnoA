@@ -112,7 +112,6 @@ func TestDepositGnsToTierProject01_Tier30(t *testing.T) {
 
 		// user01 makes deposit
 		std.TestSetRealm(user01Realm)
-		std.TestSetOrigCaller(user01)
 		gns.Approve(a2u(consts.LAUNCHPAD_ADDR), uint64(1_000_000))
 
 		// skip some blocks to make project active
@@ -146,7 +145,6 @@ func TestCollectProtocolFeeByProject01Recipient(t *testing.T) {
 
 	t.Run("claim protocol reward", func(t *testing.T) {
 		std.TestSetRealm(projectRealm)
-		std.TestSetOrigCaller(projectAddr)
 
 		oldBar := bar.BalanceOf(a2u(projectAddr))
 		oldQux := qux.BalanceOf(a2u(projectAddr))
@@ -188,7 +186,6 @@ func TestApiGetClaimableDepositByAddress(t *testing.T) {
 
 		// and actual collect
 		std.TestSetRealm(user01Realm)
-		std.TestSetOrigCaller(user01)
 		claimed := CollectDepositGns()
 		shouldEQ(t, claimed, uint64(1_000_000))
 	})
@@ -198,7 +195,6 @@ func TestApiGetClaimableDepositByAddress(t *testing.T) {
 		shouldEQ(t, got, uint64(0))
 
 		std.TestSetRealm(user01Realm)
-		std.TestSetOrigCaller(user01)
 		claimed := CollectDepositGns()
 		shouldEQ(t, claimed, uint64(0))
 	})

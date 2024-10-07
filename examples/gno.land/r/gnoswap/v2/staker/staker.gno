@@ -110,7 +110,7 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 
 	// staked status
 	deposit := deposits[tokenId]
-	deposit.owner = std.PrevRealm().Addr() // XXX: std.GetOrigCaller()
+	deposit.owner = std.PrevRealm().Addr()
 	deposit.numberOfStakes++
 	deposit.stakeTimestamp = time.Now().Unix()
 	deposit.stakeHeight = std.GetHeight()
@@ -568,10 +568,8 @@ func CreateExternalIncentive(
 //   - If incentive expiration time is not over
 //   - If reward token amount is not enough to refund
 //   - If the caller is neither the refundee nor the admin
-func EndExternalIncentive(_refundee, targetPoolPath, rewardToken string, startTimestamp, endTimestamp, height int64) {
+func EndExternalIncentive(refundee std.Address, targetPoolPath, rewardToken string, startTimestamp, endTimestamp, height int64) {
 	common.IsHalted()
-
-	refundee := std.Address(_refundee)
 
 	incentiveId := incentiveIdCompute(refundee, targetPoolPath, rewardToken, startTimestamp, endTimestamp, height)
 
@@ -622,7 +620,7 @@ func EndExternalIncentive(_refundee, targetPoolPath, rewardToken string, startTi
 		"m_prevRealm", prevRealm(),
 		"p_poolPath", targetPoolPath,
 		"p_rewardToken", rewardToken,
-		"p_refundee", _refundee,
+		"p_refundee", refundee.String(),
 		"end_by", incentive.refundee.String(),
 		"refund_amount", refund.ToString(),
 		"refund_gns_amount", uint64ToStr(incentive.depositGnsAmount),

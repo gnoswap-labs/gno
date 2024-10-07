@@ -182,6 +182,4 @@ func init() {
 	RegisterGRC20Interface("gno.land/r/demo/wugnot", WugnotToken{})
 	RegisterGRC20Interface("gno.land/r/onbloc/obl", OBLToken{})
 	RegisterGRC20Interface("gno.land/r/gnoswap/v2/gns", GNSToken{})
-
-	std.TestSetOrigCaller(consts.GNOSWAP_ADMIN)
 }

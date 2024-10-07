@@ -45,7 +45,7 @@ func TestPositionMintQuxGnot(t *testing.T) {
 }
 
 func TestDrySwapRouteQuxGnotExactIn(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		quxPath,               // inputToken
@@ -59,7 +59,7 @@ func TestDrySwapRouteQuxGnotExactIn(t *testing.T) {
 }
 
 func TestDrySwapRouteQuxGnotExactOut(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		quxPath,               // inputToken

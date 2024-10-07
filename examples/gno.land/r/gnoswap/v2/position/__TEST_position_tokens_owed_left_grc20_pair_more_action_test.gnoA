@@ -15,7 +15,6 @@ import (
 )
 
 func TestPoolInitCreatePool(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
 	std.TestSetRealm(gsaRealm)
 
 	gns.Approve(a2u(consts.POOL_ADDR), pl.GetPoolCreationFee())
@@ -68,7 +67,6 @@ func TestSwap1(t *testing.T) {
 	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 
 	std.TestSetRealm(rouRealm)
-	std.TestSetOrigCaller(gsa)
 	amount0, amount1 := pl.Swap(
 		barPath,
 		fooPath,
@@ -148,7 +146,6 @@ func TestSwap2(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
 
 	std.TestSetRealm(rouRealm)
-	std.TestSetOrigCaller(gsa)
 	amount0, amount1 := pl.Swap(
 		barPath,
 		fooPath,
@@ -183,7 +180,6 @@ func TestSwap3(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
 
 	std.TestSetRealm(rouRealm)
-	std.TestSetOrigCaller(gsa)
 	amount0, amount1 := pl.Swap(
 		barPath,
 		fooPath,
@@ -263,7 +259,7 @@ func TestDecreaseLiquidityPosition02(t *testing.T) {
 	_lpTokenId := uint64(2)
 
 	ownerOfPosition := gnft.OwnerOf(tid(_lpTokenId))
-	shouldEQ(t, ownerOfPosition, std.GetOrigCaller())
+	shouldEQ(t, ownerOfPosition, gsa)
 
 	unclaimedFee0, unclaimedFee1 := unclaimedFee(_lpTokenId)
 	shouldEQ(t, unclaimedFee0.ToString(), "0")
@@ -286,7 +282,7 @@ func TestDecreaseLiquidityPosition02(t *testing.T) {
 	shouldEQ(t, amount1, "55436931")
 
 	ownerOfPosition = gnft.OwnerOf(tid(_lpTokenId))
-	shouldEQ(t, ownerOfPosition, std.GetOrigCaller())
+	shouldEQ(t, ownerOfPosition, gsa)
 
 	unclaimedFee0, unclaimedFee1 = unclaimedFee(tokenId)
 	shouldEQ(t, unclaimedFee0.ToString(), "0")

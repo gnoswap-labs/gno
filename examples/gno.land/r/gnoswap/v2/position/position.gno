@@ -293,6 +293,7 @@ func increaseLiquidity(params IncreaseLiquidityParams) (uint64, *u256.Uint, *u25
 			amount1Desired: params.amount1Desired,
 			amount0Min:     params.amount0Min,
 			amount1Min:     params.amount1Min,
+			caller:         std.PrevRealm().Addr(),
 		},
 	)
 
@@ -554,6 +555,7 @@ func Reposition(
 			amount1Desired: u256.MustFromDecimal(_amount1Desired),
 			amount0Min:     u256.MustFromDecimal(_amount0Min),
 			amount1Min:     u256.MustFromDecimal(_amount1Min),
+			caller:         std.PrevRealm().Addr(),
 		},
 	)
 

@@ -53,7 +53,7 @@ func TestPositionMintGnsGnot(t *testing.T) {
 }
 
 func TestPositionMintGnotBar(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	// send
 	std.TestIssueCoins(gsa, std.Coins{{"ugnot", 100000}})
@@ -75,7 +75,7 @@ func TestPositionMintGnotBar(t *testing.T) {
 }
 
 func TestDrySwapRouteGnsBarExactIn(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
+	std.TestSetRealm(gsaRealm)
 
 	dryResult := DrySwapRoute(
 		consts.GNS_PATH, // inputToken

@@ -15,13 +15,11 @@ import (
 
 func init() {
 	// set pool create fee to 0 for testing
-	std.TestSetOrigCaller(gsa)
 	std.TestSetRealm(gsaRealm)
 	pl.SetPoolCreationFee(0)
 }
 
 func TestPoolInitCreatePool(t *testing.T) {
-	std.TestSetOrigCaller(gsa)
 	std.TestSetRealm(gsaRealm)
 
 	gns.Approve(a2u(consts.POOL_ADDR), pl.GetPoolCreationFee())
@@ -107,7 +105,6 @@ func TestSwap1(t *testing.T) {
 	wugnot.Approve(a2u(consts.ROUTER_ADDR), consts.UINT64_MAX)
 
 	std.TestSetRealm(rouRealm)
-	std.TestSetOrigCaller(gsa)
 	amount0, amount1 := pl.Swap(
 		consts.WUGNOT_PATH,
 		consts.GNS_PATH,

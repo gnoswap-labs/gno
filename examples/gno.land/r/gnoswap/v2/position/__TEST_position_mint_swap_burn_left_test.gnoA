@@ -17,7 +17,6 @@ import (
 
 func init() {
 	// set pool create fee to 0 for testing
-	std.TestSetOrigCaller(gsa)
 	std.TestSetRealm(gsaRealm)
 	pl.SetPoolCreationFee(0)
 }
@@ -106,6 +105,7 @@ func TestPoolBalanceMint02(t *testing.T) {
 }
 
 func TestCollectFeeBeforeSwap(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
 	tokenId, fee0, fee1, poolPath, _, _ := CollectFee(1, false)
 
 	shouldEQ(t, tokenId, uint64(1))
@@ -130,7 +130,6 @@ func TestSwap1(t *testing.T) {
 	bar.Approve(a2u(consts.POOL_ADDR), 1234567)
 
 	std.TestSetRealm(rouRealm)
-	std.TestSetOrigCaller(gsa)
 	amount0, amount1 := pl.Swap(
 		barPath,
 		fooPath,
@@ -151,6 +150,7 @@ func TestSwap1(t *testing.T) {
 }
 
 func TestUnclaimedFeePos01Swap01(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
 	amount0, amount1 := unclaimedFee(1)
 
 	shouldEQ(t, amount0.ToString(), "444") // if only one position, this should be 617
@@ -173,7 +173,6 @@ func TestSwap2(t *testing.T) {
 	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 
 	std.TestSetRealm(rouRealm)
-	std.TestSetOrigCaller(gsa)
 	amount0, amount1 := pl.Swap(
 		barPath,
 		fooPath,
@@ -194,6 +193,7 @@ func TestSwap2(t *testing.T) {
 }
 
 func TestUnclaimedFeePos01Swap02(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
 	amount0, amount1 := unclaimedFee(1)
 
 	shouldEQ(t, amount0.ToString(), "8683")
@@ -201,6 +201,7 @@ func TestUnclaimedFeePos01Swap02(t *testing.T) {
 }
 
 func TestUnclaimedFeePos02Swap02(t *testing.T) {
+	std.TestSetRealm(gsaRealm)
 	amount0, amount1 := unclaimedFee(2)
 
 	shouldEQ(t, amount0.ToString(), "1935")
@@ -212,6 +213,7 @@ func TestCollectFeePos01(t *testing.T) {
 	// token0: 43308438
 	// token1: 6709742
 
+	std.TestSetRealm(gsaRealm)
 	tokenId, fee0, fee1, poolPath, _, _ := CollectFee(1, true)
 
 	shouldEQ(t, tokenId, uint64(1))
@@ -229,6 +231,7 @@ func TestDecreaseAllPos01(t *testing.T) {
 	// token0: 43299755
 	// token1: 6709742
 
+	std.TestSetRealm(gsaRealm)
 	tokenId, liquidity, fee0, fee1, amount0, amount1, poolPath := DecreaseLiquidity(
 		uint64(1),   // tokenId
 		100,         // liquidityRatio
@@ -256,6 +259,7 @@ func TestDecreaseAllPos02(t *testing.T) {
 	// token0: 7548510
 	// token1: 2
 
+	std.TestSetRealm(gsaRealm)
 	tokenId, liquidity, fee0, fee1, amount0, amount1, poolPath := DecreaseLiquidity(
 		uint64(2),   // tokenId
 		100,         // liquidityRatio

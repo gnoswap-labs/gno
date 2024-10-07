@@ -75,7 +75,6 @@ func TestLaunchPadDeposit(t *testing.T) {
 	gns.Transfer(a2u(user01), uint64(1_000_000)) // to deposit
 
 	std.TestSetRealm(user01Realm)
-	std.TestSetOrigCaller(user01)
 	gns.Approve(a2u(consts.LAUNCHPAD_ADDR), uint64(1_000_000))
 
 	lp.DepositGns(

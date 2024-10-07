@@ -80,7 +80,6 @@ func TestExactInputSinglePool(t *testing.T) {
 	poolPath := "gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:3000"
 
 	user1Realm := std.NewUserRealm(user1Addr)
-	std.TestSetOrigCaller(user1Addr)
 	std.TestSetRealm(user1Realm)
 
 	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
