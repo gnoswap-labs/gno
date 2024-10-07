@@ -14,7 +14,6 @@ func GetLimitCaller() bool {
 	return limitCaller
 }
 func SetLimitCaller(v bool) {
-	// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic("must be called by admin")
