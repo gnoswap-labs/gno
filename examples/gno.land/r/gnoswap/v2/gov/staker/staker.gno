@@ -7,6 +7,8 @@ import (
 	"gno.land/p/demo/ufmt"
 	pusers "gno.land/p/demo/users"
 
+	"gno.land/r/gnoswap/v2/consts"
+
 	"gno.land/r/gnoswap/v2/gns"
 	"gno.land/r/gnoswap/v2/gov/xgns"
 
@@ -216,6 +218,65 @@ func CollectReward() {
 		std.Emit(
 			"CollectReward",
 			"m_prevRealm", prevRealm(),
+			"reward", "protocol_fee",
+			"token", tokenPath,
+			"amount", ufmt.Sprintf("%d", amount),
+		)
+	}
+}
+
+func CollectRewardFromLaunchPad(to std.Address) {
+	prevRealm := std.PrevRealm().PkgPath()
+	if prevRealm != consts.LAUNCHPAD_PATH {
+		panic("only launchpad can call CollectRewardFromLaunchPad()")
+	}
+
+	en.MintAndDistributeGns()
+	calculateReward()
+
+	// GNS EMISSION
+	emissionReward := userEmissionReward[to]
+	if emissionReward > 0 {
+		if gns.BalanceOf(a2u(std.CurrentRealm().Addr())) < emissionReward {
+			panic(ufmt.Sprintf("not enough GNS in the realm to send emission reward(%d) for user %s", emissionReward, to.String()))
+		}
+
+		// transfer GNS to to
+		gns.Transfer(a2u(to), emissionReward)
+		println("GOV_STAKER_GNS_EMISSION_USER", to.String(), "AMOUNT", emissionReward)
+		userEmissionReward[to] = 0
+
+		std.Emit(
+			"CollectRewardFromLaunchPad",
+			"m_prevRealm", prevRealm,
+			"m_to", to.String(),
+			"reward", "emission",
+			"amount", ufmt.Sprintf("%d", emissionReward),
+		)
+	}
+
+	// PROTOCOL FEE
+	protocolFee, exist := userProtocolFeeReward[to]
+	if !exist || len(protocolFee) == 0 {
+		println("no protocol fee reward for user", to)
+		return
+	}
+
+	for tokenPath, amount := range protocolFee {
+		if amount == 0 {
+			continue
+		}
+
+		// transfer token to to
+		// token.Transfer(a2u(to), amount)
+		transferByRegisterCall(tokenPath, to, amount)
+		println("GOV_STAKER_PROTOCOL_FEE_USER", to.String(), "TOKEN", tokenPath, "AMOUNT", amount)
+		userProtocolFeeReward[to][tokenPath] = 0
+
+		std.Emit(
+			"CollectReward",
+			"m_prevRealm", prevRealm,
+			"p_to", to.String(),
 			"reward", "protocol_fee",
 			"token", tokenPath,
 			"amount", ufmt.Sprintf("%d", amount),
