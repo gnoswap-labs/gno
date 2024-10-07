@@ -26,12 +26,12 @@ type voteWithWeight struct {
 }
 
 var (
-	votes     = make(map[string]bool)                      // voteKey(proposalId:user) -> yes/no
-	userVotes = make(map[string]map[uint64]voteWithWeight) // user -> proposalId -> voteWithWeight
+	votes     = make(map[string]bool)                           // voteKey(proposalId:user) -> yes/no
+	userVotes = make(map[std.Address]map[uint64]voteWithWeight) // user -> proposalId -> voteWithWeight
 
 	proposalId               uint64
 	proposals                = make(map[uint64]ProposalInfo) // proposalId -> ProposalInfo
-	latestProposalByProposer = make(map[string]uint64)       // proposer -> proposalId
+	latestProposalByProposer = make(map[std.Address]uint64)  // proposer -> proposalId
 )
 
 // ProposeText creates a new text proposal with the given data
@@ -46,7 +46,6 @@ func ProposeText(
 	en.MintAndDistributeGns()
 	updateProposalsState()
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	proposer := std.PrevRealm().Addr()
 
 	enough := checkEnoughXGnsToPropose(proposer)
@@ -73,11 +72,10 @@ func ProposeText(
 
 	proposalId++
 	proposals[proposalId] = proposal
-	latestProposalByProposer[proposer.String()] = proposalId
+	latestProposalByProposer[proposer] = proposalId
 
 	std.Emit(
 		"Proposed",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_title", title,
 		"p_description", description,
@@ -104,7 +102,6 @@ func ProposeCommunityPoolSpend(
 	en.MintAndDistributeGns()
 	updateProposalsState()
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	proposer := std.PrevRealm().Addr()
 
 	enough := checkEnoughXGnsToPropose(proposer)
@@ -136,11 +133,10 @@ func ProposeCommunityPoolSpend(
 
 	proposalId++
 	proposals[proposalId] = proposal
-	latestProposalByProposer[proposer.String()] = proposalId
+	latestProposalByProposer[proposer] = proposalId
 
 	std.Emit(
 		"Proposed",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_title", title,
 		"p_description", description,
@@ -169,7 +165,6 @@ func ProposeParameterChange(
 	en.MintAndDistributeGns()
 	updateProposalsState()
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	proposer := std.PrevRealm().Addr()
 
 	enough := checkEnoughXGnsToPropose(proposer)
@@ -225,11 +220,10 @@ func ProposeParameterChange(
 
 	proposalId++
 	proposals[proposalId] = proposal
-	latestProposalByProposer[proposer.String()] = proposalId
+	latestProposalByProposer[proposer] = proposalId
 
 	std.Emit(
 		"Proposed",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_title", title,
 		"p_description", description,
@@ -261,7 +255,6 @@ func Vote(proposalId uint64, yes bool) string {
 	now := uint64(time.Now().Unix())
 	votingStartTime := proposal.ExecutionState.CreatedAt + config.VotingStartDelay
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	voter := std.PrevRealm().Addr()
 
 	if now < votingStartTime {
@@ -285,7 +278,7 @@ func Vote(proposalId uint64, yes bool) string {
 	}
 
 	weight := gs.GetDelegatedCumulative(
-		voter.String(),
+		voter,
 		votingStartTime-config.VotingWeightSmoothingDuration,
 	)
 	if weight == 0 {
@@ -308,10 +301,10 @@ func Vote(proposalId uint64, yes bool) string {
 	proposals[proposalId] = proposal // update Yea, Nay
 	votes[voteKey] = yes
 
-	if userVotes[voter.String()] == nil {
-		userVotes[voter.String()] = make(map[uint64]voteWithWeight)
+	if userVotes[voter] == nil {
+		userVotes[voter] = make(map[uint64]voteWithWeight)
 	}
-	userVotes[voter.String()][proposalId] = voteWithWeight{
+	userVotes[voter][proposalId] = voteWithWeight{
 		Yes:         yes,
 		Weight:      weight,
 		VotedHeight: uint64(std.GetHeight()),
@@ -320,7 +313,6 @@ func Vote(proposalId uint64, yes bool) string {
 
 	std.Emit(
 		"Voted",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_proposalId", ufmt.Sprintf("%d", proposalId),
 		"p_yes", voteToString(yes),
@@ -355,7 +347,6 @@ func Cancel(proposalId uint64) {
 		panic(ufmt.Sprintf("voting has already started for proposal %d", proposalId))
 	}
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	caller := std.PrevRealm().Addr()
 	if caller != proposal.Proposer {
 		// If the caller is not the proposer, check if the proposer's stake has fallen below the threshold
@@ -379,7 +370,6 @@ func Cancel(proposalId uint64) {
 
 	std.Emit(
 		"Canceled",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_proposalId", ufmt.Sprintf("%d", proposalId),
 		"by", caller.String(),
@@ -461,10 +451,8 @@ func Execute(proposalId uint64) {
 	proposal.ExecutionState.Active = false
 	proposals[proposalId] = proposal
 
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
 	std.Emit(
 		"Executed",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_proposalId", ufmt.Sprintf("%d", proposalId),
 		"executor", std.PrevRealm().Addr().String(),
@@ -534,6 +522,10 @@ func updateProposalsState() {
 
 func checkEnoughXGnsToPropose(proposer std.Address) bool {
 	xGNS := xgns.BalanceOf(a2u(proposer))
+	println("proposer", proposer.String())
+	println("xGNS", xGNS)
+	println("config.ProposalCreationThreshold", config.ProposalCreationThreshold)
+
 	if xGNS < config.ProposalCreationThreshold {
 		return false
 	}
