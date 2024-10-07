@@ -9,7 +9,7 @@ import (
 	"gno.land/r/gnoswap/v2/consts"
 )
 
-func wrap(ugnotAmount uint64) {
+func wrap(ugnotAmount uint64, to std.Address) {
 	if ugnotAmount == 0 {
 		return
 	}
@@ -26,7 +26,7 @@ func wrap(ugnotAmount uint64) {
 	wugnot.Deposit() // POSITION HAS WUGNOT
 
 	// SEND WUGNOT: POSITION -> USER
-	wugnot.Transfer(a2u(std.PrevRealm().Addr()), ugnotAmount)
+	wugnot.Transfer(a2u(to), ugnotAmount)
 
 	std.Emit(
 		"GNOSWAP",
@@ -36,20 +36,20 @@ func wrap(ugnotAmount uint64) {
 	)
 }
 
-func unwrap(wugnotAmount uint64) {
+func unwrap(wugnotAmount uint64, to std.Address) {
 	if wugnotAmount == 0 {
 		return
 	}
 
 	// SEND WUGNOT: USER -> POSITION
-	wugnot.TransferFrom(a2u(std.PrevRealm().Addr()), a2u(consts.POSITION_ADDR), wugnotAmount)
+	wugnot.TransferFrom(a2u(to), a2u(consts.POSITION_ADDR), wugnotAmount)
 
 	// UNWRAP IT
 	wugnot.Withdraw(wugnotAmount)
 
 	// SEND GNOT: POSITION -> USER
 	banker := std.GetBanker(std.BankerTypeRealmSend)
-	banker.SendCoins(consts.POSITION_ADDR, std.PrevRealm().Addr(), std.Coins{{"ugnot", int64(wugnotAmount)}})
+	banker.SendCoins(consts.POSITION_ADDR, to, std.Coins{{"ugnot", int64(wugnotAmount)}})
 
 	std.Emit(
 		"GNOSWAP",

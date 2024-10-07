@@ -44,6 +44,7 @@ func TestMintPosition01InRange(t *testing.T) {
 		"0",
 		max_timeout,
 		gsa,
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position Mint [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_tickLower 12000} {p_tickUpper 14000} {tokenId 3} {liquidity 957388253} {amount0 50000000} {amount1 0}]}
 
@@ -70,6 +71,7 @@ func TestMintPosition02LowerRange(t *testing.T) {
 		"0",
 		max_timeout,
 		gsa,
+		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position Mint [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_tickLower 12000} {p_tickUpper 14000} {tokenId 3} {liquidity 957388253} {amount0 50000000} {amount1 0}]}
 
@@ -95,6 +97,7 @@ func TestMintPosition03UpperRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
+		gsa,
 		gsa,
 	)
 	// ---       event: {GNOSWAP gno.land/r/gnoswap/v2/position Mint [{m_callType DIRECT} {m_origCaller g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c} {m_prevRealm } {p_poolPath gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500} {p_tickLower 12000} {p_tickUpper 14000} {tokenId 3} {liquidity 957388253} {amount0 50000000} {amount1 0}]}

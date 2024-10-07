@@ -46,6 +46,7 @@ func TestMintPositionFullInRange(t *testing.T) {
 		"0",
 		max_timeout,
 		gsa,
+		gsa,
 	)
 
 }

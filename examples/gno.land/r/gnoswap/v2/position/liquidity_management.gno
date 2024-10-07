@@ -1,8 +1,6 @@
 package position
 
 import (
-	"std"
-
 	u256 "gno.land/p/gnoswap/uint256"
 
 	"gno.land/r/gnoswap/v2/common"
@@ -28,14 +26,14 @@ func addLiquidity(params AddLiquidityParams) (*u256.Uint, *u256.Uint, *u256.Uint
 
 	pToken0, pToken1, pFee := poolKeyDivide(params.poolKey)
 	amount0, amount1 := pl.Mint( // string(uint256), string(uint256)
-		pToken0,                // token0Path string
-		pToken1,                // token1Path string
-		pFee,                   // fee uint16
-		consts.POSITION_ADDR,   // recipient std.Address
-		params.tickLower,       // tickLower int32
-		params.tickUpper,       // tickUpper int32
-		liquidity.ToString(),   // _liquidityAmount string(uint128)
-		std.PrevRealm().Addr(), // positionCaller std.Address
+		pToken0,              // token0Path string
+		pToken1,              // token1Path string
+		pFee,                 // fee uint16
+		consts.POSITION_ADDR, // recipient std.Address
+		params.tickLower,     // tickLower int32
+		params.tickUpper,     // tickUpper int32
+		liquidity.ToString(), // _liquidityAmount string(uint128)
+		params.caller,        // positionCaller std.Address
 	)
 
 	amount0Uint := u256.MustFromDecimal(amount0)

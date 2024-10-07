@@ -38,6 +38,7 @@ func TestMintPosition01InRange(t *testing.T) {
 		"0",
 		max_timeout,
 		gsa,
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(1))
@@ -75,6 +76,7 @@ func TestMintPosition02InRange(t *testing.T) {
 		"0",
 		"0",
 		max_timeout,
+		gsa,
 		gsa,
 	)
 

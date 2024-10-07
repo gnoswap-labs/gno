@@ -48,7 +48,7 @@ func TestPositionMintBarBaz(t *testing.T) {
 	std.TestSetRealm(gsaRealm)
 	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 	baz.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
-	tokenId, liquidity, amount0, amount1 := pn.Mint(barPath, bazPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa)
+	tokenId, liquidity, amount0, amount1 := pn.Mint(barPath, bazPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa, gsa)
 
 	shouldEQ(t, tokenId, uint64(1))
 	shouldEQ(t, amount0, "36790")  // bar
@@ -60,7 +60,7 @@ func TestPositionMintBazQux(t *testing.T) {
 	baz.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 	qux.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 
-	tokenId, liquidity, amount0, amount1 := pn.Mint(bazPath, quxPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa)
+	tokenId, liquidity, amount0, amount1 := pn.Mint(bazPath, quxPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa, gsa)
 
 	shouldEQ(t, tokenId, uint64(2))
 	shouldEQ(t, amount0, "36790")
@@ -78,7 +78,7 @@ func TestPositionMintQuxGnot(t *testing.T) {
 	wugnot.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 	wugnot.Approve(a2u(consts.POSITION_ADDR), consts.UINT64_MAX) // wrap unwrap
 
-	tokenId, liquidity, amount0, amount1 := pn.Mint(quxPath, consts.GNOT, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa)
+	tokenId, liquidity, amount0, amount1 := pn.Mint(quxPath, consts.GNOT, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, gsa, gsa)
 
 	shouldEQ(t, tokenId, uint64(3))
 	shouldEQ(t, amount0, "100000")
