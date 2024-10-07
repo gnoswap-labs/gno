@@ -28,13 +28,16 @@ func b64Encode(data string) string {
 	return string(b64.StdEncoding.EncodeToString([]byte(data)))
 }
 
-func origCaller() string {
-	// myunghwan, Change GetOrigCaller to PrevRealm().Addr()
-	// TODO :
-	// - Check if PrevRealm().Addr() is the same as GetOrigCaller()
-	return std.GetOrigCaller().String()
-}
-
 func prevRealm() string {
 	return std.PrevRealm().PkgPath()
+}
+
+func isUserCall() bool {
+	return std.PrevRealm().IsUser()
+}
+
+func assertUserCall() {
+	if !isUserCall() {
+		panic("must be called by user")
+	}
 }

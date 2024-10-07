@@ -21,7 +21,7 @@ func GetLockedAmount() uint64 {
 // GetLockedInfoByAddress gets the locked info of an address.
 // - total locked amount
 // - claimable amount
-func GetLockedInfoByAddress(addr string) string {
+func GetLockedInfoByAddress(addr std.Address) string {
 	en.MintAndDistributeGns()
 	calculateReward()
 
@@ -55,7 +55,7 @@ func GetLockedInfoByAddress(addr string) string {
 	return marshal(lockedObj)
 }
 
-func GetClaimableRewardByAddress(addr string) string {
+func GetClaimableRewardByAddress(addr std.Address) string {
 	en.MintAndDistributeGns()
 	calculateReward()
 
