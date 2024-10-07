@@ -128,7 +128,6 @@ func DepositGns(
 
 	std.Emit(
 		"DepositGns",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_targetProjectTierId", targetProjectTierId,
 		"p_amount", ufmt.Sprintf("%d", amount),
@@ -192,7 +191,7 @@ func CollectDepositGns() uint64 {
 		// emit event for each deposit
 		std.Emit(
 			"CollectDepositGns",
-			"m_origCaller", origCaller(),
+
 			"m_prevRealm", prevRealm(),
 			"depositId", depositId,
 			"amount", ufmt.Sprintf("%d", deposit.amount),

@@ -83,7 +83,6 @@ func CollectReward() {
 
 			std.Emit(
 				"CollectReward",
-				"m_origCaller", origCaller(),
 				"m_prevRealm", prevRealm(),
 				"depositId", depositId,
 				"amount", ufmt.Sprintf("%d", deposit.rewardAmount),
@@ -172,7 +171,6 @@ func CollectRewardByProjectId(projectId string) uint64 {
 
 			std.Emit(
 				"CollectRewardByProjectId",
-				"m_origCaller", origCaller(),
 				"m_prevRealm", prevRealm(),
 				"p_projectId", projectId,
 				"depositId", depositId,
@@ -269,7 +267,6 @@ func CollectRewardByProjectTier(tierId string) uint64 {
 
 			std.Emit(
 				"CollectRewardByProjectTier",
-				"m_origCaller", origCaller(),
 				"m_prevRealm", prevRealm(),
 				"p_tierId", tierId,
 				"depositId", depositId,
@@ -348,7 +345,6 @@ func CollectRewardByDepositId(depositId string) uint64 {
 
 		std.Emit(
 			"CollectRewardByDepositId",
-			"m_origCaller", origCaller(),
 			"m_prevRealm", prevRealm(),
 			"p_depositId", depositId,
 			"amount", ufmt.Sprintf("%d", deposit.rewardAmount),

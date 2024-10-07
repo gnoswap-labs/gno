@@ -177,7 +177,6 @@ func CreateProject(
 
 	std.Emit(
 		"CreateProject",
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"p_tokenPath", tokenPath,
 		"p_recipient", recipient.String(),
@@ -241,7 +240,6 @@ func RefundProject(projectId string) uint64 {
 
 		std.Emit(
 			"RefundProject",
-			"m_origCaller", origCaller(),
 			"m_prevRealm", prevRealm(),
 			"p_projectId", projectId,
 			"recipient", recipient.String(),
