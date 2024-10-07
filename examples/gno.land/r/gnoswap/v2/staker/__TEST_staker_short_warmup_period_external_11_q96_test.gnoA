@@ -57,7 +57,8 @@ func TestMintBarQux100_1(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(1))
@@ -152,7 +153,8 @@ func TestMintBarQux100_2(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(2))

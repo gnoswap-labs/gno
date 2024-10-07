@@ -76,7 +76,8 @@ func TestPositionMintPos01Tier01(t *testing.T) {
 		"0",                         // amount0Min
 		"0",                         // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 	std.TestSkipHeights(1)
 
@@ -113,7 +114,8 @@ func TestPositionMintPos02Tier01(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	std.TestSkipHeights(1)
@@ -151,7 +153,8 @@ func TestPositionMintPos03Tier01(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	std.TestSkipHeights(1)

@@ -72,7 +72,8 @@ func TestMintBarQux100_1(t *testing.T) {
 		"1",        // amount0Min
 		"1",        // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(1))
@@ -100,7 +101,8 @@ func TestMintBarQux100_2(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	shouldEQ(t, tokenId, uint64(2))
@@ -180,11 +182,11 @@ func TestMakePositionOutRange(t *testing.T) {
 		barPath,
 		quxPath,
 		fee100,
-		gsa.String(),
+		gsa,
 		true,
 		"70000",
 		consts.MIN_PRICE,
-		gsa.String(),
+		gsa,
 	)
 	shouldEQ(t, amount0, "70000")
 	shouldEQ(t, amount1, "-69773")
@@ -213,11 +215,11 @@ func TestMakePositionInRange(t *testing.T) {
 		barPath,
 		quxPath,
 		fee100,
-		gsa.String(),
+		gsa,
 		false,
 		"70000",
 		consts.MAX_PRICE,
-		gsa.String(),
+		gsa,
 	)
 	// shouldEQ(t, amount0, "70000")
 	// shouldEQ(t, amount1, "-69775")

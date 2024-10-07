@@ -71,7 +71,8 @@ func TestMintBarQux500(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	std.TestSkipHeights(1)
@@ -99,7 +100,8 @@ func TestMintBarBaz100(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 	std.TestSkipHeights(1)
 
@@ -126,7 +128,8 @@ func TestMintFooQux500(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	std.TestSkipHeights(1)

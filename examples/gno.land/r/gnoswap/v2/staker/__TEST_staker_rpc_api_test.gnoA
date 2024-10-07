@@ -79,7 +79,8 @@ func TestPositionMintFooBar01(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,  // deadline
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	std.TestSkipHeights(1)
@@ -112,7 +113,8 @@ func TestPositionMintFooBar02(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,  // deadline
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	std.TestSkipHeights(1)
@@ -145,7 +147,8 @@ func TestPositionMintBazQux01(t *testing.T) {
 		"1",          // amount0Min
 		"1",          // amount1Min
 		max_timeout,  // deadline
-		gsa.String(),
+		gsa,
+		gsa,
 	)
 
 	std.TestSkipHeights(1)

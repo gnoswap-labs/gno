@@ -31,36 +31,39 @@ func GetRegisteredTokens() []string {
 	return tokens
 }
 
-// RegisterGRC20Interface registers a GRC20 interface for a given package path.
+// RegisterGRC20Interface registers a GRC20 token interface
 //
 // Panics:
-//   - If the caller is not the authorized TOKEN_REGISTER address
-//   - If the package path is already registered
+//   - caller is not the admin
+//   - token already registered
 func RegisterGRC20Interface(pkgPath string, igrc20 GRC20Interface) {
-	caller := std.GetOrigCaller()
+	assertUserCall()
+
+	caller := std.PrevRealm().Addr()
 	if caller != consts.TOKEN_REGISTER {
-		panic(ufmt.Sprintf("[STAKER] staker_register.gno__RegisterGRC20Interface() || unauthorized address(%s) to register", caller.String()))
+		panic(ufmt.Sprintf("[STAKER] token_register.gno__RegisterGRC20Interface() || unauthorized address(%s) to register", caller.String()))
 	}
 
 	pkgPath = handleNative(pkgPath)
 
 	_, found := registered[pkgPath]
 	if found {
-		panic(ufmt.Sprintf("[STAKER] staker_register.gno__RegisterGRC20Interface() || pkgPath(%s) already registered", pkgPath))
+		panic(ufmt.Sprintf("[STAKER] token_register.gno__RegisterGRC20Interface() || pkgPath(%s) already registered", pkgPath))
 	}
 
 	registered[pkgPath] = igrc20
 }
 
-// UnregisterGRC20Interface removes a registered GRC20 interface for a given package path.
+// UnregisterGRC20Interface unregisters a GRC20 token interface
 //
 // Panics:
-//   - If the caller is not the authorized TOKEN_REGISTER address
+//   - caller is not the admin
 func UnregisterGRC20Interface(pkgPath string) {
-	// only admin can unregister
-	caller := std.GetOrigCaller()
+	assertUserCall()
+
+	caller := std.PrevRealm().Addr()
 	if caller != consts.TOKEN_REGISTER {
-		panic(ufmt.Sprintf("[STAKER] staker_register.gno__UnregisterGRC20Interface() || unauthorized address(%s) to unregister", caller.String()))
+		panic(ufmt.Sprintf("[STAKER] token_register.gno__UnregisterGRC20Interface() || unauthorized address(%s) to unregister", caller.String()))
 	}
 
 	pkgPath = handleNative(pkgPath)
