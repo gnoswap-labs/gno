@@ -187,7 +187,6 @@ func SetAvgBlockTimeInMs(ms int64) {
 	std.Emit(
 		"GNOSWAP",
 		"m_callType", callType(),
-		"m_origCaller", origCaller(),
 		"m_prevRealm", prevRealm(),
 		"m_func", "SetAvgBlockTimeInMs",
 		"before", int64ToStr(before),
@@ -256,11 +255,6 @@ func GetHalvingInfo() string {
 func getYearlyBlockForTimestampMs(ms int64) int64 {
 	yearMs := TIMESTAMP_365DAYS * 1000 // how much millisecond in a year
 	return yearMs / ms                 // how many block in a year
-}
-
-func origCaller() string {
-	// myugnhwan, Change GetOrigCaller to PrevRealm().Addr()
-	return std.PrevRealm().Addr().String()
 }
 
 func prevRealm() string {
