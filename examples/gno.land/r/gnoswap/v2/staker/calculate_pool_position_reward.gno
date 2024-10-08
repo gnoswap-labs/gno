@@ -261,7 +261,6 @@ func CalcPoolPosition() {
 			std.Emit(
 				"GNOSWAP_PROTOCOL_FEE",
 				"m_callType", callType(),
-				"m_origCaller", origCaller(),
 				"m_prevRealm", prevRealm(),
 				"poolPath", poolPath,
 				"reason", "emission_target_pool_no_staked",

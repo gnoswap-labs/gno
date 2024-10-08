@@ -68,6 +68,8 @@ const (
 
 	LAUNCHPAD_PATH string      = "gno.land/r/gnoswap/v2/launchpad"
 	LAUNCHPAD_ADDR std.Address = "g1qslhn7vn69e09zwmz5hlz0273v3c33u5z8d9j7"
+
+	INIT_REGISTER_PATH string = "gno.land/r/g1er355fkjksqpdtwmhf5penwa82p0rhqxkkyhk5/v2/register_gnodev"
 )
 
 // NUMBER
