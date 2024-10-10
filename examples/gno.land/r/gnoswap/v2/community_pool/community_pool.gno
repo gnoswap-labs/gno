@@ -10,24 +10,58 @@ import (
 	"gno.land/r/gnoswap/v2/consts"
 )
 
-func TransferToken(pkgPath string, to std.Address, amount uint64) {
-	common.IsHalted()
-
+// OnlyAdminTransferToken transfers token to the given address.
+// Panics if the caller is not the admin.
+func OnlyAdminTransferToken(pkgPath string, to std.Address, amount uint64) {
 	caller := std.PrevRealm().Addr()
-	if caller != consts.GNOSWAP_ADMIN && caller != consts.GOV_GOVERNANCE_ADDR {
+	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[COMMUNITY_POOL] community_pool.gno__TransferToken() || only admin(%s) or governance(%s) can transfer community pool's balance, called from %s",
+				"[COMMUNITY_POOL] community_pool.gno__OnlyAdminTransferToken() || only admin(%s) can transfer token, called from %s",
 				consts.GNOSWAP_ADMIN,
+				caller,
+			),
+		)
+	}
+
+	transferToken(pkgPath, to, amount)
+	std.Emit(
+		"TransferTokenByAdmin",
+		"p_pkgPath", pkgPath,
+		"p_to", to,
+		"p_amount", amount,
+	)
+}
+
+// OnlyGovernanceTransferToken transfers token to the given address.
+// Panics if the caller is not the governance contract.
+func OnlyGovernanceTransferToken(pkgPath string, to std.Address, amount uint64) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GOV_GOVERNANCE_ADDR {
+		panic(
+			ufmt.Sprintf(
+				"[COMMUNITY_POOL] community_pool.gno__OnlyGovernanceTransferToken() || only governance(%s) can transfer token, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
 		)
 	}
 
+	transferToken(pkgPath, to, amount)
+	std.Emit(
+		"TransferTokenByGovernance",
+		"p_pkgPath", pkgPath,
+		"p_to", to,
+		"p_amount", amount,
+	)
+}
+
+func transferToken(pkgPath string, to std.Address, amount uint64) {
+	common.IsHalted()
+
 	_, found := registered[pkgPath]
 	if !found {
-		panic(ufmt.Sprintf("[COMMUNITY_POOL] community_pool.gno__TransferToken() || pkgPath(%s) not registered", pkgPath))
+		panic(ufmt.Sprintf("[COMMUNITY_POOL] community_pool.gno__transferToken() || pkgPath(%s) not registered", pkgPath))
 	}
 
 	registered[pkgPath].Transfer()(a2u(to), amount)

@@ -10,6 +10,7 @@ import (
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
 
+	"gno.land/r/gnoswap/v2/common"
 	"gno.land/r/gnoswap/v2/consts"
 )
 
@@ -108,18 +109,61 @@ func GetEachTierPoolNum() []string {
 	return []string{tier1, tier2, tier3}
 }
 
-// SetPoolTier sets the tier of a specified pool
+func OnlyAdminSetPoolTier(poolPath string, tier uint64) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GNOSWAP_ADMIN {
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] manage_pool_tiers.gno__OnlyAdminSetPoolTier() || only admin(%s) can set additional pool with tier, called from %s",
+				consts.GNOSWAP_ADMIN,
+				caller,
+			),
+		)
+	}
+
+	setPoolTier(poolPath, tier)
+
+	std.Emit(
+		"SetPoolTierByAdmin",
+		"p_poolPath", poolPath,
+		"p_tier", uint64ToStr(tier),
+	)
+}
+
+func OnlyGovernanceSetPoolTier(poolPath string, tier uint64) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GOV_GOVERNANCE_ADDR {
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] manage_pool_tiers.gno__OnlyGovernanceSetPoolTier() || only governance(%s) can set additional pool with tier, called from %s",
+				consts.GOV_GOVERNANCE_ADDR,
+				caller,
+			),
+		)
+	}
+
+	setPoolTier(poolPath, tier)
+
+	std.Emit(
+		"SetPoolTierByGovernance",
+		"p_poolPath", poolPath,
+		"p_tier", uint64ToStr(tier),
+	)
+}
+
+// setPoolTier sets the tier of a specified pool
 //
 // Parameters:
 //   - pool (string): The path of the pool to set the tier for
 //   - tier (uint64): The tier level to set (must be between 1 and 3)
 //
 // Panics:
-//   - Caller is not admin or governance address
 //   - Pool does not exist
 //   - Pool already exists in poolTiers
 //   - Tier is not valid (not between 1 and 3)
-func SetPoolTier(pool string, tier uint64) {
+func setPoolTier(pool string, tier uint64) {
+	common.IsHalted()
+
 	en.MintAndDistributeGns()
 	CalcPoolPosition()
 
@@ -134,18 +178,6 @@ func SetPoolTier(pool string, tier uint64) {
 		panic(ufmt.Sprintf("[STAKER] manage_pool_tiers.gno__SetPoolTier() || pool(%s) already exists in poolTiers", pool))
 	}
 
-	caller := std.PrevRealm().Addr()
-	if caller != consts.GNOSWAP_ADMIN && caller != consts.GOV_GOVERNANCE_ADDR {
-		panic(
-			ufmt.Sprintf(
-				"[STAKER] manage_pool_tiers.gno__SetPoolTier() || only admin(%s) or governance(%s) can set additional pool with tier, called from %s",
-				consts.GNOSWAP_ADMIN,
-				consts.GOV_GOVERNANCE_ADDR,
-				caller,
-			),
-		)
-	}
-
 	// check if tier is valid
 	mustValidTier(tier)
 
@@ -153,28 +185,61 @@ func SetPoolTier(pool string, tier uint64) {
 		tier:           tier,
 		startTimestamp: time.Now().Unix(),
 	}
+}
+
+func OnlyAdminChangePoolTier(poolPath string, tier uint64) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GNOSWAP_ADMIN {
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] manage_pool_tiers.gno__OnlyAdminChangePoolTier() || only admin(%s) can change existing pool tier, called from %s",
+				consts.GNOSWAP_ADMIN,
+				caller,
+			),
+		)
+	}
+
+	changePoolTier(poolPath, tier)
 
 	std.Emit(
-		"GNOSWAP",
-		"m_callType", callType(),
-		"m_prevRealm", prevRealm(),
-		"p_poolPath", pool,
+		"ChangePoolTierByAdmin",
+		"p_poolPath", poolPath,
 		"p_tier", uint64ToStr(tier),
 	)
 }
 
-// ChangePoolTier changes the tier of an existing pool in poolTiers
+func OnlyGovernanceChangePoolTier(poolPath string, tier uint64) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GOV_GOVERNANCE_ADDR {
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] manage_pool_tiers.gno__OnlyGovernanceChangePoolTier() || only governance(%s) can change existing pool tier, called from %s",
+				consts.GOV_GOVERNANCE_ADDR,
+				caller,
+			),
+		)
+	}
+
+	changePoolTier(poolPath, tier)
+
+	std.Emit(
+		"ChangePoolTierByGovernance",
+		"p_poolPath", poolPath,
+		"p_tier", uint64ToStr(tier),
+	)
+}
+
+// changePoolTier changes the tier of an existing pool in poolTiers
 //
 // Parameters:
 //   - pool (string): The path of the pool to change the tier for
 //   - tier (uint64): The new tier level to set (must be between 1 and 3)
 //
 // Panics:
-//   - Caller is not admin or governance address
 //   - Pool does not exist in poolTiers
 //   - Tier is not valid (not between 1 and 3)
 //   - Pool is default pool (MUST_EXISTS_IN_TIER_1)
-func ChangePoolTier(pool string, tier uint64) {
+func changePoolTier(pool string, tier uint64) {
 	// because we changed poolTiers, previous calculation should be based on last tier
 	// from next calculation, it will be based on new tier
 	en.MintAndDistributeGns()
@@ -218,15 +283,56 @@ func ChangePoolTier(pool string, tier uint64) {
 	poolTiers[pool] = internal
 }
 
-// RemovePoolTier removes the pool from poolTiers
+func OnlyAdminRemovePoolTier(poolPath string) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GNOSWAP_ADMIN {
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] manage_pool_tiers.gno__OnlyAdminRemovePoolTier() || only admin(%s) can remove existing pool with tier, called from %s",
+				consts.GNOSWAP_ADMIN,
+				caller,
+			),
+		)
+	}
+
+	removePoolTier(poolPath)
+
+	std.Emit(
+		"RemovePoolTierByAdmin",
+		"p_poolPath", poolPath,
+	)
+}
+
+func OnlyGovernanceRemovePoolTier(poolPath string) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GOV_GOVERNANCE_ADDR {
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] manage_pool_tiers.gno__OnlyGovernanceRemovePoolTier() || only governance(%s) can remove existing pool with tier, called from %s",
+				consts.GOV_GOVERNANCE_ADDR,
+				caller,
+			),
+		)
+	}
+
+	removePoolTier(poolPath)
+
+	std.Emit(
+		"RemovePoolTierByGovernance",
+		"p_poolPath", poolPath,
+	)
+}
+
+// removePoolTier removes the pool from poolTiers
 //
 // Parameters:
 //   - pool (string): The path of the pool to remove from poolTiers
 //
 // Panics:
-//   - Caller is not admin or governance address
 //   - Pool is default pool (MUST_EXISTS_IN_TIER_1)
-func RemovePoolTier(pool string) {
+func removePoolTier(pool string) {
+	common.IsHalted()
+
 	// because we remove pool from poolTiers, this should be final calculation
 	en.MintAndDistributeGns()
 	CalcPoolPosition()

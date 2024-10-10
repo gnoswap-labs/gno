@@ -83,30 +83,49 @@ func GetUnstakingFee() uint64 {
 	return unstakingFee
 }
 
-func SetUnstakingFee(fee uint64) {
+func OnlyAdminSetUnstakingFee(fee uint64) {
 	caller := std.PrevRealm().Addr()
-	if caller != consts.GNOSWAP_ADMIN && caller != consts.GOV_GOVERNANCE_ADDR {
+	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[STAKER] protocol_fee_unstaking.gno__SetUnstakingFee() || only admin(%s) or governance(%s) can set unstaking fee, called from %s",
+				"[STAKER] reward_fee.gno__OnlyAdminSetUnstakingFee() || only admin(%s) can set unstaking fee, called from %s",
 				consts.GNOSWAP_ADMIN,
+				caller,
+			),
+		)
+	}
+
+	setUnstakingFee(fee)
+	std.Emit(
+		"SetUnstakingFeeByAdmin",
+		"p_fee", uint64ToStr(fee),
+	)
+}
+
+func OnlyGovernanceSetUnstakingFee(fee uint64) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GOV_GOVERNANCE_ADDR {
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] reward_fee.gno__OnlyGovernanceSetUnstakingFee() || only governance(%s) can set unstaking fee, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
 		)
 	}
 
+	setUnstakingFee(fee)
+	std.Emit(
+		"SetUnstakingFeeByGovernance",
+		"p_fee", uint64ToStr(fee),
+	)
+}
+
+func setUnstakingFee(fee uint64) {
 	// 10000 (bps) = 100%
 	if fee > 10000 {
 		panic(ufmt.Sprintf("[STAKER] reward_fee.gno__SetUnstakingFee() || fee(%d) must be in range 0 ~ 10000", fee))
 	}
 
 	unstakingFee = fee
-
-	std.Emit(
-		"GNOSWAP",
-		"m_callType", callType(),
-		"m_prevRealm", prevRealm(),
-		"p_fee", uint64ToStr(fee),
-	)
 }

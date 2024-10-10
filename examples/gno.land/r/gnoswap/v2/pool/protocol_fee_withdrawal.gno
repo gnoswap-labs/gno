@@ -103,36 +103,51 @@ func GetWithdrawalFee() uint64 {
 	return withdrawalFee
 }
 
-// SetWithdrawalFee sets the withdrawal fee
-//
-// Panics:
-// - caller is not the admin
-func SetWithdrawalFee(fee uint64) {
-	common.IsHalted()
-
+func OnlyAdminSetWithdrawalFee(fee uint64) {
 	caller := std.PrevRealm().Addr()
-	if caller != consts.GNOSWAP_ADMIN && caller != consts.GOV_GOVERNANCE_ADDR {
+	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] protocol_fee_withdrawal.gno__SetWithdrawalFee() || only admin(%s) or governance(%s) can set withdrawal fee, called from %s",
+				"[POOL] protocol_fee_withdrawal.gno__OnlyAdminSetWithdrawalFee() || only admin(%s) can set withdrawal fee, called from %s",
 				consts.GNOSWAP_ADMIN,
+				caller,
+			),
+		)
+	}
+
+	setWithdrawalFee(fee)
+	std.Emit(
+		"SetWithdrawalFeeByAdmin",
+		"p_fee", uint64ToStr(fee),
+	)
+}
+
+func OnlyGovernanceSetWithdrawalFee(fee uint64) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GOV_GOVERNANCE_ADDR {
+		panic(
+			ufmt.Sprintf(
+				"[POOL] protocol_fee_withdrawal.gno__OnlyGovernanceSetWithdrawalFee() || only governance(%s) can set withdrawal fee, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
 		)
 	}
 
+	setWithdrawalFee(fee)
+	std.Emit(
+		"SetWithdrawalFeeByGovernance",
+		"p_fee", uint64ToStr(fee),
+	)
+}
+
+func setWithdrawalFee(fee uint64) {
+	common.IsHalted()
+
 	// 10000 (bps) = 100%
 	if fee > 10000 {
-		panic(ufmt.Sprintf("[POOL] withdrawal_fee.gno__SetWithdrawalFee() || fee(%d) must be in range 0 ~ 10000", fee))
+		panic(ufmt.Sprintf("[POOL] withdrawal_fee.gno__setWithdrawalFee() || fee(%d) must be in range 0 ~ 10000", fee))
 	}
 
 	withdrawalFee = fee
-
-	std.Emit(
-		"GNOSWAP",
-		"m_callType", callType(),
-		"m_prevRealm", prevRealm(),
-		"p_fee", uint64ToStr(fee),
-	)
 }

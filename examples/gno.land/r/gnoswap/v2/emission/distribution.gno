@@ -49,8 +49,77 @@ func GetDistributionPct(target int) uint64 {
 	return distributionPct[emissionTarget(target)]
 }
 
-// ChangeDistributionPct changes the distribution percentage for the given four targets.
-func ChangeDistributionPct(
+// OnlyAdminChangeDistributionPct changes the distribution percentage for the given targets.
+// Panics if the caller is not the admin.
+func OnlyAdminChangeDistributionPct(
+	target01 int, pct01 uint64,
+	target02 int, pct02 uint64,
+	target03 int, pct03 uint64,
+	target04 int, pct04 uint64,
+) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GNOSWAP_ADMIN {
+		panic("only admin can change distribution percentages")
+	}
+
+	changeDistributionPcts(
+		target01, pct01,
+		target02, pct02,
+		target03, pct03,
+		target04, pct04,
+	)
+
+	checkSumDistributionPct()
+
+	std.Emit(
+		"ChangeDistributionPctByAdmin",
+		"p_target01", target01,
+		"p_pct01", pct01,
+		"p_target02", target02,
+		"p_pct02", pct02,
+		"p_target03", target03,
+		"p_pct03", pct03,
+		"p_target04", target04,
+		"p_pct04", pct04,
+	)
+}
+
+// OnlyGovernanceChangeDistributionPct changes the distribution percentage for the given targets.
+// Panics if the caller is not the governance contract.
+func OnlyGovernanceChangeDistributionPct(
+	target01 int, pct01 uint64,
+	target02 int, pct02 uint64,
+	target03 int, pct03 uint64,
+	target04 int, pct04 uint64,
+) {
+	caller := std.PrevRealm().Addr()
+	if caller != consts.GOV_GOVERNANCE_ADDR {
+		panic("only governance can change distribution percentages")
+	}
+
+	changeDistributionPcts(
+		target01, pct01,
+		target02, pct02,
+		target03, pct03,
+		target04, pct04,
+	)
+
+	checkSumDistributionPct()
+
+	std.Emit(
+		"ChangeDistributionPctByGovernance",
+		"p_target01", target01,
+		"p_pct01", pct01,
+		"p_target02", target02,
+		"p_pct02", pct02,
+		"p_target03", target03,
+		"p_pct03", pct03,
+		"p_target04", target04,
+		"p_pct04", pct04,
+	)
+}
+
+func changeDistributionPcts(
 	target01 int, pct01 uint64,
 	target02 int, pct02 uint64,
 	target03 int, pct03 uint64,
@@ -113,12 +182,6 @@ func transferToTarget(target emissionTarget, amount uint64) {
 
 // changeDistributionPct changes the distribution percentage for the given target.
 func changeDistributionPct(target emissionTarget, pct uint64) {
-	// only admin or governance can change
-	caller := std.PrevRealm().Addr()
-	if caller != consts.GNOSWAP_ADMIN && caller != consts.GOV_GOVERNANCE_ADDR {
-		panic("only admin or governance can change distribution percentages")
-	}
-
 	// cannot add new target
 	if target != LIQUIDITY_STAKING && target != DEVOPS && target != COMMUNITY_POOL && target != GOV_STAKER {
 		panic("invalid target")

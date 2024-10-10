@@ -56,10 +56,10 @@ func init() {
 	configVersions[uint64(len(configVersions)+1)] = config
 }
 
-// Reconfigure updates the Governor's configuration.
-// This function can only be called by admin
+// OnlyAdminReconfigure updates the proposal realted configuration.
+// Panics if the caller is not the admin.
 // Returns the new configuration version number.
-func Reconfigure(
+func OnlyAdminReconfigure(
 	votingStartDelay uint64,
 	votingPeriod uint64,
 	votingWeightSmoothingDuration uint64,
@@ -68,28 +68,49 @@ func Reconfigure(
 	executionDelay uint64,
 	executionWindow uint64,
 ) uint64 {
-	assertUserCall()
-
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
-		panic("Reconfigure can only be called by the admin")
+		panic("must be called by admin")
 	}
 
-	return reconfigure(
-		votingStartDelay,
-		votingPeriod,
-		votingWeightSmoothingDuration,
-		quorum,
-		proposalCreationThreshold,
-		executionDelay,
-		executionWindow,
+	common.IsHalted()
+
+	en.MintAndDistributeGns()
+	updateProposalsState()
+
+	newVersion := uint64(len(configVersions) + 1)
+
+	config = Config{
+		VotingStartDelay:              votingStartDelay,
+		VotingPeriod:                  votingPeriod,
+		VotingWeightSmoothingDuration: votingWeightSmoothingDuration,
+		Quorum:                        quorum,
+		ProposalCreationThreshold:     proposalCreationThreshold,
+		ExecutionDelay:                executionDelay,
+		ExecutionWindow:               executionWindow,
+	}
+	configVersions[newVersion] = config
+
+	std.Emit(
+		"ReconfigureByAdmin",
+		"m_prevRealm", prevRealm(),
+		"p_voting_start_delay", ufmt.Sprintf("%d", config.VotingStartDelay),
+		"p_voting_period", ufmt.Sprintf("%d", config.VotingPeriod),
+		"p_voting_weight_smoothing_duration", ufmt.Sprintf("%d", config.VotingWeightSmoothingDuration),
+		"p_quorum", ufmt.Sprintf("%d", config.Quorum),
+		"p_proposal_creation_threshold", ufmt.Sprintf("%d", config.ProposalCreationThreshold),
+		"p_execution_delay", ufmt.Sprintf("%d", config.ExecutionDelay),
+		"p_execution_window", ufmt.Sprintf("%d", config.ExecutionWindow),
+		"newVersion", ufmt.Sprintf("%d", newVersion),
 	)
+
+	return newVersion
 }
 
-// reconfigure updates the Governor's configuration.
-// This function can only be called by the Governor itself (via a proposal).
+// onlyGovernanceReconfigure updates the Governor's configuration.
+// panics if the caller is not the governance contract.
 // Returns the new configuration version number.
-func reconfigure(
+func onlyGovernanceReconfigure(
 	votingStartDelay uint64,
 	votingPeriod uint64,
 	votingWeightSmoothingDuration uint64,
@@ -117,7 +138,7 @@ func reconfigure(
 	configVersions[newVersion] = config
 
 	std.Emit(
-		"Reconfigured",
+		"ReconfigureByGovernance",
 		"m_prevRealm", prevRealm(),
 		"p_voting_start_delay", ufmt.Sprintf("%d", config.VotingStartDelay),
 		"p_voting_period", ufmt.Sprintf("%d", config.VotingPeriod),
