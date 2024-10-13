@@ -60,20 +60,6 @@ func Mint(
 		pool.transferFromAndVerify(positionCaller, consts.POOL_ADDR, pool.token1Path, amount1, false)
 	}
 
-	/*
-		std.Emit(
-			"GNOSWAP",
-			"m_callType", callType(),
-			"m_prevRealm", prevRealm(),
-			"p_poolPath", GetPoolPath(token0Path, token1Path, fee),
-			"p_tickLower", int32ToStr(tickLower),
-			"p_tickUpper", int32ToStr(tickUpper),
-			"p_liquidityAmount", _liquidityAmount,
-			"amount0", amount0.ToString(),
-			"amount1", amount1.ToString(),
-		)
-	*/
-
 	return amount0.ToString(), amount1.ToString()
 }
 
@@ -121,20 +107,6 @@ func Burn(
 
 	positionKey := positionGetKey(std.PrevRealm().Addr(), tickLower, tickUpper)
 	pool.positions[positionKey] = position
-
-	/*
-		std.Emit(
-			"GNOSWAP",
-			"m_callType", callType(),
-			"m_prevRealm", prevRealm(),
-			"p_poolPath", GetPoolPath(token0Path, token1Path, fee),
-			"p_tickLower", int32ToStr(tickLower),
-			"p_tickUpper", int32ToStr(tickUpper),
-			"p_liquidityAmount", _liquidityAmount,
-			"amount0", amount0.ToString(),
-			"amount1", amount1.ToString(),
-		)
-	*/
 
 	// actual token transfer happens in Collect()
 	return amount0.ToString(), amount1.ToString()
@@ -193,20 +165,6 @@ func Collect(
 	transferByRegisterCall(pool.token1Path, recipient, amount1.Uint64())
 
 	pool.positions[positionKey] = position
-
-	/*
-		std.Emit(
-			"GNOSWAP",
-			"m_callType", callType(),
-			"m_prevRealm", prevRealm(),
-			"p_poolPath", GetPoolPath(token0Path, token1Path, fee),
-			"p_tickLower", int32ToStr(tickLower),
-			"p_tickUpper", int32ToStr(tickUpper),
-			"p_recipient", _recipient,
-			"amount0", amount0.ToString(),
-			"amount1", amount1.ToString(),
-		)
-	*/
 
 	return amount0.ToString(), amount1.ToString()
 }
@@ -445,20 +403,21 @@ func Swap(
 	}
 
 	std.Emit(
-		"GNOSWAP",
-		"m_callType", callType(),
-		"m_prevRealm", prevRealm(),
-		"p_poolPath", GetPoolPath(token0Path, token1Path, fee),
-		"p_zeroForOne", boolToStr(zeroForOne),
-		"p_amountSpecified", _amountSpecified,
-		"p_sqrtPriceLimitX96", _sqrtPriceLimitX96,
-		"p_payer", payer.String(),
-		"p_recipient", recipient.String(),
-		"amount0", amount0.ToString(),
-		"amount1", amount1.ToString(),
-		"protocol_fee0", pool.protocolFees.token0.ToString(),
-		"protocol_fee1", pool.protocolFees.token1.ToString(),
-		"swap_fee", swapFee.ToString(),
+		"Swap",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"poolPath", GetPoolPath(token0Path, token1Path, fee),
+		"zeroForOne", boolToStr(zeroForOne),
+		"amountSpecified", _amountSpecified,
+		"sqrtPriceLimitX96", _sqrtPriceLimitX96,
+		"payer", payer.String(),
+		"recipient", recipient.String(),
+		"internal_amount0", amount0.ToString(),
+		"internal_amount1", amount1.ToString(),
+		"internal_protocolFee0", pool.protocolFees.token0.ToString(),
+		"internal_protocolFee1", pool.protocolFees.token1.ToString(),
+		"internal_swapFee", swapFee.ToString(),
+		"internal_sqrtPriceX96", pool.slot0.sqrtPriceX96.ToString(),
 	)
 
 	pool.slot0.unlocked = true
@@ -483,17 +442,21 @@ func OnlyAdminSetFeeProtocol(
 	}
 
 	newFee := setFeeProtocol(feeProtocol0, feeProtocol1)
+
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
 		"SetFeeProtocolByAdmin",
-		"p_feeProtocol0", feeProtocol0,
-		"p_feeProtocol1", feeProtocol1,
-		"newFee", newFee,
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"feeProtocol0", feeProtocol0,
+		"feeProtocol1", feeProtocol1,
+		"internal_newFee", newFee,
 	)
 }
 
-// OnlyGovernanceSetFeeProtocol sets the fee protocol for all pools
+// SetFeeProtocol sets the fee protocol for all pools
 // Panics if the caller is not the governance contract
-func OnlyGovernanceSetFeeProtocol(
+func SetFeeProtocol(
 	feeProtocol0 uint8,
 	feeProtocol1 uint8,
 ) {
@@ -509,11 +472,15 @@ func OnlyGovernanceSetFeeProtocol(
 	}
 
 	newFee := setFeeProtocol(feeProtocol0, feeProtocol1)
+
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
-		"SetFeeProtocolByGovernance",
-		"p_feeProtocol0", feeProtocol0,
-		"p_feeProtocol1", feeProtocol1,
-		"newFee", newFee,
+		"SetFeeProtocol",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"feeProtocol0", feeProtocol0,
+		"feeProtocol1", feeProtocol1,
+		"internal_newFee", newFee,
 	)
 }
 
@@ -539,7 +506,7 @@ func setFeeProtocol(
 	return newFee
 }
 
-func OnlyAdminCollectProtocol(
+func CollectProtocolByAdmin(
 	token0Path string,
 	token1Path string,
 	fee uint32,
@@ -551,7 +518,7 @@ func OnlyAdminCollectProtocol(
 	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] pool.gno__OnlyAdminCollectProtocol() || only admin(%s) can collect protocol fees, called from %s",
+				"[POOL] pool.gno__CollectProtocolByAdmin() || only admin(%s) can collect protocol fees, called from %s",
 				consts.GNOSWAP_ADMIN,
 				caller,
 			),
@@ -567,18 +534,21 @@ func OnlyAdminCollectProtocol(
 		_amount1Requested,
 	)
 
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
 		"CollectProtocolByAdmin",
-		"p_token0Path", token0Path,
-		"p_token1Path", token1Path,
-		"p_fee", fee,
-		"p_recipient", recipient.String(),
-		"amount0", amount0,
-		"amount1", amount1,
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"token0Path", token0Path,
+		"token1Path", token1Path,
+		"fee", fee,
+		"recipient", recipient.String(),
+		"internal_amount0", amount0,
+		"internal_amount1", amount1,
 	)
 }
 
-func OnlyGovernanceCollectProtocol(
+func CollectProtocol(
 	token0Path string,
 	token1Path string,
 	fee uint32,
@@ -590,7 +560,7 @@ func OnlyGovernanceCollectProtocol(
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] pool.gno__OnlyGovernanceCollectProtocol() || only governance(%s) can collect protocol fees, called from %s",
+				"[POOL] pool.gno__CollectProtocol() || only governance(%s) can collect protocol fees, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
@@ -606,12 +576,15 @@ func OnlyGovernanceCollectProtocol(
 		_amount1Requested,
 	)
 
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
-		"CollectProtocolByGovernance",
-		"p_token0Path", token0Path,
-		"p_token1Path", token1Path,
-		"p_fee", fee,
-		"p_recipient", recipient.String(),
+		"CollectProtocol",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"token0Path", token0Path,
+		"token1Path", token1Path,
+		"fee", fee,
+		"recipient", recipient.String(),
 		"amount0", amount0,
 		"amount1", amount1,
 	)

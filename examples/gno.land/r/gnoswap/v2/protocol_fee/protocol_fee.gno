@@ -68,7 +68,9 @@ func OnlyAdminSetDevOpsPct(pct uint64) {
 	setDevOpsPct(pct)
 	std.Emit(
 		"SetDevOpsPctByAdmin",
-		"p_pct", pct,
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"pct", pct,
 	)
 }
 
@@ -83,7 +85,9 @@ func OnlyGovernanceSetDevOpsPct(pct uint64) {
 	setDevOpsPct(pct)
 	std.Emit(
 		"SetDevOpsPctByGovernance",
-		"p_pct", pct,
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"pct", pct,
 	)
 }
 

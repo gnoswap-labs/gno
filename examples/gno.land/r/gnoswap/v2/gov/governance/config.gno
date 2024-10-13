@@ -56,10 +56,10 @@ func init() {
 	configVersions[uint64(len(configVersions)+1)] = config
 }
 
-// OnlyAdminReconfigure updates the proposal realted configuration.
+// ReconfigureByAdmin updates the proposal realted configuration.
 // Panics if the caller is not the admin.
 // Returns the new configuration version number.
-func OnlyAdminReconfigure(
+func ReconfigureByAdmin(
 	votingStartDelay uint64,
 	votingPeriod uint64,
 	votingWeightSmoothingDuration uint64,
@@ -91,26 +91,28 @@ func OnlyAdminReconfigure(
 	}
 	configVersions[newVersion] = config
 
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
 		"ReconfigureByAdmin",
-		"m_prevRealm", prevRealm(),
-		"p_voting_start_delay", ufmt.Sprintf("%d", config.VotingStartDelay),
-		"p_voting_period", ufmt.Sprintf("%d", config.VotingPeriod),
-		"p_voting_weight_smoothing_duration", ufmt.Sprintf("%d", config.VotingWeightSmoothingDuration),
-		"p_quorum", ufmt.Sprintf("%d", config.Quorum),
-		"p_proposal_creation_threshold", ufmt.Sprintf("%d", config.ProposalCreationThreshold),
-		"p_execution_delay", ufmt.Sprintf("%d", config.ExecutionDelay),
-		"p_execution_window", ufmt.Sprintf("%d", config.ExecutionWindow),
-		"newVersion", ufmt.Sprintf("%d", newVersion),
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"votingStartDelay", ufmt.Sprintf("%d", config.VotingStartDelay),
+		"votingPeriod", ufmt.Sprintf("%d", config.VotingPeriod),
+		"votingWeightSmoothingDuration", ufmt.Sprintf("%d", config.VotingWeightSmoothingDuration),
+		"quorum", ufmt.Sprintf("%d", config.Quorum),
+		"proposalCreationThreshold", ufmt.Sprintf("%d", config.ProposalCreationThreshold),
+		"executionDelay", ufmt.Sprintf("%d", config.ExecutionDelay),
+		"executionWindow", ufmt.Sprintf("%d", config.ExecutionWindow),
+		"internal_newVersion", ufmt.Sprintf("%d", newVersion),
 	)
 
 	return newVersion
 }
 
-// onlyGovernanceReconfigure updates the Governor's configuration.
+// reconfigure updates the Governor's configuration.
 // panics if the caller is not the governance contract.
 // Returns the new configuration version number.
-func onlyGovernanceReconfigure(
+func reconfigure(
 	votingStartDelay uint64,
 	votingPeriod uint64,
 	votingWeightSmoothingDuration uint64,
@@ -137,17 +139,19 @@ func onlyGovernanceReconfigure(
 	}
 	configVersions[newVersion] = config
 
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
-		"ReconfigureByGovernance",
-		"m_prevRealm", prevRealm(),
-		"p_voting_start_delay", ufmt.Sprintf("%d", config.VotingStartDelay),
-		"p_voting_period", ufmt.Sprintf("%d", config.VotingPeriod),
-		"p_voting_weight_smoothing_duration", ufmt.Sprintf("%d", config.VotingWeightSmoothingDuration),
-		"p_quorum", ufmt.Sprintf("%d", config.Quorum),
-		"p_proposal_creation_threshold", ufmt.Sprintf("%d", config.ProposalCreationThreshold),
-		"p_execution_delay", ufmt.Sprintf("%d", config.ExecutionDelay),
-		"p_execution_window", ufmt.Sprintf("%d", config.ExecutionWindow),
-		"newVersion", ufmt.Sprintf("%d", newVersion),
+		"Reconfigure",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"votingStartDelay", ufmt.Sprintf("%d", config.VotingStartDelay),
+		"votingPeriod", ufmt.Sprintf("%d", config.VotingPeriod),
+		"votingWeightSmoothingDuration", ufmt.Sprintf("%d", config.VotingWeightSmoothingDuration),
+		"quorum", ufmt.Sprintf("%d", config.Quorum),
+		"proposalCreationThreshold", ufmt.Sprintf("%d", config.ProposalCreationThreshold),
+		"executionDelay", ufmt.Sprintf("%d", config.ExecutionDelay),
+		"executionWindow", ufmt.Sprintf("%d", config.ExecutionWindow),
+		"internal_newVersion", ufmt.Sprintf("%d", newVersion),
 	)
 
 	return newVersion

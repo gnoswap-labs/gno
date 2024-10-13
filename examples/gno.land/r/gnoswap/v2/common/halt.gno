@@ -22,14 +22,14 @@ func IsHalted() {
 	}
 }
 
-// OnlyAdminSetHalt sets the halt status.
+// SetHaltByAdmin sets the halt status.
 // Panics if the caller is not the admin.
-func OnlyAdminSetHalt(halt bool) {
+func SetHaltByAdmin(halt bool) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[COMMON] halt.gno__OnlyAdminSetHalt() || only admin(%s) can set halt, called from %s",
+				"[COMMON] halt.gno__SetHaltByAdmin() || only admin(%s) can set halt, called from %s",
 				consts.GNOSWAP_ADMIN,
 				caller,
 			),
@@ -38,27 +38,32 @@ func OnlyAdminSetHalt(halt bool) {
 
 	setHalt(halt)
 
+	prevAddr, prevRealm := getPrev()
 	if halt {
 		std.Emit(
 			"SetHaltByAdmin",
-			"p_halt", boolToStr(halt),
+			"prevAddr", prevAddr,
+			"prevRealm", prevRealm,
+			"halt", boolToStr(halt),
 		)
 	} else {
 		std.Emit(
 			"UnsetHaltByAdmin",
-			"p_halt", boolToStr(halt),
+			"prevAddr", prevAddr,
+			"prevRealm", prevRealm,
+			"halt", boolToStr(halt),
 		)
 	}
 }
 
-// OnlyGovernanceSetHalt sets the halt status.
+// SetHalt sets the halt status.
 // Panics if the caller is not the governance contract.
-func OnlyGovernanceSetHalt(halt bool) {
+func SetHalt(halt bool) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic(
 			ufmt.Sprintf(
-				"[COMMON] halt.gno__OnlyGovernanceSetHalt() || only governance(%s) can set halt, called from %s",
+				"[COMMON] halt.gno__SetHalt() || only governance(%s) can set halt, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
@@ -67,27 +72,24 @@ func OnlyGovernanceSetHalt(halt bool) {
 
 	setHalt(halt)
 
+	prevAddr, prevRealm := getPrev()
 	if halt {
 		std.Emit(
-			"SetHaltByGovernance",
-			"p_halt", boolToStr(halt),
+			"SetHalt",
+			"prevAddr", prevAddr,
+			"prevRealm", prevRealm,
+			"halt", boolToStr(halt),
 		)
 	} else {
 		std.Emit(
-			"UnsetHaltByGovernance",
-			"p_halt", boolToStr(halt),
+			"UnsetHalt",
+			"prevAddr", prevAddr,
+			"prevRealm", prevRealm,
+			"halt", boolToStr(halt),
 		)
 	}
 }
 
 func setHalt(halt bool) {
 	halted = halt
-}
-
-func boolToStr(b bool) string {
-	if b {
-		return "true"
-	}
-
-	return "false"
 }

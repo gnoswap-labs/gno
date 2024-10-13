@@ -10,14 +10,14 @@ import (
 	"gno.land/r/gnoswap/v2/consts"
 )
 
-// OnlyAdminTransferToken transfers token to the given address.
+// TransferTokenByAdmin transfers token to the given address.
 // Panics if the caller is not the admin.
-func OnlyAdminTransferToken(pkgPath string, to std.Address, amount uint64) {
+func TransferTokenByAdmin(pkgPath string, to std.Address, amount uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[COMMUNITY_POOL] community_pool.gno__OnlyAdminTransferToken() || only admin(%s) can transfer token, called from %s",
+				"[COMMUNITY_POOL] community_pool.gno__TransferTokenByAdmin() || only admin(%s) can transfer token, called from %s",
 				consts.GNOSWAP_ADMIN,
 				caller,
 			),
@@ -25,22 +25,26 @@ func OnlyAdminTransferToken(pkgPath string, to std.Address, amount uint64) {
 	}
 
 	transferToken(pkgPath, to, amount)
+
+	prevAddr, prevRealm := common.GetPrev()
 	std.Emit(
 		"TransferTokenByAdmin",
-		"p_pkgPath", pkgPath,
-		"p_to", to,
-		"p_amount", amount,
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"pkgPath", pkgPath,
+		"to", to,
+		"amount", amount,
 	)
 }
 
-// OnlyGovernanceTransferToken transfers token to the given address.
+// TransferToken transfers token to the given address.
 // Panics if the caller is not the governance contract.
-func OnlyGovernanceTransferToken(pkgPath string, to std.Address, amount uint64) {
+func TransferToken(pkgPath string, to std.Address, amount uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic(
 			ufmt.Sprintf(
-				"[COMMUNITY_POOL] community_pool.gno__OnlyGovernanceTransferToken() || only governance(%s) can transfer token, called from %s",
+				"[COMMUNITY_POOL] community_pool.gno__TransferToken() || only governance(%s) can transfer token, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
@@ -48,11 +52,15 @@ func OnlyGovernanceTransferToken(pkgPath string, to std.Address, amount uint64) 
 	}
 
 	transferToken(pkgPath, to, amount)
+
+	prevAddr, prevRealm := common.GetPrev()
 	std.Emit(
-		"TransferTokenByGovernance",
-		"p_pkgPath", pkgPath,
-		"p_to", to,
-		"p_amount", amount,
+		"TransferToken",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"pkgPath", pkgPath,
+		"to", to,
+		"amount", amount,
 	)
 }
 

@@ -16,12 +16,12 @@ func GetDepositGnsAmount() uint64 {
 	return depositGnsAmount
 }
 
-func OnlyAdminSetDepositGnsAmount(amount uint64) {
+func SetDepositGnsAmountByAdmin(amount uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[STAKER] external_deposit_fee.gno__OnlyAdminSetDepositGnsAmount() || only admin(%s) can set deposit gns amount, called from %s",
+				"[STAKER] external_deposit_fee.gno__SetDepositGnsAmountByAdmin() || only admin(%s) can set deposit gns amount, called from %s",
 				consts.GNOSWAP_ADMIN,
 				caller,
 			),
@@ -32,16 +32,18 @@ func OnlyAdminSetDepositGnsAmount(amount uint64) {
 
 	std.Emit(
 		"SetDepositGnsAmountByAdmin",
-		"p_amount", uint64ToStr(amount),
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"amount", uint64ToStr(amount),
 	)
 }
 
-func OnlyGovernanceSetDepositGnsAmount(amount uint64) {
+func SetDepositGnsAmount(amount uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic(
 			ufmt.Sprintf(
-				"[STAKER] external_deposit_fee.gno__OnlyGovernanceSetDepositGnsAmount() || only governance(%s) can set deposit gns amount, called from %s",
+				"[STAKER] external_deposit_fee.gno__SetDepositGnsAmount() || only governance(%s) can set deposit gns amount, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
@@ -51,8 +53,10 @@ func OnlyGovernanceSetDepositGnsAmount(amount uint64) {
 	setDepositGnsAmount(amount)
 
 	std.Emit(
-		"SetDepositGnsAmountByGovernance",
-		"p_amount", uint64ToStr(amount),
+		"SetDepositGnsAmount",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"amount", uint64ToStr(amount),
 	)
 }
 

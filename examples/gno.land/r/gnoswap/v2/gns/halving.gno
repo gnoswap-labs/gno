@@ -99,9 +99,9 @@ func GetAvgBlockTimeInMs() int64 {
 	return avgBlockTimeMs
 }
 
-// OnlyAdminSetAvgBlockTimeInMs sets the average block time in millisecond.
+// SetAvgBlockTimeInMsByAdmin sets the average block time in millisecond.
 // Panics if the caller is not the admin.
-func OnlyAdminSetAvgBlockTimeInMs(ms int64) {
+func SetAvgBlockTimeInMsByAdmin(ms int64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic("must be called by admin")
@@ -110,16 +110,19 @@ func OnlyAdminSetAvgBlockTimeInMs(ms int64) {
 	before := avgBlockTimeMs
 
 	setAvgBlockTimeInMs(ms)
+
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
 		"SetAvgBlockTimeInMsByAdmin",
-		"p_ms", int64ToStr(ms),
-		"before", int64ToStr(before),
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"ms", int64ToStr(ms),
 	)
 }
 
-// OnlyGovernanceSetAvgBlockTimeInMs sets the average block time in millisecond.
+// SetAvgBlockTimeInMs sets the average block time in millisecond.
 // Panics if the caller is not the governance contract.
-func OnlyGovernanceSetAvgBlockTimeInMs(ms int64) {
+func SetAvgBlockTimeInMs(ms int64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic("must be called by governance")
@@ -128,10 +131,13 @@ func OnlyGovernanceSetAvgBlockTimeInMs(ms int64) {
 	before := avgBlockTimeMs
 
 	setAvgBlockTimeInMs(ms)
+
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
-		"SetAvgBlockTimeInMsByGovernance",
-		"p_ms", int64ToStr(ms),
-		"before", int64ToStr(before),
+		"SetAvgBlockTimeInMs",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"ms", int64ToStr(ms),
 	)
 }
 

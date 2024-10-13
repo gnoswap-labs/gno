@@ -2,7 +2,6 @@ package pool
 
 import (
 	"std"
-	"strconv"
 
 	"gno.land/r/gnoswap/v2/common"
 	"gno.land/r/gnoswap/v2/consts"
@@ -55,44 +54,24 @@ func HandleWithdrawalFee(
 	if !ok {
 		panic(ufmt.Sprintf("[POOL] withdrawal_fee.gno__HandleWithdrawalFee() || expected transferFromByRegisterCall(%s, %s, %s, %s) == true", token0Path, positionCaller.String(), consts.PROTOCOL_FEE_ADDR, feeAmount0))
 	}
-	std.Emit(
-		"GNOSWAP_PROTOCOL_FEE",
-		"m_callType", callType(),
-		"m_prevRealm", prevRealm(),
-		"lpTokenId", strconv.FormatUint(tokenId, 10),
-		"poolPath", poolPath,
-		"reason", "withdrawal",
-		"token", token0Path,
-		"amount", feeAmount0.ToString(),
-	)
 
 	ok = transferFromByRegisterCall(token1Path, positionCaller, consts.PROTOCOL_FEE_ADDR, feeAmount1.Uint64())
 	if !ok {
 		panic(ufmt.Sprintf("[POOL] withdrawal_fee.gno__HandleWithdrawalFee() || expected transferFromByRegisterCall(%s, %s, %s, %s) == true", token1Path, positionCaller.String(), consts.PROTOCOL_FEE_ADDR, feeAmount1))
 	}
-	std.Emit(
-		"GNOSWAP_PROTOCOL_FEE",
-		"m_callType", callType(),
-		"m_prevRealm", prevRealm(),
-		"lpTokenId", strconv.FormatUint(tokenId, 10),
-		"poolPath", poolPath,
-		"reason", "withdrawal",
-		"token", token1Path,
-		"amount", feeAmount1.ToString(),
-	)
 
 	afterAmount0 := new(u256.Uint).Sub(amount0, feeAmount0)
 	afterAmount1 := new(u256.Uint).Sub(amount1, feeAmount1)
 
 	std.Emit(
-		"GNOSWAP",
-		"m_callType", callType(),
-		"m_prevRealm", prevRealm(),
-		"p_tokenId", uint64ToStr(tokenId),
-		"p_token0Path", token0Path,
-		"p_token1Path", token1Path,
-		"fee0Amount", feeAmount0.ToString(),
-		"fee1Amount", feeAmount1.ToString(),
+		"WithdrawalFee",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"tokenId", uint64ToStr(tokenId),
+		"token0Path", token0Path,
+		"token1Path", token1Path,
+		"internal_fee0Amount", feeAmount0.ToString(),
+		"internal_fee1Amount", feeAmount1.ToString(),
 	)
 
 	return afterAmount0.ToString(), afterAmount1.ToString()
@@ -103,12 +82,12 @@ func GetWithdrawalFee() uint64 {
 	return withdrawalFee
 }
 
-func OnlyAdminSetWithdrawalFee(fee uint64) {
+func SetWithdrawalFeeByAdmin(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] protocol_fee_withdrawal.gno__OnlyAdminSetWithdrawalFee() || only admin(%s) can set withdrawal fee, called from %s",
+				"[POOL] protocol_fee_withdrawal.gno__SetWithdrawalFeeByAdmin() || only admin(%s) can set withdrawal fee, called from %s",
 				consts.GNOSWAP_ADMIN,
 				caller,
 			),
@@ -118,16 +97,18 @@ func OnlyAdminSetWithdrawalFee(fee uint64) {
 	setWithdrawalFee(fee)
 	std.Emit(
 		"SetWithdrawalFeeByAdmin",
-		"p_fee", uint64ToStr(fee),
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"fee", uint64ToStr(fee),
 	)
 }
 
-func OnlyGovernanceSetWithdrawalFee(fee uint64) {
+func SetWithdrawalFee(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] protocol_fee_withdrawal.gno__OnlyGovernanceSetWithdrawalFee() || only governance(%s) can set withdrawal fee, called from %s",
+				"[POOL] protocol_fee_withdrawal.gno__SetWithdrawalFee() || only governance(%s) can set withdrawal fee, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
@@ -136,8 +117,10 @@ func OnlyGovernanceSetWithdrawalFee(fee uint64) {
 
 	setWithdrawalFee(fee)
 	std.Emit(
-		"SetWithdrawalFeeByGovernance",
-		"p_fee", uint64ToStr(fee),
+		"SetWithdrawalFee",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"fee", uint64ToStr(fee),
 	)
 }
 

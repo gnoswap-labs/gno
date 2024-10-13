@@ -21,14 +21,14 @@ func GetPoolCreationFee() uint64 {
 	return poolCreationFee
 }
 
-// OnlyAdminSetPoolCreationFee sets the poolCreationFee.
+// SetPoolCreationFeeByAdmin sets the poolCreationFee.
 // Panics if the caller is not the admin.
-func OnlyAdminSetPoolCreationFee(fee uint64) {
+func SetPoolCreationFeeByAdmin(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] protocol_fee_pool_creation.gno__OnlyAdminSetPoolCreationFee() || only admin(%s) can set pool creation fee, called from %s",
+				"[POOL] protocol_fee_pool_creation.gno__SetPoolCreationFeeByAdmin() || only admin(%s) can set pool creation fee, called from %s",
 				consts.GNOSWAP_ADMIN,
 				caller,
 			),
@@ -36,20 +36,24 @@ func OnlyAdminSetPoolCreationFee(fee uint64) {
 	}
 
 	setPoolCreationFee(fee)
+
+	prevAddr, prevRealm := common.GetPrev()
 	std.Emit(
 		"SetPoolCreationFeeByAdmin",
-		"p_fee", uint64ToStr(fee),
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"internal_fee", uint64ToStr(fee),
 	)
 }
 
-// OnlyGovernanceSetPoolCreationFee sets the poolCreationFee.
+// SetPoolCreationFee sets the poolCreationFee.
 // Panics if the caller is not the governance contract.
-func OnlyGovernanceSetPoolCreationFee(fee uint64) {
+func SetPoolCreationFee(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] protocol_fee_pool_creation.gno__OnlyGovernanceSetPoolCreationFee() || only governance(%s) can set pool creation fee, called from %s",
+				"[POOL] protocol_fee_pool_creation.gno__SetPoolCreationFee() || only governance(%s) can set pool creation fee, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
@@ -57,9 +61,13 @@ func OnlyGovernanceSetPoolCreationFee(fee uint64) {
 	}
 
 	setPoolCreationFee(fee)
+
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
-		"SetPoolCreationFeeByGovernance",
-		"p_fee", uint64ToStr(fee),
+		"SetPoolCreationFee",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"internal_fee", uint64ToStr(fee),
 	)
 }
 

@@ -49,9 +49,9 @@ func GetDistributionPct(target int) uint64 {
 	return distributionPct[emissionTarget(target)]
 }
 
-// OnlyAdminChangeDistributionPct changes the distribution percentage for the given targets.
+// ChangeDistributionPctByAdmin changes the distribution percentage for the given targets.
 // Panics if the caller is not the admin.
-func OnlyAdminChangeDistributionPct(
+func ChangeDistributionPctByAdmin(
 	target01 int, pct01 uint64,
 	target02 int, pct02 uint64,
 	target03 int, pct03 uint64,
@@ -71,22 +71,25 @@ func OnlyAdminChangeDistributionPct(
 
 	checkSumDistributionPct()
 
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
 		"ChangeDistributionPctByAdmin",
-		"p_target01", target01,
-		"p_pct01", pct01,
-		"p_target02", target02,
-		"p_pct02", pct02,
-		"p_target03", target03,
-		"p_pct03", pct03,
-		"p_target04", target04,
-		"p_pct04", pct04,
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"target01", target01,
+		"pct01", pct01,
+		"target02", target02,
+		"pct02", pct02,
+		"target03", target03,
+		"pct03", pct03,
+		"target04", target04,
+		"pct04", pct04,
 	)
 }
 
-// OnlyGovernanceChangeDistributionPct changes the distribution percentage for the given targets.
+// ChangeDistributionPct changes the distribution percentage for the given targets.
 // Panics if the caller is not the governance contract.
-func OnlyGovernanceChangeDistributionPct(
+func ChangeDistributionPct(
 	target01 int, pct01 uint64,
 	target02 int, pct02 uint64,
 	target03 int, pct03 uint64,
@@ -106,16 +109,19 @@ func OnlyGovernanceChangeDistributionPct(
 
 	checkSumDistributionPct()
 
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
-		"ChangeDistributionPctByGovernance",
-		"p_target01", target01,
-		"p_pct01", pct01,
-		"p_target02", target02,
-		"p_pct02", pct02,
-		"p_target03", target03,
-		"p_pct03", pct03,
-		"p_target04", target04,
-		"p_pct04", pct04,
+		"ChangeDistributionPct",
+		"prevAddr", prevAddr,
+		"prevRealm", prevRealm,
+		"target01", target01,
+		"pct01", pct01,
+		"target02", target02,
+		"pct02", pct02,
+		"target03", target03,
+		"pct03", pct03,
+		"target04", target04,
+		"pct04", pct04,
 	)
 }
 
