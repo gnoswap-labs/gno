@@ -57,9 +57,9 @@ func GetDevOpsPct() uint64 {
 	return devOpsPct
 }
 
-// OnlyAdminSetDevOpsPct sets the devOpsPct.
+// SetDevOpsPctByAdmin sets the devOpsPct.
 // Panics if the caller is not the admin.
-func OnlyAdminSetDevOpsPct(pct uint64) {
+func SetDevOpsPctByAdmin(pct uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GNOSWAP_ADMIN {
 		panic("must be called by admin")
@@ -74,9 +74,9 @@ func OnlyAdminSetDevOpsPct(pct uint64) {
 	)
 }
 
-// OnlyGovernanceSetDevOpsPct sets the devOpsPct.
+// SetDevOpsPct sets the devOpsPct.
 // Panics if the caller is not the governance contract.
-func OnlyGovernanceSetDevOpsPct(pct uint64) {
+func SetDevOpsPct(pct uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
 		panic("must be called by governance")
@@ -84,7 +84,7 @@ func OnlyGovernanceSetDevOpsPct(pct uint64) {
 
 	setDevOpsPct(pct)
 	std.Emit(
-		"SetDevOpsPctByGovernance",
+		"SetDevOpsPct",
 		"prevAddr", prevAddr,
 		"prevRealm", prevRealm,
 		"pct", pct,

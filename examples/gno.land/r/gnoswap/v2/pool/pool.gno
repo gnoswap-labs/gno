@@ -424,9 +424,9 @@ func Swap(
 	return amount0.ToString(), amount1.ToString()
 }
 
-// OnlyAdminSetFeeProtocol sets the fee protocol for all pools
+// SetFeeProtocolByAdmin sets the fee protocol for all pools
 // Panics if the caller is not the admin
-func OnlyAdminSetFeeProtocol(
+func SetFeeProtocolByAdmin(
 	feeProtocol0 uint8,
 	feeProtocol1 uint8,
 ) {
@@ -434,7 +434,7 @@ func OnlyAdminSetFeeProtocol(
 	if caller != consts.GNOSWAP_ADMIN {
 		panic(
 			ufmt.Sprintf(
-				"[POOL] pool.gno__SetFeeProtocol() || only admin(%s) can set fee protocol, called from %s",
+				"[POOL] pool.gno__SetFeeProtocolByAdmin() || only admin(%s) can set fee protocol, called from %s",
 				consts.GNOSWAP_ADMIN,
 				caller,
 			),
