@@ -51,6 +51,8 @@ func CollectRewardByProjectId(projectId string) uint64 {
 		return 0
 	}
 
+	prevAddr, prevRealm := getPrev()
+
 	toUser := uint64(0)
 	for _, depositId := range depositIds {
 		deposit := deposits[depositId]
@@ -166,9 +168,10 @@ func CollectRewardByDepositId(depositId string) uint64 {
 
 		std.Emit(
 			"CollectRewardByDepositId",
-			"m_prevRealm", prevRealm(),
-			"p_depositId", depositId,
-			"amount", ufmt.Sprintf("%d", deposit.rewardAmount),
+			"prevAddr", prevAddr,
+			"prevRealm", prevRealm,
+			"depositId", depositId,
+			"internal_amount", ufmt.Sprintf("%d", deposit.rewardAmount),
 		)
 
 		// update project

@@ -178,6 +178,7 @@ func CreateProject(
 
 	projects[projectId] = project
 
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
 		"CreateProject",
 		"m_prevRealm", prevRealm(),
@@ -207,50 +208,6 @@ func CreateProject(
 	)
 
 	return projectId
-}
-
-// RefundProject refunds project's left token amount
-// - only recipient can refund
-//
-// returns amount
-func RefundProject(projectId string) uint64 {
-	assertUserCall()
-	caller := std.PrevRealm().Addr()
-	project, exist := projects[projectId]
-	if !exist {
-		panic("project not exist")
-	}
-
-	recipient := project.recipient
-	if caller != recipient {
-		panic("only recipient can refund")
-	}
-
-	endHeight := project.endHeight
-	height := uint64(std.GetHeight())
-
-	if endHeight > height {
-		panic("project not ended yet")
-	}
-
-	toRefund := project.depositAmount - project.totalCollectedAmount
-	if toRefund > 0 {
-		transferByRegisterCall(
-			project.tokenPath,
-			recipient,
-			toRefund,
-		)
-
-		std.Emit(
-			"RefundProject",
-			"m_prevRealm", prevRealm(),
-			"p_projectId", projectId,
-			"recipient", recipient.String(),
-			"toRefund", ufmt.Sprintf("%d", toRefund),
-		)
-	}
-
-	return toRefund
 }
 
 func generateProjectId(tokenPath string) string {
