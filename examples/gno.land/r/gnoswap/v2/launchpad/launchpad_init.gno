@@ -63,6 +63,9 @@ func CreateProject(
 	if strings.Contains(conditionsToken, "*PAD*") {
 		tokensToCheck := strings.Split(conditionsToken, "*PAD*")
 		for _, token := range tokensToCheck {
+			if token == consts.GOV_XGNS_PATH {
+				continue
+			}
 			if _, exist := registered[token]; !exist {
 				panic(ufmt.Sprintf("condition token(%s) not registered", token))
 			}
@@ -186,8 +189,8 @@ func CreateProject(
 		"p_tier30Ratio", ufmt.Sprintf("%d", tier30Ratio),
 		"p_tier90Ratio", ufmt.Sprintf("%d", tier90Ratio),
 		"p_tier180Ratio", ufmt.Sprintf("%d", tier180Ratio),
-		"p_startHeight", ufmt.Sprintf("%d", startHeight),
 		"p_startTime", ufmt.Sprintf("%d", startTime),
+		"startHeight", ufmt.Sprintf("%d", startHeight),
 		"projectId", projectId,
 
 		"tier30Amount", ufmt.Sprintf("%d", tier30Amount),
