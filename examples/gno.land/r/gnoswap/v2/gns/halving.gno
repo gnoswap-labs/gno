@@ -2,8 +2,9 @@ package gns
 
 import (
 	"std"
-	"strconv"
 	"time"
+
+	"gno.land/p/demo/ufmt"
 
 	"gno.land/r/gnoswap/v2/common"
 	"gno.land/r/gnoswap/v2/consts"
@@ -108,8 +109,6 @@ func SetAvgBlockTimeInMsByAdmin(ms int64) {
 		panic("must be called by admin")
 	}
 
-	before := avgBlockTimeMs
-
 	setAvgBlockTimeInMs(ms)
 
 	prevAddr, prevRealm := getPrev()
@@ -117,7 +116,7 @@ func SetAvgBlockTimeInMsByAdmin(ms int64) {
 		"SetAvgBlockTimeInMsByAdmin",
 		"prevAddr", prevAddr,
 		"prevRealm", prevRealm,
-		"ms", int64ToStr(ms),
+		"ms", ufmt.Sprintf("%d", ms),
 	)
 }
 
@@ -129,8 +128,6 @@ func SetAvgBlockTimeInMs(ms int64) {
 		panic("must be called by governance")
 	}
 
-	before := avgBlockTimeMs
-
 	setAvgBlockTimeInMs(ms)
 
 	prevAddr, prevRealm := getPrev()
@@ -138,7 +135,7 @@ func SetAvgBlockTimeInMs(ms int64) {
 		"SetAvgBlockTimeInMs",
 		"prevAddr", prevAddr,
 		"prevRealm", prevRealm,
-		"ms", int64ToStr(ms),
+		"ms", ufmt.Sprintf("%d", ms),
 	)
 }
 
@@ -171,7 +168,7 @@ func setAvgBlockTimeInMs(ms int64) {
 	amountPerBlockPerHalvingYear[year] = adjustedAmountPerBlock
 
 	// adjust halving block
-	for year, block := range halvingYearBlock {
+	for year, _ := range halvingYearBlock {
 		// XXX TODO: no need to adjust previous year
 		yearEnd := halvingYearTimestamp[year]
 
@@ -257,8 +254,4 @@ func callType() string {
 	}
 
 	return "INDIRECT"
-}
-
-func int64ToStr(i int64) string {
-	return strconv.FormatInt(i, 10)
 }

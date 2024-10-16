@@ -83,7 +83,7 @@ func CollectRewardByProjectId(projectId string) uint64 {
 				}
 
 				if uint64(std.GetHeight()) < collectableAfter {
-					println("NOT CLAIMABLE YET", std.GetHeight(), "<", collectableAfter)
+					println("NOT CLAIMABLE YET")
 					continue
 				}
 
@@ -93,10 +93,11 @@ func CollectRewardByProjectId(projectId string) uint64 {
 
 			std.Emit(
 				"CollectRewardByProjectId",
-				"m_prevRealm", prevRealm(),
-				"p_projectId", projectId,
-				"depositId", depositId,
-				"amount", ufmt.Sprintf("%d", deposit.rewardAmount),
+				"prevAddr", prevAddr,
+				"prevRealm", prevRealm,
+				"projectId", projectId,
+				"internal_depositId", depositId,
+				"internal_amount", ufmt.Sprintf("%d", deposit.rewardAmount),
 			)
 		}
 
@@ -159,7 +160,7 @@ func CollectRewardByDepositId(depositId string) uint64 {
 			}
 
 			if uint64(std.GetHeight()) < collectableAfter {
-				println("NOT CLAIMABLE YET", std.GetHeight(), "<", collectableAfter)
+				println("NOT CLAIMABLE YET")
 				return 0
 			}
 
