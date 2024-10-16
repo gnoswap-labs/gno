@@ -240,8 +240,6 @@ func CollectDepositGnsByProjectId(projectId string) uint64 {
 
 	calculateDepositReward()
 
-	prevAddr, prevRealm := getPrev()
-
 	gnsToUser := uint64(0)
 	for _, depositId := range depositIds {
 		deposit := deposits[depositId]
@@ -284,12 +282,10 @@ func CollectDepositGnsByProjectId(projectId string) uint64 {
 
 		// emit event for each deposit
 		std.Emit(
-			"CollectDepositGnsByProjectId",
-			"prevAddr", prevAddr,
-			"prevRealm", prevRealm,
-			"projectId", projectId,
-			"internal_depositId", depositId,
-			"internal_amount", ufmt.Sprintf("%d", deposit.amount),
+			"CollectDepositGns",
+			"m_prevRealm", prevRealm(),
+			"depositId", depositId,
+			"amount", ufmt.Sprintf("%d", deposit.amount),
 		)
 	}
 
@@ -359,13 +355,11 @@ func CollectDepositGnsByDepositId(depositId string) uint64 {
 	projects[deposit.projectId] = project
 
 	// emit event for each deposit
-	prevAddr, prevRealm := getPrev()
 	std.Emit(
-		"CollectDepositGnsByDepositId",
-		"prevAddr", prevAddr,
-		"prevRealm", prevRealm,
-		"depositId", depositId,
-		"internal_amount", ufmt.Sprintf("%d", deposit.amount),
+		"CollectDepositGns",
+		"m_prevRealm", prevRealm(),
+		"p_depositId", depositId,
+		"amount", ufmt.Sprintf("%d", deposit.amount),
 	)
 
 	if deposit.amount > 0 {
@@ -409,7 +403,12 @@ func checkDepositConditions(project Project) {
 			continue
 		} else {
 			// check balance
-			balance := balanceOfByRegisterCall(condition.tokenPath, std.PrevRealm().Addr())
+			var balance uint64
+			if condition.tokenPath == consts.GOV_XGNS_PATH {
+				balance = xgns.BalanceOf(a2u(std.PrevRealm().Addr()))
+			} else {
+				balance = balanceOfByRegisterCall(condition.tokenPath, std.PrevRealm().Addr())
+			}
 			if balance < condition.minAmount {
 				panic(ufmt.Sprintf("insufficient balance(%d) for token(%s)", balance, condition.tokenPath))
 			}
