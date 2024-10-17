@@ -94,14 +94,33 @@ func DepositGns(
 	depositor := std.PrevRealm().Addr()
 	depositorStr := depositor.String()
 	depositId := projectId + ":" + tierStr + ":" + depositorStr + ":" + ufmt.Sprintf("%d", std.GetHeight())
+
+	// calculate claimable height & time base on deposit height & time
+	calcClaimableHeight := uint64(std.GetHeight()) + tier.collectWaitDuration
+	_claimWaitDurationTimestamp := uint64(0)
+	switch tierStr {
+	case "30":
+		_claimWaitDurationTimestamp = TIMESTAMP_3DAYS
+	case "90":
+		_claimWaitDurationTimestamp = TIMESTAMP_7DAYS
+	case "180":
+		_claimWaitDurationTimestamp = TIMESTAMP_14DAYS
+	}
+	calcClaimableTimestamp := uint64(time.Now().Unix()) + _claimWaitDurationTimestamp
+
+	claimableHeight := min(calcClaimableHeight, tier.endHeight)
+	claimableTime := min(calcClaimableTimestamp, tier.endTime)
+
 	depositToHistory := Deposit{
-		id:            depositId,
-		projectId:     projectId,
-		tier:          tierStr,
-		depositor:     depositor,
-		amount:        amount,
-		depositHeight: uint64(std.GetHeight()),
-		depositTime:   uint64(time.Now().Unix()),
+		id:              depositId,
+		projectId:       projectId,
+		tier:            tierStr,
+		depositor:       depositor,
+		amount:          amount,
+		depositHeight:   uint64(std.GetHeight()),
+		depositTime:     uint64(time.Now().Unix()),
+		claimableHeight: claimableHeight,
+		claimableTime:   claimableTime,
 	}
 
 	// update deposits
@@ -136,6 +155,8 @@ func DepositGns(
 		"targetProjectTierId", targetProjectTierId,
 		"amount", ufmt.Sprintf("%d", amount),
 		"internal_depositId", depositId,
+		"internal_claimableHeight", ufmt.Sprintf("%d", claimableHeight),
+		"internal_claimableTime", ufmt.Sprintf("%d", claimableTime),
 	)
 
 	return depositId
@@ -409,7 +430,12 @@ func checkDepositConditions(project Project) {
 			continue
 		} else {
 			// check balance
-			balance := balanceOfByRegisterCall(condition.tokenPath, std.PrevRealm().Addr())
+			var balance uint64
+			if condition.tokenPath == consts.GOV_XGNS_PATH {
+				balance = xgns.BalanceOf(a2u(std.PrevRealm().Addr()))
+			} else {
+				balance = balanceOfByRegisterCall(condition.tokenPath, std.PrevRealm().Addr())
+			}
 			if balance < condition.minAmount {
 				panic(ufmt.Sprintf("insufficient balance(%d) for token(%s)", balance, condition.tokenPath))
 			}
