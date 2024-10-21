@@ -29,7 +29,7 @@ func TestMintAndDistributeGns_Initial(t *testing.T) {
 	shouldEQ(t, gnsBalance(consts.STAKER_ADDR), uint64(1316352703))       // 75% of 1755136938
 	shouldEQ(t, gnsBalance(consts.DEV_OPS), uint64(351027387))            // 20% of 1755136938
 	shouldEQ(t, gnsBalance(consts.COMMUNITY_POOL_ADDR), uint64(87756846)) // 5% of 1755136938
-	shouldEQ(t, gnsBalance(consts.GOV_STAKER_ADDR), uint64(0))                 // 0% of 1755136938
+	shouldEQ(t, gnsBalance(consts.GOV_STAKER_ADDR), uint64(0))            // 0% of 1755136938
 	shouldEQ(t, gnsBalance(emissionAddr), uint64(2))                      // 1755136938 - (1316352703 + 351027387 + 87756846) = 2
 }
 
@@ -46,12 +46,28 @@ func TestMintAndDistributeGns_SameBlock(t *testing.T) {
 	shouldEQ(t, gnsBalance(emissionAddr), uint64(2))
 }
 
+func TestMintAndDistributeGns_After123Block(t *testing.T) {
+	var nextBlockGap int64 = 123
+	var initialTotalSupply uint64 = 100000000000000
+	var nextBlockGapMintedAmount uint64 = 1755136938
+	std.TestSkipHeights(nextBlockGap)
+	shouldEQ(t, lastExecutedHeight+nextBlockGap, std.GetHeight())
+	MintAndDistributeGns()
+
+	shouldEQ(t, gns.TotalSupply(), initialTotalSupply+nextBlockGapMintedAmount*2)
+	shouldEQ(t, gnsBalance(consts.STAKER_ADDR)-uint64(1316352703), uint64(1316352705))     // 75% of 1755136938+2
+	shouldEQ(t, gnsBalance(consts.DEV_OPS)-uint64(351027387), uint64(351027388))           // 20% of 1755136938+2
+	shouldEQ(t, gnsBalance(consts.COMMUNITY_POOL_ADDR)-uint64(87756846), uint64(87756847)) // 5% of 1755136938+2
+	shouldEQ(t, gnsBalance(consts.GOV_STAKER_ADDR), uint64(0))                             // 0% of 1755136938+2
+	shouldEQ(t, gnsBalance(emissionAddr), uint64(0))
+}
+
 func TestMintAndDistributeGns_After5Block(t *testing.T) {
 	std.TestSkipHeights(5)
-	height := std.GetHeight()
+	current_height := std.GetHeight()
 
 	// we're in a new block, so MintAndDistributeGns should mint again
-	shouldEQ(t, lastExecutedHeight, height-5)
+	shouldEQ(t, lastExecutedHeight, current_height-5)
 	MintAndDistributeGns()
-	shouldEQ(t, lastExecutedHeight, height)
+	shouldEQ(t, lastExecutedHeight, current_height)
 }
