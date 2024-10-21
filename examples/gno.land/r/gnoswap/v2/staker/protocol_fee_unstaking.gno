@@ -7,6 +7,8 @@ import (
 
 	"gno.land/p/demo/ufmt"
 
+	u256 "gno.land/p/gnoswap/uint256"
+
 	"gno.land/r/gnoswap/v2/gns"
 )
 
@@ -47,7 +49,10 @@ func handleUnstakingFee(
 
 	} else {
 		// external contract has fee
-		transferByRegisterCall(tokenPath, consts.PROTOCOL_FEE_ADDR, feeAmount)
+		ok := transferByRegisterCall(tokenPath, consts.PROTOCOL_FEE_ADDR, feeAmount)
+		if !ok {
+			panic(ufmt.Sprintf("[STAKER] reward_fee.gno__handleUnstakingFee() || expected transferByRegisterCall(%s, %s, %s) == true", tokenPath, consts.PROTOCOL_FEE_ADDR, u256.NewUint(feeAmount).ToString()))
+		}
 		std.Emit(
 			"ProtocolFeeExternalReward",
 			"prevAddr", prevAddr,
@@ -69,9 +74,12 @@ func GetUnstakingFee() uint64 {
 func SetUnstakingFeeByAdmin(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.ADMIN {
-		panic(addDetailToError(errNoPermission,
-			ufmt.Sprintf("reward_fee.gno__SetUnstakingFeeByAdmin() || only admin(%s) can set unstaking fee, called from %s", consts.ADMIN, caller),
-		),
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] reward_fee.gno__SetUnstakingFeeByAdmin() || only admin(%s) can set unstaking fee, called from %s",
+				consts.ADMIN,
+				caller,
+			),
 		)
 	}
 
@@ -90,9 +98,13 @@ func SetUnstakingFeeByAdmin(fee uint64) {
 func SetUnstakingFee(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
-		panic(addDetailToError(errNoPermission,
-			ufmt.Sprintf("reward_fee.gno__SetUnstakingFee() || only governance(%s) can set unstaking fee, called from %s", consts.GOV_GOVERNANCE_ADDR, caller),
-		))
+		panic(
+			ufmt.Sprintf(
+				"[STAKER] reward_fee.gno__SetUnstakingFee() || only governance(%s) can set unstaking fee, called from %s",
+				consts.GOV_GOVERNANCE_ADDR,
+				caller,
+			),
+		)
 	}
 
 	setUnstakingFee(fee)
@@ -110,9 +122,7 @@ func SetUnstakingFee(fee uint64) {
 func setUnstakingFee(fee uint64) {
 	// 10000 (bps) = 100%
 	if fee > 10000 {
-		panic(addDetailToError(errInvalidInput,
-			ufmt.Sprintf("reward_fee.gno__SetUnstakingFee() || fee(%d) must be in range 0 ~ 10000", fee),
-		))
+		panic(ufmt.Sprintf("[STAKER] reward_fee.gno__SetUnstakingFee() || fee(%d) must be in range 0 ~ 10000", fee))
 	}
 
 	unstakingFee = fee

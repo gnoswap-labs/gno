@@ -37,10 +37,9 @@ func isUserCall() bool {
 }
 
 func assertUserCall() {
-	panic(addDetailToError(
-		errNoPermission,
-		"util.gno__assertUserCall() || must be called by user",
-	))
+	if !isUserCall() {
+		panic("must be called by user")
+	}
 }
 
 func getPrev() (string, string) {

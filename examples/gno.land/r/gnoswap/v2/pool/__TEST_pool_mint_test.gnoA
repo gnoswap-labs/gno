@@ -79,7 +79,7 @@ func TestMintMiscellaneous(t *testing.T) {
 
 	t.Run("cannot remove more than the entire position", func(t *testing.T) {
 		std.TestSetRealm(posRealm)
-		shouldPanicWithMsg(
+		shouldPanic(
 			t,
 			func() {
 				Burn(
@@ -91,7 +91,6 @@ func TestMintMiscellaneous(t *testing.T) {
 					"1001",
 				)
 			},
-			`GNOSWAP-POOL-007`,
 		)
 
 	})

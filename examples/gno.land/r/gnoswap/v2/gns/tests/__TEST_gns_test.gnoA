@@ -61,7 +61,7 @@ func TestMintNoPermission(t *testing.T) {
 		func() {
 			Mint(dummyUser)
 		},
-		`GNOSWAP-GNS-001`,
+		"only emission contract can call Mint",
 	)
 }
 

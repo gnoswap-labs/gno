@@ -175,7 +175,7 @@ func underscoreOK(s string) bool {
 func strToInt(str string) int {
 	res, err := strconv.Atoi(str)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
 	return res
@@ -190,10 +190,7 @@ func checkProposalType(proposalType string) {
 	if proposalType != "TEXT" &&
 		proposalType != "COMMUNITY_POOL_SPEND" &&
 		proposalType != "PARAMETER_CHANGE" {
-		panic(addDetailToError(
-			errUnsupportedProposalType,
-			ufmt.Sprintf("util.gno__checkProposalType() || invalid proposal type: %s", proposalType),
-		))
+		panic("INVALID_PROPOSAL_TYPE")
 	}
 }
 
@@ -240,10 +237,7 @@ func isUserCall() bool {
 
 func assertUserCall() {
 	if !isUserCall() {
-		panic(addDetailToError(
-			errNoPermission,
-			"util.gno__assertUserCall() || must be called by user",
-		))
+		panic("must be called by user")
 	}
 }
 

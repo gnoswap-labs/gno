@@ -127,7 +127,7 @@ func ApiGetPools() string {
 
 	b, err := json.Marshal(node)
 	if err != nil {
-		panic(err.Error())
+		panic(ufmt.Sprintf("[POOL] _RPC_api.gno__ApiGetPools() || %s", err.Error()))
 	}
 
 	return string(b)
@@ -177,7 +177,7 @@ func ApiGetPool(poolPath string) string {
 
 	b, err := json.Marshal(node)
 	if err != nil {
-		panic(err.Error())
+		panic(ufmt.Sprintf("[POOL] _RPC_api.gno__ApiGetPool(%s) || %s", poolPath, err.Error()))
 	}
 
 	return string(b)
@@ -259,10 +259,7 @@ func posKeyDivide(posKey string) (string, int32, int32) {
 
 	res := strings.Split(posKey, "__")
 	if len(res) != 3 {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("_RPC_api.gno__posKeyDivide() || invalid posKey(%s)", posKey),
-		))
+		panic(ufmt.Sprintf("[POOL] _RPC_api.gno__posKeyDivide() || invalid posKey(%s)", posKey))
 	}
 
 	owner, _tickLower, _tickUpper := res[0], res[1], res[2]

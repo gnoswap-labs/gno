@@ -42,7 +42,10 @@ func handleSwapFee(
 			banker := std.GetBanker(std.BankerTypeRealmSend)
 			banker.SendCoins(consts.ROUTER_ADDR, consts.PROTOCOL_FEE_ADDR, std.Coins{{"ugnot", int64(feeAmountUint64)}})
 		} else { // just transfer if grc20
-			transferFromByRegisterCall(outputToken, std.PrevRealm().Addr(), consts.PROTOCOL_FEE_ADDR, feeAmountUint64)
+			ok := transferFromByRegisterCall(outputToken, std.PrevRealm().Addr(), consts.PROTOCOL_FEE_ADDR, feeAmountUint64)
+			if !ok {
+				panic(ufmt.Sprintf("[ROUTER] protocol_fee_swap.gno__handleSwapFee() || expected transferFromByRegisterCall(%s, %s, %s, %d) == true", outputToken, std.PrevRealm().Addr(), consts.PROTOCOL_FEE_ADDR, feeAmountUint64))
+			}
 		}
 
 		prevAddr, prevRealm := getPrev()
@@ -67,14 +70,13 @@ func GetSwapFee() uint64 {
 func SetSwapFeeByAdmin(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.ADMIN {
-		panic(addDetailToError(
-			errNoPermission,
+		panic(
 			ufmt.Sprintf(
-				"protocol_fee_swap.gno__SetSwapFeeByAdmin() || only admin(%s) can set swap fee, called from %s",
+				"[ROUTER] protocol_fee_swap.gno__SetSwapFeeByAdmin() || only admin(%s) can set swap fee, called from %s",
 				consts.ADMIN,
 				caller,
 			),
-		))
+		)
 	}
 
 	setSwapFee(fee)
@@ -92,14 +94,13 @@ func SetSwapFeeByAdmin(fee uint64) {
 func SetSwapFee(fee uint64) {
 	caller := std.PrevRealm().Addr()
 	if caller != consts.GOV_GOVERNANCE_ADDR {
-		panic(addDetailToError(
-			errNoPermission,
+		panic(
 			ufmt.Sprintf(
-				"protocol_fee_swap.gno__SetSwapFee() || only governance(%s) can set swap fee, called from %s",
+				"[ROUTER] protocol_fee_swap.gno__SetSwapFee() || only governance(%s) can set swap fee, called from %s",
 				consts.GOV_GOVERNANCE_ADDR,
 				caller,
 			),
-		))
+		)
 	}
 
 	setSwapFee(fee)
@@ -119,10 +120,7 @@ func setSwapFee(fee uint64) {
 
 	// 10000 (bps) = 100%
 	if fee > 10000 {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("protocol_fee_swap.gno__SetSwapFee() || fee(%d) must be in range 0 ~ 10000", fee),
-		))
+		panic(ufmt.Sprintf("[ROUTER] protocol_fee_swap.gno__SetSwapFee() || fee(%d) must be in range 0 ~ 10000", fee))
 	}
 
 	swapFee = fee

@@ -1,12 +1,10 @@
 package pool
 
 import (
-	"gno.land/p/demo/ufmt"
+	"gno.land/r/gnoswap/v2/consts"
 
 	i256 "gno.land/p/gnoswap/int256"
 	u256 "gno.land/p/gnoswap/uint256"
-
-	"gno.land/r/gnoswap/v2/consts"
 )
 
 // tickTickSpacingToMaxLiquidityPerTick calculates the maximum liquidity
@@ -83,14 +81,7 @@ func (pool *Pool) tickUpdate(
 	liquidityGrossAfter := liquidityMathAddDelta(liquidityGrossBefore, liquidityDelta)
 
 	if !(liquidityGrossAfter.Lte(maxLiquidity)) {
-		panic(addDetailToError(
-			errLiquidityCalculation,
-			ufmt.Sprintf(
-				"tick_update.gno__tickUpdate() || liquidityGrossAfter(%s) is greater than maxLiquidity(%s)",
-				liquidityGrossAfter,
-				maxLiquidity,
-			),
-		))
+		panic("tick panic #1")
 	}
 
 	flipped = (liquidityGrossAfter.IsZero()) != (liquidityGrossBefore.IsZero())

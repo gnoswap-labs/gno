@@ -43,17 +43,11 @@ func SwapRoute(
 	common.IsHalted()
 
 	if swapType != "EXACT_IN" && swapType != "EXACT_OUT" {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("router.gno__SwapRoute() || Unknown swapType(%s)", swapType),
-		))
+		panic("[ROUTER] router.gno__SwapRoute() || Unknown swapType")
 	}
 
 	if common.GetLimitCaller() && std.PrevRealm().PkgPath() != "" {
-		panic(addDetailToError(
-			errNoPermission,
-			ufmt.Sprintf("router.gno__SwapRoute() || only user can call this function, called from %s", std.PrevRealm().PkgPath()),
-		))
+		panic("[ROUTER] router.gno__SwapRoute() || only user can call this function")
 	}
 
 	en.MintAndDistributeGns()
@@ -83,10 +77,7 @@ func SwapRoute(
 			u64AmountSpecified := i256AmountSpecified.Uint64()
 
 			if ugnotSentByUser != u64AmountSpecified {
-				panic(addDetailToError(
-					errWrapUnwrap,
-					ufmt.Sprintf("router.gno__SwapRoute() || ugnot sent by user is not equal to amount specified (ugnotSentByUser: %d, amountSpecified: %d)", ugnotSentByUser, u64AmountSpecified),
-				))
+				panic(ufmt.Sprintf("[ROUTER] router.gno__SwapRoute() || ugnot sent by user is not equal to amount specified (ugnotSentByUser: %d, amountSpecified: %d)", ugnotSentByUser, u64AmountSpecified))
 			}
 
 			if ugnotSentByUser > 0 {
@@ -132,24 +123,15 @@ func SwapRoute(
 
 func validateInput(amountSpecified *i256.Int, swapType string, routes, quotes []string) {
 	if amountSpecified.IsZero() || amountSpecified.IsNeg() {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("router.gno__SwapRoute() || Invalid amountSpecified(%s)", amountSpecified.ToString()),
-		))
+		panic("[ROUTER] Invalid amountSpecified")
 	}
 
 	if len(routes) < 1 || len(routes) > 7 {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("router.gno__SwapRoute() || Invalid route length(%d)", len(routes)),
-		))
+		panic("[ROUTER] Invalid route length")
 	}
 
 	if len(routes) != len(quotes) {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("router.gno__SwapRoute() || Mismatch between routes and quotes length(%d != %d)", len(routes), len(quotes)),
-		))
+		panic("[ROUTER] Mismatch between routes and quotes length")
 	}
 
 	var quotesSum int64
@@ -159,10 +141,7 @@ func validateInput(amountSpecified *i256.Int, swapType string, routes, quotes []
 	}
 
 	if quotesSum != 100 {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("router.gno__SwapRoute() || Quote sum is not 100(%d)", quotesSum),
-		))
+		panic("[ROUTER] Quote sum is not 100")
 	}
 }
 
@@ -175,10 +154,7 @@ func processRoutes(routes, quotes []string, amountSpecified *i256.Int, swapType 
 		quote, _ := strconv.Atoi(quotes[i])
 
 		if numHops < 1 || numHops > 3 {
-			panic(addDetailToError(
-				errInvalidInput,
-				ufmt.Sprintf("router.gno__SwapRoute() || Invalid number of hops(%d)", numHops),
-			))
+			panic(ufmt.Sprintf("[ROUTER] Invalid number of hops: %d", numHops))
 		}
 
 		toSwap := i256.Zero().Mul(amountSpecified, i256.NewInt(int64(quote)))
@@ -215,10 +191,7 @@ func handleSingleSwap(route string, amountSpecified *i256.Int, isDry bool) (*u25
 
 func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOut *u256.Uint, swapType string, tokenAmountLimit *u256.Uint, userBeforeWugnotBalance, userWrappedWugnot uint64, amountSpecified *u256.Uint) (string, string) {
 	if swapType == "EXACT_OUT" && resultAmountOut.Lt(amountSpecified) {
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("router.gno__finalizeSwap() || Too few received for user (expected minimum: %s, actual: %s, swapType: %s)", amountSpecified.ToString(), resultAmountOut.ToString(), swapType),
-		))
+		panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too few received for user (expected minimum: %s, actual: %s, swapType: %s)", amountSpecified.ToString(), resultAmountOut.ToString(), swapType))
 	}
 
 	afterFee := handleSwapFee(outputToken, resultAmountOut, false)
@@ -230,10 +203,7 @@ func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOu
 
 		if spend > userWrappedWugnot {
 			// used existing wugnot
-			panic(addDetailToError(
-				errWrapUnwrap,
-				ufmt.Sprintf("router.gno__finalizeSwap() || Too much wugnot spent (wrapped: %d, spend: %d)", userWrappedWugnot, spend),
-			))
+			panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too much wugnot spent (wrapped: %d, spend: %d)", userWrappedWugnot, spend))
 		}
 
 		// unwrap left amount
@@ -247,17 +217,11 @@ func finalizeSwap(inputToken, outputToken string, resultAmountIn, resultAmountOu
 
 	if swapType == "EXACT_IN" {
 		if !tokenAmountLimit.Lte(afterFee) {
-			panic(addDetailToError(
-				errInvalidInput,
-				ufmt.Sprintf("router.gno__finalizeSwap() || Too few received for user (expected minimum: %s, actual: %s, swapType: %s)", tokenAmountLimit.ToString(), afterFee.ToString(), swapType),
-			))
+			panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too few received for user (expected minimum: %s, actual: %s, swapType: %s)", tokenAmountLimit.ToString(), afterFee.ToString(), swapType))
 		}
 	} else {
 		if !resultAmountIn.Lte(tokenAmountLimit) {
-			panic(addDetailToError(
-				errInvalidInput,
-				ufmt.Sprintf("router.gno__finalizeSwap() || Too much spent for user (expected maximum: %s, actual: %s, swapType: %s)", tokenAmountLimit.ToString(), resultAmountIn.ToString(), swapType),
-			))
+			panic(ufmt.Sprintf("[ROUTER] router.gno__finalizeSwap() || Too much spent for user (expected maximum: %s, actual: %s, swapType: %s)", tokenAmountLimit.ToString(), resultAmountIn.ToString(), swapType))
 		}
 	}
 
@@ -298,9 +262,6 @@ func handleMultiSwap(swapType string, route string, numHops int, amountSpecified
 		return multiSwapNegative(swapParams, numHops-1, route) // iterate here
 
 	default:
-		panic(addDetailToError(
-			errInvalidInput,
-			ufmt.Sprintf("router.gno__handleMultiSwap() || unknown swapType(%s)", swapType),
-		))
+		panic("[ROUTER] router.gno__handleMultiSwap() || unknown swapType")
 	}
 }

@@ -10,10 +10,7 @@ func isUserCall() bool {
 
 func assertUserCall() {
 	if !isUserCall() {
-		panic(addDetailToError(
-			errNoPermission,
-			"util.gno__assertUserCall() || must be called by user",
-		))
+		panic("must be called by user")
 	}
 }
 

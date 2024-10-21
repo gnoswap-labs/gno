@@ -96,7 +96,7 @@ func GetDelegationRatioBase() string {
 
 	b, err := json.Marshal(ratioObj)
 	if err != nil {
-		panic(err.Error())
+		panic(ufmt.Sprintf("JSON marshal error: %v", err))
 	}
 
 	return string(b)
@@ -125,7 +125,7 @@ func GetVotingPowerBase() string {
 
 	b, err := json.Marshal(votingObj)
 	if err != nil {
-		panic(err.Error())
+		panic(ufmt.Sprintf("JSON marshal error: %v", err))
 	}
 
 	return string(b)
@@ -157,7 +157,7 @@ func GetVotingPowerBaseByAddress(addr std.Address) string {
 
 	b, err := json.Marshal(votingObj)
 	if err != nil {
-		panic(err.Error())
+		panic(ufmt.Sprintf("JSON marshal error: %v", err))
 	}
 
 	return string(b)

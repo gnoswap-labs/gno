@@ -299,6 +299,6 @@ func TestCollectReward02(t *testing.T) {
 		func() {
 			CollectReward(2, false)
 		},
-		"GNOSWAP-STAKER-015",
+		"[STAKER] staker.gno__CollectReward() || tokenId(2) not staked",
 	)
 }

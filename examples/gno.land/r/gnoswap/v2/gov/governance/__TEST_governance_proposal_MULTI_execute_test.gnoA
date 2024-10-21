@@ -2,7 +2,6 @@ package governance
 
 import (
 	"std"
-	"strings"
 	"testing"
 
 	"gno.land/r/gnoswap/v2/consts"
@@ -24,8 +23,6 @@ func TestProposeParameterChange_Single_SetAvgBlockTimeInMs(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-003") {
-				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
 
@@ -42,8 +39,6 @@ func TestProposeParameterChange_Single_SetAvgBlockTimeInMs(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-003") {
-				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
 
@@ -60,8 +55,6 @@ func TestProposeParameterChange_Single_SetAvgBlockTimeInMs(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-020") {
-				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
 
@@ -78,8 +71,6 @@ func TestProposeParameterChange_Single_SetAvgBlockTimeInMs(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-020") {
-				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
 

@@ -81,9 +81,7 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 	// check whether tokenId already staked or not
 	_, exist := deposits[tokenId]
 	if exist {
-		panic(addDetailToError(errAlreadyStaked,
-			ufmt.Sprintf("staker.gno__StakeToken() || tokenId(%d) already staked", tokenId),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__StakeToken() || tokenId(%d) already staked", tokenId))
 	}
 
 	// if caller is owner
@@ -91,9 +89,7 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 	// stakerIsOwner
 	stakerIsOwner := gnft.OwnerOf(tid(tokenId)) == consts.STAKER_ADDR
 	if !(callerIsOwner || stakerIsOwner) {
-		panic(addDetailToError(errNoPermission,
-			ufmt.Sprintf("staker.gno__StakeToken() || neither caller(%s) or staker(%s) is not owner of tokenId(%d)", std.PrevRealm().Addr(), consts.STAKER_ADDR, tokenId),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__StakeToken() || Neither Caller(%s) or Staker(%s) is not owner of tokenId(%d)", std.PrevRealm().Addr(), consts.STAKER_ADDR, tokenId))
 	}
 
 	// check pool path from tokenid
@@ -103,17 +99,13 @@ func StakeToken(tokenId uint64) (string, string, string) { // poolPath, token0Am
 	hasInternal := poolHasInternal(poolPath)
 	hasExternal := poolHasExternal(poolPath)
 	if hasInternal == false && hasExternal == false {
-		panic(addDetailToError(errNonIncentivizedPool,
-			ufmt.Sprintf("staker.gno__StakeToken() || poolPath(%s) has no internal or external incentive(can not stake)", poolPath),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__StakeToken() || poolPath(%s) has no internal or external incentive(can not stake)", poolPath))
 	}
 
 	// check tokenId has liquidity or not
 	liquidity := pn.PositionGetPositionLiquidity(tokenId) // *u256.Uint
 	if liquidity.Lte(u256.Zero()) {
-		panic(addDetailToError(errInvalidInput,
-			ufmt.Sprintf("staker.gno__StakeToken() || tokenId(%d) has no liquidity", tokenId),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__StakeToken() || tokenId(%d) has no liquidity", tokenId))
 	}
 
 	// staked status
@@ -167,15 +159,11 @@ func CollectReward(tokenId uint64, unwrapResult bool) string { // poolPath
 
 	deposit, exist := deposits[tokenId]
 	if !exist {
-		panic(addDetailToError(errDataNotFound,
-			ufmt.Sprintf("staker.gno__CollectReward() || tokenId(%d) not staked", tokenId),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__CollectReward() || tokenId(%d) not staked", tokenId))
 	}
 
 	if std.PrevRealm().Addr() != deposit.owner {
-		panic(addDetailToError(errNoPermission,
-			ufmt.Sprintf("staker.gno__CollectReward() || only owner(%s) can collect reward from tokenId(%d), std.PrevRealm().Addr()(%s)", deposit.owner, tokenId, std.PrevRealm().Addr()),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__CollectReward() || only owner(%s) can collect reward from tokenId(%d), std.PrevRealm().Addr()(%s)", deposit.owner, tokenId, std.PrevRealm().Addr()))
 	}
 
 	poolPath := deposits[tokenId].targetPoolPath
@@ -367,9 +355,7 @@ func UnstakeToken(tokenId uint64, unwrapResult bool) (string, string, string) { 
 	// unstaked status
 	deposit, exist := deposits[tokenId]
 	if !exist {
-		panic(addDetailToError(errDataNotFound,
-			ufmt.Sprintf("staker.gno__UnstakeToken() || tokenId(%d) not staked", tokenId),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__UnstakeToken() || tokenId(%d) not staked", tokenId))
 	}
 
 	// Claim All Rewards
@@ -430,17 +416,13 @@ func CreateExternalIncentive(
 	if common.GetLimitCaller() {
 		isUserCalled := std.PrevRealm().PkgPath() == ""
 		if !isUserCalled {
-			panic(addDetailToError(errNoPermission,
-				ufmt.Sprintf("staker.gno__CreateExternalIncentive() || only user can call this function"),
-			))
+			panic("[STAKER] staker.gno__CreateExternalIncentive() || only user can call this function")
 		}
 	}
 
 	// panic if pool does not exist
 	if !(pl.DoesPoolPathExist(targetPoolPath)) {
-		panic(addDetailToError(errDataNotFound,
-			ufmt.Sprintf("staker.gno__CreateExternalIncentive() || targetPoolPath(%s) does not exist", targetPoolPath),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__CreateExternalIncentive() || targetPoolPath(%s) does not exist", targetPoolPath))
 	}
 
 	// check token can be used as reward
@@ -454,9 +436,7 @@ func CreateExternalIncentive(
 		ugnotSent := uint64(sent.AmountOf("ugnot"))
 
 		if ugnotSent != rewardAmount.Uint64() {
-			panic(addDetailToError(errWrapUnwrap,
-				ufmt.Sprintf("staker.gno__CreateExternalIncentive() || user(%s) sent ugnot(%d) amount not equal to rewardAmount(%d)", std.PrevRealm().Addr(), ugnotSent, rewardAmount.Uint64()),
-			))
+			panic(ufmt.Sprintf("[STAKER] staker.gno__CreateExternalIncentive() || user(%s) sent ugnot(%d) amount not equal to rewardAmount(%d)", std.PrevRealm().Addr(), ugnotSent, rewardAmount.Uint64()))
 		}
 
 		wrap(ugnotSent)
@@ -471,16 +451,12 @@ func CreateExternalIncentive(
 
 	// endTimestamp cannot be later than 253402300799 (9999-12-31 23:59:59)
 	if endTimestamp >= MAX_UNIX_EPOCH_TIME {
-		panic(addDetailToError(errInvalidInput,
-			ufmt.Sprintf("staker.gno__CreateExternalIncentive() || endTimestamp(%d) cannot be later than 253402300799 (9999-12-31 23:59:59)", endTimestamp),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__CreateExternalIncentive() || endTimestamp(%d) cannot be later than 253402300799 (9999-12-31 23:59:59)", endTimestamp))
 	}
 
 	externalDuration := uint64(endTimestamp - startTimestamp)
 	if !(externalDuration == TIMESTAMP_90DAYS || externalDuration == TIMESTAMP_180DAYS || externalDuration == TIMESTAMP_365DAYS) {
-		panic(addDetailToError(errInvalidInput,
-			ufmt.Sprintf("staker.gno__CreateExternalIncentive() || externalDuration(%d) must be 90, 180, 365 days", externalDuration),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__CreateExternalIncentive() || externalDuration(%d) must be 90, 180, 365 days)", externalDuration))
 	}
 
 	incentiveId := incentiveIdCompute(std.PrevRealm().Addr(), targetPoolPath, rewardToken, startTimestamp, endTimestamp, std.GetHeight())
@@ -605,24 +581,18 @@ func EndExternalIncentive(refundee std.Address, targetPoolPath, rewardToken stri
 
 	incentive, exist := incentives[incentiveId]
 	if !exist {
-		panic(addDetailToError(errDataNotFound,
-			ufmt.Sprintf("staker.gno__EndExternalIncentive() || cannot end non existent incentive(%s)", incentiveId),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__EndExternalIncentive() || cannot end non existent incentive(%s)", incentiveId))
 	}
 
 	if time.Now().Unix() < incentive.endTimestamp {
-		panic(addDetailToError(errCannotEndIncentive,
-			ufmt.Sprintf("staker.gno__EndExternalIncentive() || cannot end incentive before endTimestamp(%d), current(%d)", incentive.endTimestamp, time.Now().Unix()),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__EndExternalIncentive() || cannot end incentive before endTimestamp(%d), current(%d)", incentive.endTimestamp, time.Now().Unix()))
 	}
 
 	// when incentive end time is over
 	// admin or refundee can end incentive ( left amount will be refunded )
 	caller := std.PrevRealm().Addr()
 	if caller != consts.ADMIN && caller != refundee {
-		panic(addDetailToError(errNoPermission,
-			ufmt.Sprintf("staker.gno__EndExternalIncentive() || only refundee(%s) or admin(%s) can end incentive", refundee, consts.ADMIN),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__EndExternalIncentive() || only refundee(%s) or admin(%s) can end incentive", refundee, consts.ADMIN))
 	}
 
 	// when incentive ended, refund remaining reward
@@ -670,17 +640,13 @@ func checkStartTime(startTimestamp int64) {
 	// REF: https://stackoverflow.com/a/23982005
 	numStr := strconv.Itoa(int(startTimestamp))
 	if len(numStr) >= 13 {
-		panic(addDetailToError(errInvalidInput,
-			ufmt.Sprintf("staker.gno__checkStartTime() || startTimestamp(%d) must be in seconds format, not milliseconds", startTimestamp),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__checkStartTime() || startTimestamp(%d) must be in seconds format, not milliseconds", startTimestamp))
 	}
 
 	// must be at least +1 day midnight
 	tomorrowMidnight := time.Now().AddDate(0, 0, 1).Truncate(24 * time.Hour).Unix()
 	if startTimestamp < tomorrowMidnight {
-		panic(addDetailToError(errInvalidIncentiveStartTime,
-			ufmt.Sprintf("staker.gno__checkStartTime() || startTimestamp(%d) must be at least +1 day midnight(%d)", startTimestamp, tomorrowMidnight),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__checkStartTime() || startTimestamp(%d) must be at least +1 day midnight(%d)", startTimestamp, tomorrowMidnight))
 	}
 
 	// must be midnight of the day
@@ -689,18 +655,14 @@ func checkStartTime(startTimestamp int64) {
 
 	isMidnight := hour == 0 && minute == 0 && second == 0
 	if !isMidnight {
-		panic(addDetailToError(errInvalidIncentiveStartTime,
-			ufmt.Sprintf("staker.gno__checkStartTime() || startTime(%d = %s) must be midnight of the day", startTimestamp, startTime.String()),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__checkStartTime() || startTime(%d = %s) must be midnight of the day", startTimestamp, startTime.String()))
 	}
 }
 
 func transferDeposit(tokenId uint64, to std.Address) {
 	owner := gnft.OwnerOf(tid(tokenId))
 	if std.PrevRealm().Addr() == to {
-		panic(addDetailToError(errNoPermission,
-			ufmt.Sprintf("staker.gno__transferDeposit() || only owner(%s) can transfer tokenId(%d), std.PrevRealm().Addr()(%s)", owner, tokenId, std.PrevRealm().Addr()),
-		))
+		panic(ufmt.Sprintf("[STAKER] staker.gno__transferDeposit() || only owner(%s) can transfer tokenId(%d), std.PrevRealm().Addr()(%s)", owner, tokenId, std.PrevRealm().Addr()))
 	}
 
 	// transfer NFT ownership
@@ -748,9 +710,7 @@ func isAllowedForExternalReward(poolPath, tokenPath string) {
 		return
 	}
 
-	panic(addDetailToError(errCannotUseForExternalReward,
-		ufmt.Sprintf("staker.gno__isAllowedForExternalReward() || tokenPath(%s) is not allowed for external reward for poolPath(%s)", tokenPath, poolPath),
-	))
+	panic(ufmt.Sprintf("[STAKER] staker.gno__isAllowedForExternalReward() || tokenPath(%s) is not allowed for external reward for poolPath(%s)", tokenPath, poolPath))
 }
 
 func poolHasInternal(poolPath string) bool {

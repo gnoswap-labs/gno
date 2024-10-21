@@ -2,7 +2,6 @@ package gns
 
 import (
 	"std"
-	"strings"
 
 	"testing"
 
@@ -39,8 +38,8 @@ func shouldPanicWithMsg(t *testing.T, f func(), msg string) {
 		if r := recover(); r == nil {
 			t.Errorf("The code did not panic")
 		} else {
-			if !strings.Contains(string(r), msg) {
-				t.Errorf("excepted panic\n%v\n\ngot\n%v\n", msg, r)
+			if r != msg {
+				t.Errorf("excepted panic(%v), got(%v)", msg, r)
 			}
 		}
 	}()

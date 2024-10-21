@@ -51,10 +51,7 @@ func GetRewardByProjectWallet(addr std.Address) uint64 {
 func SetAmountByProjectWallet(addr std.Address, amount uint64, add bool) {
 	prev := std.PrevRealm().PkgPath()
 	if prev != consts.LAUNCHPAD_PATH {
-		panic(addDetailToError(
-			errInvalidAddress,
-			ufmt.Sprintf("reward_calculation.gno__SetAmountByProjectWallet() || only launchpad can set amountByProjectWallet, called from %s", prev),
-		))
+		panic(ufmt.Sprintf("only launchpad can set amountByProjectWallet, called from %s", prev))
 	}
 
 	calculateReward()
@@ -224,10 +221,7 @@ func getGovStakerGnsWithoutXGns() uint64 {
 	println("getGovStakerGnsWithoutXGns()_totalXGns:\t\t\t", totalXGns)
 
 	if gnsGovStaker < totalXGns {
-		panic(addDetailToError(
-			errNotEnoughBalance,
-			ufmt.Sprintf("reward_calculation.gno__getGovStakerGnsWithoutXGns() || gnsGovStaker(%d) < totalXGns(%d)", gnsGovStaker, totalXGns),
-		))
+		panic(ufmt.Sprintf("gnsGovStaker(%d) < totalXGns(%d)", gnsGovStaker, totalXGns))
 	}
 	return gnsGovStaker - totalXGns
 }

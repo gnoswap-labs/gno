@@ -229,10 +229,7 @@ func isUserCall() bool {
 
 func assertUserCall() {
 	if !isUserCall() {
-		panic(addDetailToError(
-			errNoPermission,
-			ufmt.Sprintf("must be called by user"),
-		))
+		panic("must be called by user")
 	}
 }
 

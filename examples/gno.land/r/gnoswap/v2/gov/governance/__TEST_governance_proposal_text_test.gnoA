@@ -18,7 +18,7 @@ func TestProposeText(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-005") {
+			} else if !strings.Contains(string(r), "PROPOSER_HAS_NOT_ENOUGH_XGNS") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -98,7 +98,7 @@ func TestVote(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-004") {
+			} else if !strings.Contains(string(r), "does not exist") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -113,7 +113,7 @@ func TestVote(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-006") {
+			} else if !strings.Contains(string(r), "not started yet") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -179,7 +179,7 @@ func TestVote(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-009") {
+			} else if !strings.Contains(string(r), "already voted") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -194,7 +194,7 @@ func TestVote(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-007") {
+			} else if !strings.Contains(string(r), "has ended") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -238,7 +238,7 @@ func TestCancel(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-004") {
+			} else if !strings.Contains(string(r), "does not exist") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -278,7 +278,7 @@ func TestCancel(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-011") {
+			} else if !strings.Contains(string(r), "already canceled") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -291,7 +291,7 @@ func TestCancel(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-012") {
+			} else if !strings.Contains(string(r), "already started") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
@@ -311,7 +311,7 @@ func TestExecute(t *testing.T) {
 		defer func() {
 			if r := recover(); r == nil {
 				t.Errorf("The code did not panic")
-			} else if !strings.Contains(string(r), "GNOSWAP-GOVERNANCE-014") {
+			} else if !strings.Contains(string(r), "not executable") {
 				t.Errorf("Unexpected panic message: %v", r)
 			}
 		}()
