@@ -88,12 +88,12 @@ func CreateProject(
 
 	avgBlockTimeMs := uint64(gns.GetAvgBlockTimeInMs())
 
-	currentBlockHeight := uint64(std.GetHeight())
+	height := uint64(std.GetHeight())
 	now := uint64(time.Now().Unix())
 
 	timeUntilStart := startTime - now
-	startDelayBlockDuration := timeUntilStart * 1000 / avgBlockTimeMs
-	startBlockHeight := currentBlockHeight + startDelayBlockDuration
+	blockDuration := timeUntilStart * 1000 / avgBlockTimeMs
+	startHeight := height + blockDuration
 
 	transferFromByRegisterCall(
 		tokenPath,
@@ -105,22 +105,23 @@ func CreateProject(
 	tier30Amount := depositAmount * tier30Ratio / 100
 	tier90Amount := depositAmount * tier90Ratio / 100
 	tier180Amount := depositAmount * tier180Ratio / 100
-	sumAllTierAmount := tier30Amount + tier90Amount + tier180Amount
-	leftAmount := depositAmount - sumAllTierAmount
-	if leftAmount > 0 {
-		// TODO:
+	sumAll := tier30Amount + tier90Amount + tier180Amount
+	left := depositAmount - sumAll
+	if left > 0 {
 		// uAmounts can be left due to rounding
 		// XXX: how to handle this?
 		// tier180Amount += left
 	}
+	createdHeight := uint64(std.GetHeight())
+	createdTime := uint64(time.Now().Unix())
 
 	// check grc20 required conditions
 	conditions := makeConditions(conditionsToken, conditionsAmount)
 
 	// create tier
-	tier30EndHeight := startBlockHeight + (TIMESTAMP_30DAYS * 1000 / avgBlockTimeMs)
+	tier30EndHeight := startHeight + (TIMESTAMP_30DAYS * 1000 / avgBlockTimeMs)
 	tier30AmountX96 := new(u256.Uint).Mul(u256.NewUint(tier30Amount), q96)
-	tier30AmountPerBlockX96 := new(u256.Uint).Div(tier30AmountX96, u256.NewUint(tier30EndHeight-startBlockHeight))
+	tier30AmountPerBlockX96 := new(u256.Uint).Div(tier30AmountX96, u256.NewUint(tier30EndHeight-startHeight))
 	tier30 := Tier{
 		id:                    generateTierId(projectId, 30),
 		collectWaitDuration:   TIMESTAMP_3DAYS * 1000 / avgBlockTimeMs,
@@ -130,9 +131,9 @@ func CreateProject(
 		endTime:               startTime + TIMESTAMP_30DAYS,
 	}
 
-	tier90EndHeight := startBlockHeight + (TIMESTAMP_90DAYS * 1000 / avgBlockTimeMs)
+	tier90EndHeight := startHeight + (TIMESTAMP_90DAYS * 1000 / avgBlockTimeMs)
 	tier90AmountX96 := new(u256.Uint).Mul(u256.NewUint(tier90Amount), q96)
-	tier90AmountPerBlockX96 := new(u256.Uint).Div(tier90AmountX96, u256.NewUint(tier90EndHeight-startBlockHeight))
+	tier90AmountPerBlockX96 := new(u256.Uint).Div(tier90AmountX96, u256.NewUint(tier90EndHeight-startHeight))
 	tier90 := Tier{
 		id:                    generateTierId(projectId, 90),
 		collectWaitDuration:   TIMESTAMP_7DAYS * 1000 / avgBlockTimeMs,
@@ -142,9 +143,9 @@ func CreateProject(
 		endTime:               startTime + TIMESTAMP_90DAYS,
 	}
 
-	tier180EndHeight := startBlockHeight + (TIMESTAMP_180DAYS * 1000 / avgBlockTimeMs)
+	tier180EndHeight := startHeight + (TIMESTAMP_180DAYS * 1000 / avgBlockTimeMs)
 	tier180AmountX96 := new(u256.Uint).Mul(u256.NewUint(tier180Amount), q96)
-	tier180AmountPerBlockX96 := new(u256.Uint).Div(tier180AmountX96, u256.NewUint(tier180EndHeight-startBlockHeight))
+	tier180AmountPerBlockX96 := new(u256.Uint).Div(tier180AmountX96, u256.NewUint(tier180EndHeight-startHeight))
 	tier180 := Tier{
 		id:                    generateTierId(projectId, 180),
 		collectWaitDuration:   TIMESTAMP_14DAYS * 1000 / avgBlockTimeMs,
@@ -167,9 +168,9 @@ func CreateProject(
 		tier90Ratio:   tier90Ratio,
 		tier180:       tier180,
 		tier180Ratio:  tier180Ratio,
-		createdHeight: currentBlockHeight,
-		createdTime:   now,
-		startHeight:   startBlockHeight,
+		createdHeight: createdHeight,
+		createdTime:   createdTime,
+		startHeight:   startHeight,
 		startTime:     startTime,
 		endHeight:     tier180.endHeight,
 		endTime:       tier180.endTime,
@@ -177,11 +178,11 @@ func CreateProject(
 
 	projects[projectId] = project
 
-	prevAddr, prevPkgPath := getPrev()
+	prevAddr, prevRealm := getPrev()
 	std.Emit(
 		"CreateProject",
 		"prevAddr", prevAddr,
-		"prevRealm", prevPkgPath,
+		"prevRealm", prevRealm,
 		"tokenPath", tokenPath,
 		"recipient", recipient.String(),
 		"depositAmount", ufmt.Sprintf("%d", depositAmount),
@@ -191,7 +192,7 @@ func CreateProject(
 		"tier90Ratio", ufmt.Sprintf("%d", tier90Ratio),
 		"tier180Ratio", ufmt.Sprintf("%d", tier180Ratio),
 		"startTime", ufmt.Sprintf("%d", startTime),
-		"internal_startHeight", ufmt.Sprintf("%d", startBlockHeight),
+		"internal_startHeight", ufmt.Sprintf("%d", startHeight),
 		"internal_projectId", projectId,
 		"internal_tier30Amount", ufmt.Sprintf("%d", tier30Amount),
 		"internal_tier30EndHeight", ufmt.Sprintf("%d", tier30EndHeight),
