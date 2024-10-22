@@ -42,9 +42,11 @@ var (
 var halvingYearBlock = make(map[int64]int64)     // year => block
 var halvingYearTimestamp = make(map[int64]int64) // year => timestamp
 
-var halvingYearAmount = make(map[int64]uint64)     // year => mintAmount
-var halvingYearMintAmount = make(map[int64]uint64) // year => (actual) mintAmount
-var halvingYearAccuAmount = make(map[int64]uint64) // year => accuAmount
+var halvingYearAmount = make(map[int64]uint64)            // year => mintAmount
+var halvingYearMintAmount = make(map[int64]uint64)        // year => (actual) mintAmount
+var halvingYearAccuAmount = make(map[int64]uint64)        // year => accuAmount
+var amountPerBlockPerHalvingYear = make(map[int64]uint64) // year => reward per block
+
 func init() {
 	// yearly mint amount
 	halvingYearAmount[1] = 18_750_000_000_000 * 12 // 225000000000000
@@ -73,11 +75,7 @@ func init() {
 	halvingYearAccuAmount[10] = halvingYearAccuAmount[9] + halvingYearAmount[10]
 	halvingYearAccuAmount[11] = halvingYearAccuAmount[10] + halvingYearAmount[11]
 	halvingYearAccuAmount[12] = halvingYearAccuAmount[11] + halvingYearAmount[12]
-}
 
-var amountPerBlockPerHalvingYear = make(map[int64]uint64) // year => reward per block
-
-func init() {
 	height := std.GetHeight()
 
 	startHeight = height
@@ -128,7 +126,8 @@ func SetAvgBlockTimeInMs(ms int64) {
 		panic("must be called by governance")
 	}
 
-	setAvgBlockTimeInMs(ms)
+	//setAvgBlockTimeInMs(ms)
+	resyncRewardPreBlockTrim()
 
 	prevAddr, prevRealm := getPrev()
 	std.Emit(
@@ -137,6 +136,34 @@ func SetAvgBlockTimeInMs(ms int64) {
 		"prevRealm", prevRealm,
 		"ms", ufmt.Sprintf("%d", ms),
 	)
+}
+
+func resyncRewardPreBlockTrim() {
+	common.IsHalted()
+
+	currentHeight := std.GetHeight()
+
+	genBlockAmount := uint64(currentHeight - startHeight)
+	year := GetHalvingYearByHeight(currentHeight)
+	logicMintedAmount := genBlockAmount * amountPerBlockPerHalvingYear[year]
+	measuredMintedAmount := TotalMinted()
+	var diffAmount uint64
+	var isOverFlow bool
+	if logicMintedAmount >= measuredMintedAmount { // 덜준거
+		diffAmount = logicMintedAmount - measuredMintedAmount
+		isOverFlow = false
+	} else {
+		diffAmount = measuredMintedAmount - logicMintedAmount
+		isOverFlow = true
+	}
+
+	leftBlockAmount := halvingYearBlock[year] - currentHeight
+	adjustedAmountPerBlock := diffAmount / uint64(leftBlockAmount)
+	if isOverFlow {
+		amountPerBlockPerHalvingYear[year] -= adjustedAmountPerBlock
+	} else {
+		amountPerBlockPerHalvingYear[year] += adjustedAmountPerBlock
+	}
 }
 
 func setAvgBlockTimeInMs(ms int64) {
