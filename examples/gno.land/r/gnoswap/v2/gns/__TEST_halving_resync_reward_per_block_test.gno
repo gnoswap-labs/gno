@@ -1,0 +1,71 @@
+package gns
+
+import (
+	pusers "gno.land/p/demo/users"
+	"gno.land/r/gnoswap/v2/consts"
+	"std"
+	"testing"
+)
+
+func TestEmissionAmount(t *testing.T) {
+	shouldEQ(t, amountToEmission, uint64(900_000_000_000_000))
+
+	sumAmount := uint64(0)
+	for _, amountYearly := range halvingYearAmount {
+		sumAmount += uint64(amountYearly)
+	}
+	shouldEQ(t, sumAmount, amountToEmission)
+}
+
+func TestSkip50Block(t *testing.T) {
+	std.TestSkipHeights(50)
+	shouldEQ(t, std.GetHeight(), int64(173)) // 123 + 50
+
+	std.TestSetRealm(emissionRealm)
+	Mint(emissionUsers) // 14269406 * 50
+	shouldEQ(t, TotalMinted(), uint64(713470300))
+
+	ghi := GetHalvingInfo()
+	shouldEQ(t, ghi, `{"height":173,"timestamp":1234567990,"avgBlockTimeMs":2000,"halvings":[{"year":1,"block":15768123,"amount":14269406},{"year":2,"block":31536123,"amount":14269406},{"year":3,"block":47304123,"amount":7134703},{"year":4,"block":63072123,"amount":7134703},{"year":5,"block":78840123,"amount":3567351},{"year":6,"block":94608123,"amount":3567351},{"year":7,"block":110376123,"amount":1783675},{"year":8,"block":126144123,"amount":1783675},{"year":9,"block":141912123,"amount":891837},{"year":10,"block":157680123,"amount":891837},{"year":11,"block":173448123,"amount":891837},{"year":12,"block":189216123,"amount":891837}]}`)
+}
+
+// Assume block time is 2.5s = 2500ms
+func TestSetAvgBlockTimeInMsWhenMoreDistributed(t *testing.T) {
+	// for block time 2s
+	shouldEQ(t, amountPerBlockPerHalvingYear[1], uint64(14269406)) // amountPerBlock = 14269397
+	shouldEQ(t, halvingYearBlock[1], int64(15768123))
+
+	std.TestSetRealm(swapAdminRealm)
+
+	// more reward distributed than logical mint
+	moreRewardAmount := TestBankMint(pusers.AddressOrName(consts.ADMIN))
+	SetAvgBlockTimeInMsByAdmin(2500) // adjust amountPerBlock = 14269397
+	newAmountPerBlock := uint64(14269397)
+	shouldEQ(t, amountPerBlockPerHalvingYear[1], newAmountPerBlock)
+	std.TestSkipHeights(1)
+
+	std.TestSetRealm(emissionRealm)
+	Mint(emissionUsers)
+	expectedMintedAmount := uint64(713470300 + moreRewardAmount + newAmountPerBlock)
+	shouldEQ(t, TotalMinted(), expectedMintedAmount)
+}
+
+func TestSetAvgBlockTimeInMsWhenLessDistributed(t *testing.T) {
+	shouldEQ(t, TotalMinted(), uint64(870433757))
+	shouldEQ(t, amountPerBlockPerHalvingYear[1], uint64(14269397)) // amountPerBlock = 14269397
+	shouldEQ(t, halvingYearBlock[1], int64(15768123))
+
+	std.TestSkipHeights(10)
+	std.TestSetRealm(swapAdminRealm)
+	// less reward distributed than logical mint
+	lessRewardAmount := TestBankBurn(pusers.AddressOrName(consts.ADMIN))
+	SetAvgBlockTimeInMsByAdmin(2500) // adjust amountPerBlock = 14269406
+	newAmountPerBlock := uint64(14269406)
+	shouldEQ(t, amountPerBlockPerHalvingYear[1], newAmountPerBlock)
+	std.TestSkipHeights(1)
+
+	std.TestSetRealm(emissionRealm)
+	Mint(emissionUsers)
+	expectedMintedAmount := uint64(870433757 + (14269406 * 10) - lessRewardAmount + newAmountPerBlock)
+	shouldEQ(t, TotalMinted(), expectedMintedAmount) // 731307057
+}

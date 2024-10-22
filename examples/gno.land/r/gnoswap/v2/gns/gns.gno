@@ -205,3 +205,17 @@ func checkErr(err error) {
 		panic(err.Error())
 	}
 }
+
+// TODO:
+// 1. will be removed after testing
+func TestBankMint(address pusers.AddressOrName) uint64 {
+	var testMintAmount uint64 = 14269406 * 10
+	banker.Mint(users.Resolve(address), testMintAmount)
+	return testMintAmount
+}
+
+func TestBankBurn(address pusers.AddressOrName) uint64 {
+	var testMintAmount uint64 = 14269406 * 10
+	banker.Burn(users.Resolve(address), testMintAmount)
+	return testMintAmount
+}
