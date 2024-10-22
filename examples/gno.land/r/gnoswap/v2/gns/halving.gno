@@ -99,6 +99,8 @@ func GetAvgBlockTimeInMs() int64 {
 	return avgBlockTimeMs
 }
 
+// TODO:
+// 1. remove input parameter
 // SetAvgBlockTimeInMsByAdmin sets the average block time in millisecond.
 // Panics if the caller is not the admin.
 func SetAvgBlockTimeInMsByAdmin(ms int64) {
@@ -107,7 +109,8 @@ func SetAvgBlockTimeInMsByAdmin(ms int64) {
 		panic("must be called by admin")
 	}
 
-	setAvgBlockTimeInMs(ms)
+	//setAvgBlockTimeInMs(ms)
+	resyncRewardPerBlockTrim()
 
 	prevAddr, prevRealm := getPrev()
 	std.Emit(
@@ -127,7 +130,7 @@ func SetAvgBlockTimeInMs(ms int64) {
 	}
 
 	//setAvgBlockTimeInMs(ms)
-	resyncRewardPreBlockTrim()
+	resyncRewardPerBlockTrim()
 
 	prevAddr, prevRealm := getPrev()
 	std.Emit(
@@ -138,27 +141,35 @@ func SetAvgBlockTimeInMs(ms int64) {
 	)
 }
 
-func resyncRewardPreBlockTrim() {
+func resyncRewardPerBlockTrim() {
 	common.IsHalted()
+
+	var diffAmount uint64
+	var isOverFlow bool
 
 	currentHeight := std.GetHeight()
 
 	genBlockAmount := uint64(currentHeight - startHeight)
+	if genBlockAmount <= 0 {
+		return
+	}
 	year := GetHalvingYearByHeight(currentHeight)
 	logicMintedAmount := genBlockAmount * amountPerBlockPerHalvingYear[year]
 	measuredMintedAmount := TotalMinted()
-	var diffAmount uint64
-	var isOverFlow bool
-	if logicMintedAmount >= measuredMintedAmount { // 덜준거
+
+	if logicMintedAmount >= measuredMintedAmount { // actual block time is faster than average
 		diffAmount = logicMintedAmount - measuredMintedAmount
 		isOverFlow = false
-	} else {
+	} else { // actual block time is slower than average
 		diffAmount = measuredMintedAmount - logicMintedAmount
 		isOverFlow = true
 	}
 
 	leftBlockAmount := halvingYearBlock[year] - currentHeight
 	adjustedAmountPerBlock := diffAmount / uint64(leftBlockAmount)
+	if adjustedAmountPerBlock < 0 {
+		return
+	}
 	if isOverFlow {
 		amountPerBlockPerHalvingYear[year] -= adjustedAmountPerBlock
 	} else {
