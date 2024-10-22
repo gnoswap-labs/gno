@@ -132,7 +132,6 @@ func TestCollectProtocolFeeByProject01Recipient(t *testing.T) {
 	// check claimble reward
 	res := gs.GetClaimableRewardByAddress(projectAddr)
 	shouldEQ(t, res, `{"height":"137","now":"1234567918","emissionReward":"0","protocolFees":[{"tokenPath":"gno.land/r/onbloc/bar","amount":"189"},{"tokenPath":"gno.land/r/onbloc/qux","amount":"474"}]}`)
-	// shouldEQ(t, res, `{"height":"132","now":"1234567908","emissionReward":"0","protocolFees":[{"tokenPath":"gno.land/r/onbloc/bar","amount":"1000"},{"tokenPath":"gno.land/r/onbloc/qux","amount":"2500"}]}`)
 
 	CollectProtocolFee()
 
