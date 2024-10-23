@@ -4,20 +4,16 @@ import (
 	"std"
 
 	pusers "gno.land/p/demo/users"
+
+	reg "gno.land/r/demo/grc20reg"
 )
 
 func TransferFromPrev() {
-	println("regcall_TransferFromPrev()")
 	curr := std.CurrentRealm()
-	println("currPath:", curr.PkgPath())
-	println("currAddr:", curr.Addr())
 	prev := std.PrevRealm()
-	println("prevPath:", prev.PkgPath())
-	println("prevAddr:", prev.Addr())
-	println()
 
-	// fooToken := reg.MustGet("gno.land/r/demo/foo")
-	// checkErr(fooToken.TransferFrom(prev.Addr(), curr.Addr(), 1000))
+	fooToken := reg.MustGet("gno.land/r/demo/foo")
+	checkErr(fooToken.TransferFrom(prev.Addr(), curr.Addr(), 1000))
 }
 
 func checkErr(err error) {

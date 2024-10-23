@@ -3,6 +3,7 @@ package grc20reg
 import (
 	"std"
 
+	"gno.land/p/demo/avl"
 	"gno.land/p/demo/fqname"
 	"gno.land/p/demo/grc/grc20"
 	"gno.land/p/demo/ufmt"
@@ -11,54 +12,32 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
-// var registry = avl.NewTree() // rlmPath[.slug] -> Token
-var registry = make(map[string]grc20.Token)
+var registry = avl.NewTree() // rlmPath[.slug] -> Token
 
 func Register(token grc20.Token, slug string) {
-	println("grc20reg__Register()")
 	rlmPath := std.PrevRealm().PkgPath()
 	key := fqname.Construct(rlmPath, slug)
 
-	registry[key] = token
-	// registry.Set(key, token)
-	// token.TotalSupply()
-	// registry.Set("k", "t")
+	registry.Set(key, token)
 
 	std.Emit(
 		registerEvent,
 		"pkgpath", rlmPath,
 		"slug", slug,
 	)
-
-	curr := std.CurrentRealm()
-	println("currPath:", curr.PkgPath())
-	println("currAddr:", curr.Addr())
-	prev := std.PrevRealm()
-	println("prevPath:", prev.PkgPath())
-	println("prevAddr:", prev.Addr())
-	println()
-
 }
 
 func Get(key string) grc20.Token {
-	// token, ok := registry.Get(key)
-	// if !ok {
-	// 	return nil
-	// }
-	token, ok := registry[key]
+	token, ok := registry.Get(key)
 	if !ok {
 		return nil
 	}
-	return token
+	return token.(grc20.Token)
 }
 
 func MustGet(key string) grc20.Token {
-	// token := Get(key)
-	// if token == nil {
-	// 	panic("unknown token: " + key)
-	// }
-	token, ok := registry[key]
-	if !ok {
+	token := Get(key)
+	if token == nil {
 		panic("unknown token: " + key)
 	}
 	return token
@@ -70,13 +49,15 @@ func Render(path string) string {
 		// TODO: add pagination
 		s := ""
 		count := 0
-		for key, token := range registry {
+		registry.Iterate("", "", func(key string, tokenI interface{}) bool {
 			count++
+			token := tokenI.(grc20.Token)
 			rlmPath, slug := fqname.Parse(key)
 			rlmLink := fqname.RenderLink(rlmPath, slug)
 			infoLink := "/r/demo/grc20reg:" + key
 			s += ufmt.Sprintf("- **%s** - %s - [info](%s)\n", token.GetName(), rlmLink, infoLink)
-		}
+			return false
+		})
 		if count == 0 {
 			return "No registered token."
 		}

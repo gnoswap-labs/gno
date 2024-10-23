@@ -19,23 +19,14 @@ var (
 	banker *grc20.Banker
 	admin  *ownable.Ownable
 	token  grc20.Token
+	Token  grc20.Token
 )
 
 func init() {
-	println("foo_init()")
-	curr := std.CurrentRealm()
-	println("currPath:", curr.PkgPath())
-	println("currAddr:", curr.Addr())
-	prev := std.PrevRealm()
-	println("prevPath:", prev.PkgPath())
-	println("prevAddr:", prev.Addr())
-	println()
-
 	admin = ownable.NewWithAddress("g1u7y667z64x2h7vc6fmpcprgey4ck233jaww9zq") // @manfred
 	banker = grc20.NewBanker("Foo", "FOO", 4)
 	banker.Mint(admin.Owner(), 1000000*10000) // @administrator (1M)
 	token = banker.Token()
-
 	grc20reg.Register(token, "")
 }
 
@@ -58,14 +49,10 @@ func Transfer(to pusers.AddressOrName, amount uint64) {
 }
 
 func Approve(spender pusers.AddressOrName, amount uint64) {
-	println("foo_Approve()")
+
 	curr := std.CurrentRealm()
-	println("currPath:", curr.PkgPath())
-	println("currAddr:", curr.Addr())
+
 	prev := std.PrevRealm()
-	println("prevPath:", prev.PkgPath())
-	println("prevAddr:", prev.Addr())
-	println()
 
 	spenderAddr := users.Resolve(spender)
 	checkErr(token.Approve(spenderAddr, amount))
