@@ -1,8 +1,6 @@
 package gns
 
 import (
-	pusers "gno.land/p/demo/users"
-	"gno.land/r/gnoswap/v2/consts"
 	"std"
 	"testing"
 )
@@ -32,13 +30,15 @@ func TestSkip50Block(t *testing.T) {
 // Assume block time is 2.5s = 2500ms
 func TestSetAvgBlockTimeInMsWhenMoreDistributed(t *testing.T) {
 	// for block time 2s
-	shouldEQ(t, amountPerBlockPerHalvingYear[1], uint64(14269406)) // amountPerBlock = 14269397
+	shouldEQ(t, amountPerBlockPerHalvingYear[1], uint64(14269406)) // amountPerBlock = 14269406
 	shouldEQ(t, halvingYearBlock[1], int64(15768123))
 
-	std.TestSetRealm(swapAdminRealm)
+	std.TestSkipOnlyHeights(10)
+	std.TestSetRealm(emissionRealm)
+	Mint(emissionUsers)
+	moreRewardAmount := amountPerBlockPerHalvingYear[1] * 10 // 14269406 * 10
 
-	// more reward distributed than logical mint
-	moreRewardAmount := TestBankMint(pusers.AddressOrName(consts.ADMIN))
+	std.TestSetRealm(swapAdminRealm)
 	SetAvgBlockTimeInMsByAdmin(2500) // adjust amountPerBlock = 14269397
 	newAmountPerBlock := uint64(14269397)
 	shouldEQ(t, amountPerBlockPerHalvingYear[1], newAmountPerBlock)
@@ -46,6 +46,9 @@ func TestSetAvgBlockTimeInMsWhenMoreDistributed(t *testing.T) {
 
 	std.TestSetRealm(emissionRealm)
 	Mint(emissionUsers)
+	// initial minted amount = 713470300
+	// more reward distributed than Predicted mint = 14269406 * 10
+	// new amount per block = 14269397
 	expectedMintedAmount := uint64(713470300 + moreRewardAmount + newAmountPerBlock)
 	shouldEQ(t, TotalMinted(), expectedMintedAmount)
 }
@@ -56,16 +59,19 @@ func TestSetAvgBlockTimeInMsWhenLessDistributed(t *testing.T) {
 	shouldEQ(t, halvingYearBlock[1], int64(15768123))
 
 	std.TestSkipHeights(10)
+	std.TestSkipOnlyTimeStamps(20)
+	std.TestSetRealm(emissionRealm)
+	Mint(emissionUsers)
+	lessRewardAmount := amountPerBlockPerHalvingYear[1] * 10 // 14269397 * 10
+
 	std.TestSetRealm(swapAdminRealm)
-	// less reward distributed than logical mint
-	lessRewardAmount := TestBankBurn(pusers.AddressOrName(consts.ADMIN))
-	SetAvgBlockTimeInMsByAdmin(2500) // adjust amountPerBlock = 14269406
-	newAmountPerBlock := uint64(14269406)
+	SetAvgBlockTimeInMsByAdmin(2500)
+	newAmountPerBlock := uint64(14269406) // adjust amountPerBlock = 14269406
 	shouldEQ(t, amountPerBlockPerHalvingYear[1], newAmountPerBlock)
 	std.TestSkipHeights(1)
 
 	std.TestSetRealm(emissionRealm)
 	Mint(emissionUsers)
-	expectedMintedAmount := uint64(870433757 + (14269406 * 10) - lessRewardAmount + newAmountPerBlock)
-	shouldEQ(t, TotalMinted(), expectedMintedAmount) // 731307057
+	expectedMintedAmount := uint64(870433757 + lessRewardAmount + newAmountPerBlock)
+	shouldEQ(t, TotalMinted(), expectedMintedAmount) // 1027397124
 }

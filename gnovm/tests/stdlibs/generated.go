@@ -297,6 +297,50 @@ var nativeFuncs = [...]NativeFunc{
 		},
 	},
 	{
+		"std",
+		"testSkipOnlyHeights",
+		[]gno.FieldTypeExpr{
+			{Name: gno.N("p0"), Type: gno.X("int64")},
+		},
+		[]gno.FieldTypeExpr{},
+		true,
+		func(m *gno.Machine) {
+			b := m.LastBlock()
+			var (
+				p0  int64
+				rp0 = reflect.ValueOf(&p0).Elem()
+			)
+
+			gno.Gno2GoValue(b.GetPointerTo(nil, gno.NewValuePathBlock(1, 0, "")).TV, rp0)
+
+			testlibs_std.X_testSkipOnlyHeights(
+				m,
+				p0)
+		},
+	},
+	{
+		"std",
+		"testSkipOnlyTimeStamps",
+		[]gno.FieldTypeExpr{
+			{Name: gno.N("p0"), Type: gno.X("int64")},
+		},
+		[]gno.FieldTypeExpr{},
+		true,
+		func(m *gno.Machine) {
+			b := m.LastBlock()
+			var (
+				p0  int64
+				rp0 = reflect.ValueOf(&p0).Elem()
+			)
+
+			gno.Gno2GoValue(b.GetPointerTo(nil, gno.NewValuePathBlock(1, 0, "")).TV, rp0)
+
+			testlibs_std.X_testSkipOnlyTimeStamps(
+				m,
+				p0)
+		},
+	},
+	{
 		"testing",
 		"unixNano",
 		[]gno.FieldTypeExpr{},

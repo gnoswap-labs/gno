@@ -191,3 +191,15 @@ func X_testIssueCoins(m *gno.Machine, addr string, denom []string, amt []int64) 
 		banker.IssueCoin(crypto.Bech32Address(addr), denom[i], amt[i])
 	}
 }
+
+func X_testSkipOnlyHeights(m *gno.Machine, count int64) {
+	ctx := m.Context.(*TestExecContext)
+	ctx.Height += count
+	m.Context = ctx
+}
+
+func X_testSkipOnlyTimeStamps(m *gno.Machine, count int64) {
+	ctx := m.Context.(*TestExecContext)
+	ctx.Timestamp += count * 2
+	m.Context = ctx
+}

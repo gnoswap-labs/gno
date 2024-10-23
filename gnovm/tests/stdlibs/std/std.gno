@@ -5,8 +5,10 @@ func IsOriginCall() bool          // injected
 func TestSkipHeights(count int64) // injected
 func ClearStoreCache()            // injected
 
-func TestSetOrigCaller(addr Address)  { testSetOrigCaller(string(addr)) }
-func TestSetOrigPkgAddr(addr Address) { testSetOrigPkgAddr(string(addr)) }
+func TestSetOrigCaller(addr Address)     { testSetOrigCaller(string(addr)) }
+func TestSetOrigPkgAddr(addr Address)    { testSetOrigPkgAddr(string(addr)) }
+func TestSkipOnlyHeights(count int64)    { testSkipOnlyHeights(count) }
+func TestSkipOnlyTimeStamps(count int64) { testSkipOnlyTimeStamps(count) }
 
 // TestSetRealm sets the realm for the current frame.
 // After calling TestSetRealm, calling CurrentRealm() in the test function will yield the value of
@@ -38,3 +40,5 @@ func testSetOrigSend(
 	spentDenom []string, spentAmt []int64)
 func testIssueCoins(addr string, denom []string, amt []int64)
 func getRealm(height int) (address string, pkgPath string)
+func testSkipOnlyHeights(count int64)
+func testSkipOnlyTimeStamps(count int64)
