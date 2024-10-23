@@ -124,6 +124,7 @@ func calculateGNSEmission() {
 	println(" > EN_gotGnsForEmission", gotGnsForEmission)
 	println(" > leftGnsEmissionFromLast", leftGnsEmissionFromLast)
 	gotGnsForEmission += leftGnsEmissionFromLast
+	clearLeftGnsEmissionFromLast()
 	println(" > [SUM] gotGnsForEmission", gotGnsForEmission)
 
 	if gotGnsForEmission == uint64(0) {
@@ -178,6 +179,7 @@ func calculateProtocolFee() {
 		tokenBalance := accuProtocolFee[tokenPath]
 		println(" > tokenBalance:", tokenBalance)
 		leftFromLast := leftProtocolFeeFromLast[tokenPath]
+		clearLeftProtocolFeeFromLast(tokenPath)
 		println(" > leftFromLast:", leftFromLast)
 		tokenBalance += leftFromLast
 		println(" > [SUM] tokenBalance:", tokenBalance)
@@ -224,4 +226,12 @@ func getGovStakerGnsWithoutXGns() uint64 {
 		panic(ufmt.Sprintf("gnsGovStaker(%d) < totalXGns(%d)", gnsGovStaker, totalXGns))
 	}
 	return gnsGovStaker - totalXGns
+}
+
+func clearLeftGnsEmissionFromLast() {
+	leftGnsEmissionFromLast = 0
+}
+
+func clearLeftProtocolFeeFromLast(tokenPath string) {
+	leftProtocolFeeFromLast[tokenPath] = 0
 }
