@@ -448,6 +448,9 @@ func runTestFiles(
 	m.RunFiles(n)
 
 	for _, test := range testFuncs.Tests {
+		// cleanup machine between tests
+		tests.CleanupMachine(m)
+
 		testFuncStr := fmt.Sprintf("%q", test.Name)
 
 		eval := m.Eval(gno.Call("runtest", testFuncStr))

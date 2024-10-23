@@ -3,64 +3,62 @@ package grc20reg
 import (
 	"std"
 
-	"gno.land/p/demo/avl"
 	"gno.land/p/demo/fqname"
 	"gno.land/p/demo/grc/grc20"
 	"gno.land/p/demo/ufmt"
 
 	"gno.land/p/demo/grc/grc20"
-	"gno.land/p/demo/ownable"
 	"gno.land/p/demo/ufmt"
 )
 
-var registry = avl.NewTree() // rlmPath[.slug] -> Token
+// var registry = avl.NewTree() // rlmPath[.slug] -> Token
+var registry = make(map[string]grc20.Token)
 
 func Register(token grc20.Token, slug string) {
+	println("grc20reg__Register()")
 	rlmPath := std.PrevRealm().PkgPath()
 	key := fqname.Construct(rlmPath, slug)
-	registry.Set(key, token)
+
+	registry[key] = token
+	// registry.Set(key, token)
+	// token.TotalSupply()
+	// registry.Set("k", "t")
+
 	std.Emit(
 		registerEvent,
 		"pkgpath", rlmPath,
 		"slug", slug,
 	)
-}
 
-func Register2(token grc20.Token, slug string) {
-	// dummy
-	rlmPath := std.PrevRealm().PkgPath()
-	key := fqname.Construct(rlmPath, slug)
-
-	admin := ownable.NewWithAddress("g1u7y667z64x2h7vc6fmpcprgey4ck233jaww9zq") // @manfred
-	banker := grc20.NewBanker("Foo", "FOO", 4)
-	banker.Mint(admin.Owner(), 1000000*10000) // @administrator (1M)
-	dummyToken := banker.Token()
-
-	println("TOKEN")
-	println(token)
+	curr := std.CurrentRealm()
+	println("currPath:", curr.PkgPath())
+	println("currAddr:", curr.Addr())
+	prev := std.PrevRealm()
+	println("prevPath:", prev.PkgPath())
+	println("prevAddr:", prev.Addr())
 	println()
-	println("DUMMY")
-	println(dummyToken)
-	println()
-	// registry.Set("dummy", dummyToken) // OOO
 
-	// registry.Set("dummy", "token") // OOO
-
-	registry.Set("dummy", token) // XXX
-	// registry.Set("dummy", dummyToken) // OOO
 }
 
 func Get(key string) grc20.Token {
-	token, ok := registry.Get(key)
+	// token, ok := registry.Get(key)
+	// if !ok {
+	// 	return nil
+	// }
+	token, ok := registry[key]
 	if !ok {
 		return nil
 	}
-	return token.(grc20.Token)
+	return token
 }
 
 func MustGet(key string) grc20.Token {
-	token := Get(key)
-	if token == nil {
+	// token := Get(key)
+	// if token == nil {
+	// 	panic("unknown token: " + key)
+	// }
+	token, ok := registry[key]
+	if !ok {
 		panic("unknown token: " + key)
 	}
 	return token
@@ -72,15 +70,13 @@ func Render(path string) string {
 		// TODO: add pagination
 		s := ""
 		count := 0
-		registry.Iterate("", "", func(key string, tokenI interface{}) bool {
+		for key, token := range registry {
 			count++
-			token := tokenI.(grc20.Token)
 			rlmPath, slug := fqname.Parse(key)
 			rlmLink := fqname.RenderLink(rlmPath, slug)
 			infoLink := "/r/demo/grc20reg:" + key
 			s += ufmt.Sprintf("- **%s** - %s - [info](%s)\n", token.GetName(), rlmLink, infoLink)
-			return false
-		})
+		}
 		if count == 0 {
 			return "No registered token."
 		}

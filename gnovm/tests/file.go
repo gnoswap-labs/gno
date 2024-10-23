@@ -74,6 +74,21 @@ func TestContext(pkgPath string, send std.Coins) *teststd.TestExecContext {
 	}
 }
 
+// CleanupMachine can be called during two tests while reusing the same Machine instance.
+func CleanupMachine(m *gno.Machine) {
+	prevCtx := m.Context.(*teststd.TestExecContext)
+	prevSend := prevCtx.OrigSend
+
+	newCtx := TestContext("", prevCtx.OrigSend)
+	pkgCoins := std.MustParseCoins(ugnot.ValueString(200_000_000)).Add(prevSend) // >= send.
+	banker := newTestBanker(prevCtx.OrigPkgAddr, pkgCoins)
+	newCtx.OrigPkgAddr = prevCtx.OrigPkgAddr
+	newCtx.Banker = banker
+	m.Context = newCtx
+
+	fmt.Println(newCtx.RealmFrames)
+}
+
 type runFileTestOptions struct {
 	nativeLibs bool
 	logger     loggerFunc

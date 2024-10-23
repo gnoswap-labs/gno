@@ -17,15 +17,7 @@ var (
 	regCallPath = "gno.land/r/demo/regcall"
 )
 
-func init() {
-	// prevent gofmt removes imports
-	foo.TotalSupply()
-	// reg.Render("")
-}
-
 func TestTransferFromPrev(t *testing.T) {
-	std.TestSetRealm(manfredRealm) // user
-
 	// approve using grc20reg  // only code level
 	{
 		// fooToken := reg.MustGet("gno.land/r/demo/foo")

@@ -109,8 +109,17 @@ func X_getRealm(m *gno.Machine, height int) (address, pkgPath string) {
 		changes int
 	)
 
+	// XXX: r3v4 // ing
+	// fmt.Println("===================================================")
+	// fmt.Println("X_getRealm, height", height)
 	for i := m.NumFrames() - 1; i >= 0; i-- {
+		// fmt.Println("--------------------------------")
+		// fmt.Println("m.NumFrames()", m.NumFrames())
+		// fmt.Println("i", i)
 		fr := m.Frames[i]
+		// fmt.Println("fr", fr)
+		// fmt.Println("fr.LastPackage", fr.LastPackage)
+		// fmt.Println("fr.LastPackage.IsRealm()", fr.LastPackage.IsRealm())
 		if fr.LastPackage == nil || !fr.LastPackage.IsRealm() {
 			continue
 		}
@@ -118,9 +127,17 @@ func X_getRealm(m *gno.Machine, height int) (address, pkgPath string) {
 		// LastPackage is a realm. Get caller and pkgPath, and compare against
 		// current* values.
 		caller := fr.LastPackage.GetPkgAddr().Bech32()
+		// fmt.Println("caller", caller)
 		pkgPath := fr.LastPackage.PkgPath
+		// fmt.Println("pkgPath", pkgPath)
+		// fmt.Println("currentCaller", currentCaller)
 		if caller != currentCaller {
+			// fmt.Println(" > caller != currentCaller")
 			if changes == height {
+				// fmt.Println("  > changes == height")
+				// fmt.Println("  >> changes", changes)
+				// fmt.Println("  >> caller", caller)
+				// fmt.Println("  >> pkgPath", pkgPath)
 				return string(caller), pkgPath
 			}
 			currentCaller = caller
@@ -129,6 +146,7 @@ func X_getRealm(m *gno.Machine, height int) (address, pkgPath string) {
 	}
 
 	// Fallback case: return OrigCaller.
+	// fmt.Println(">< Fallback case: return OrigCaller")
 	return string(ctx.OrigCaller), ""
 }
 

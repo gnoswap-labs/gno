@@ -13,10 +13,21 @@ type token struct {
 }
 
 // var _ Token = (*token)(nil)
-func (t *token) GetName() string     { return t.banker.name }
-func (t *token) GetSymbol() string   { return t.banker.symbol }
-func (t *token) GetDecimals() uint   { return t.banker.decimals }
-func (t *token) TotalSupply() uint64 { return t.banker.totalSupply }
+func (t *token) GetName() string   { return t.banker.name }
+func (t *token) GetSymbol() string { return t.banker.symbol }
+func (t *token) GetDecimals() uint { return t.banker.decimals }
+
+func (t *token) TotalSupply() uint64 {
+	println("P_grc20_token_TotalSupply()")
+	curr := std.CurrentRealm()
+	println("currPath:", curr.PkgPath())
+	println("currAddr:", curr.Addr())
+	prev := std.PrevRealm()
+	println("prevPath:", prev.PkgPath())
+	println("prevAddr:", prev.Addr())
+	println()
+	return t.banker.totalSupply
+}
 
 func (t *token) BalanceOf(owner std.Address) uint64 {
 	return t.banker.BalanceOf(owner)
@@ -32,19 +43,16 @@ func (t *token) Allowance(owner, spender std.Address) uint64 {
 }
 
 func (t *token) Approve(spender std.Address, amount uint64) error {
-	prev := std.PrevRealm()
-	caller := prev.Addr()
-	// caller := std.PrevRealm().Addr()
-	println("P_GRC20_Token_Approve")
-	println("> prevPath", prev.PkgPath())
-	println("> caller(prevAddr)", caller)
-	println("> spender", spender)
-	println("> amount", amount)
-
+	println("P_grc20_token_Approve()")
 	curr := std.CurrentRealm()
-	println("> currPath", curr.PkgPath())
-	println("> currAddr", curr.Addr())
+	println("currPath:", curr.PkgPath())
+	println("currAddr:", curr.Addr())
+	prev := std.PrevRealm()
+	println("prevPath:", prev.PkgPath())
+	println("prevAddr:", prev.Addr())
 	println()
+
+	caller := prev.Addr()
 
 	return t.banker.Approve(caller, spender, amount)
 }

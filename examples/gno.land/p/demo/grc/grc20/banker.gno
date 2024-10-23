@@ -188,16 +188,14 @@ func (b *Banker) Approve(owner, spender std.Address, amount uint64) error {
 	if !spender.IsValid() {
 		return ErrInvalidAddress
 	}
-	prev := std.PrevRealm()
-	curr := std.CurrentRealm()
-	println("P_GRC20_Banker_Approve")
-	println("> prevPath", prev.PkgPath())
-	println("> caller(prevAddr)", prev.Addr())
-	println("> spender", spender)
-	println("> amount", amount)
 
-	println("> currPath", curr.PkgPath())
-	println("> currAddr", curr.Addr())
+	println("P_grc20_banker_Approve()")
+	curr := std.CurrentRealm()
+	println("currPath:", curr.PkgPath())
+	println("currAddr:", curr.Addr())
+	prev := std.PrevRealm()
+	println("prevPath:", prev.PkgPath())
+	println("prevAddr:", prev.Addr())
 	println()
 
 	b.allowances.Set(allowanceKey(owner, spender), amount)
