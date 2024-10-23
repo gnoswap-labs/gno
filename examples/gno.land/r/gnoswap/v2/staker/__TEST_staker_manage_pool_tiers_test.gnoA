@@ -26,7 +26,7 @@ func TestPoolInitCreatePool(t *testing.T) {
 
 func TestSetPoolTier(t *testing.T) {
 	std.TestSetRealm(adminRealm)
-	SetPoolTier("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500", 2)
+	SetPoolTierByAdmin("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500", 2)
 
 	if poolTiers["gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500"].tier != 2 {
 		t.Error("Expected tier to be 2")
@@ -42,7 +42,7 @@ func TestGetPoolsWithTierStruct(t *testing.T) {
 
 func TestChangePoolTier(t *testing.T) {
 	std.TestSetRealm(adminRealm)
-	ChangePoolTier("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500", 3)
+	ChangePoolTierByAdmin("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500", 3)
 
 	if poolTiers["gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500"].tier != 3 {
 		t.Error("Expected tier to be 3")
@@ -63,7 +63,7 @@ func TestGetPoolsWithEmissionGnsAmount(t *testing.T) {
 
 func TestSetAnotherPoolTier3(t *testing.T) {
 	std.TestSetRealm(adminRealm)
-	SetPoolTier("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:100", 3)
+	SetPoolTierByAdmin("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:100", 3)
 
 	if poolTiers["gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:100"].tier != 3 {
 		t.Error("Expected tier to be 3")
@@ -75,7 +75,7 @@ func TestSetAnotherPoolTier3(t *testing.T) {
 
 func TestRemovePoolTier(t *testing.T) {
 	std.TestSetRealm(adminRealm)
-	RemovePoolTier("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500")
+	RemovePoolTierByAdmin("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500")
 
 	if len(poolTiers) != 2 {
 		t.Error("Expected 2 pool")
