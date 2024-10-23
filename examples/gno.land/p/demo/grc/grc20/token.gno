@@ -32,12 +32,32 @@ func (t *token) Allowance(owner, spender std.Address) uint64 {
 }
 
 func (t *token) Approve(spender std.Address, amount uint64) error {
-	caller := std.PrevRealm().Addr()
+	prev := std.PrevRealm()
+	caller := prev.Addr()
+	// caller := std.PrevRealm().Addr()
+	println("P_GRC20_Token_Approve")
+	println("> prevPath", prev.PkgPath())
+	println("> caller(prevAddr)", caller)
+	println("> spender", spender)
+	println("> amount", amount)
+
+	curr := std.CurrentRealm()
+	println("> currPath", curr.PkgPath())
+	println("> currAddr", curr.Addr())
+	println()
+
 	return t.banker.Approve(caller, spender, amount)
 }
 
 func (t *token) TransferFrom(from, to std.Address, amount uint64) error {
 	spender := std.PrevRealm().Addr()
+	println("P_GRC20_TransferFrom")
+	println("> prevPath", std.PrevRealm().PkgPath())
+	println("> spender(prevAddr)", spender)
+	println("> from", from)
+	println("> to", to)
+	println("> amount", amount)
+
 	if err := t.banker.SpendAllowance(from, spender, amount); err != nil {
 		return err
 	}
