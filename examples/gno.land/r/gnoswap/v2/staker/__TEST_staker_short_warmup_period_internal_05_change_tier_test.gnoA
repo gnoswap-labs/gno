@@ -159,7 +159,7 @@ func TestSetPoolTier(t *testing.T) {
 
 	std.TestSkipHeights(100) // this reward should go to bar:qux:100
 
-	std.TestSetRealm(adminRealm)
+	std.TestSetRealm(govRealm)
 	SetPoolTier("gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:3000", 2)
 
 	gpi := GetPrintInfo()
@@ -202,7 +202,7 @@ func TestNow(t *testing.T) {
 func TestChangePoolTier(t *testing.T) {
 	curr := getCurrentInfo()
 
-	std.TestSetRealm(adminRealm)
+	std.TestSetRealm(govRealm)
 
 	ChangePoolTier("gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:3000", 1)
 
