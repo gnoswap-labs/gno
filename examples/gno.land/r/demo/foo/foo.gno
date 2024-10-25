@@ -49,24 +49,11 @@ func Transfer(to pusers.AddressOrName, amount uint64) {
 }
 
 func Approve(spender pusers.AddressOrName, amount uint64) {
-
-	curr := std.CurrentRealm()
-
-	prev := std.PrevRealm()
-
 	spenderAddr := users.Resolve(spender)
 	checkErr(token.Approve(spenderAddr, amount))
 }
 
 func TransferFrom(from, to pusers.AddressOrName, amount uint64) {
-	// println("FOO_TransferFrom")
-	prev := std.PrevRealm()
-	prevPath := prev.PkgPath()
-	prevAddr := prev.Addr()
-	// println("> prevPath", prevPath)
-	// println("> prevAddr", prevAddr)
-	// println()
-
 	fromAddr := users.Resolve(from)
 	toAddr := users.Resolve(to)
 	checkErr(token.TransferFrom(fromAddr, toAddr, amount))

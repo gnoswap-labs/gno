@@ -7,9 +7,6 @@ import (
 	"gno.land/p/demo/fqname"
 	"gno.land/p/demo/grc/grc20"
 	"gno.land/p/demo/ufmt"
-
-	"gno.land/p/demo/grc/grc20"
-	"gno.land/p/demo/ufmt"
 )
 
 var registry = avl.NewTree() // rlmPath[.slug] -> Token

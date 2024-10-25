@@ -1,0 +1,47 @@
+# grc20reg testing
+
+# load necessary 
+loadpkg gno.land/p/demo/users
+loadpkg gno.land/p/demo/ownable
+loadpkg gno.land/r/demo/users
+loadpkg gno.land/r/demo/grc20reg
+loadpkg gno.land/r/demo/foo
+
+# add regcall
+loadpkg gno.land/r/regcall $WORK/regcall
+
+## start a new node
+gnoland start
+
+## approve using foo
+gnokey maketx call -pkgpath gno.land/r/demo/foo -func Approve -args "g134s2ds8m592aurzwpjx93trr5kdgdcxwxwt2ze" -args "1000" -gas-fee 1000000ugnot -gas-wanted 4000000 -broadcast -chainid=tendermint_test test1
+
+
+-- regcall/regcall.gno --
+package regcall
+
+import (
+	"std"
+
+	pusers "gno.land/p/demo/users"
+
+	reg "gno.land/r/demo/grc20reg"
+)
+
+func TransferFromPrev() {
+	curr := std.CurrentRealm()
+	prev := std.PrevRealm()
+
+	fooToken := reg.MustGet("gno.land/r/demo/foo")
+	checkErr(fooToken.TransferFrom(prev.Addr(), curr.Addr(), 1000))
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func a2u(addr std.Address) pusers.AddressOrName {
+	return pusers.AddressOrName(addr)
+}
