@@ -145,7 +145,7 @@ func (r *RewardRecipientsMap) GenerateRewardRecipients(depositList map[uint64]De
 			continue
 		}
 		// 4. get position liquidity
-		positionLiquidity := pn.PositionGetPositionLiquidity(tokenId).Clone()
+		positionLiquidity := pn.PositionGetPositionLiquidity(tokenId).Clone() // WTF
 		println("USING CLONE FOR UNSTAKING POSITION LIQUIDITY")
 		// 5. get staked block height of the position
 		positionStakedHeight := deposit.stakeHeight
