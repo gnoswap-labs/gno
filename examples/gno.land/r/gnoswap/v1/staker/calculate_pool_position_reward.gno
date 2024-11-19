@@ -249,7 +249,7 @@ func CalcPoolPosition() {
 			continue
 		}
 
-		positionLiquidity := pn.PositionGetPositionLiquidity(tokenId)
+		positionLiquidity := pn.PositionGetPositionLiquidity(tokenId).Clone() // WTF
 		poolTotalStakedLiquidity[poolPath] = poolTotalStakedLiquidity[poolPath].Add(poolTotalStakedLiquidity[poolPath], positionLiquidity)
 	}
 
@@ -265,7 +265,7 @@ func CalcPoolPosition() {
 			positionsLiquidityRatio[tokenId] = u256.Zero()
 		} else {
 			poolTotalStakedLiquidity := poolTotalStakedLiquidity[poolPath]
-			positionLiquidity := pn.PositionGetPositionLiquidity(tokenId)
+			positionLiquidity := pn.PositionGetPositionLiquidity(tokenId).Clone() // WTF
 
 			positionLiquidityX96x := new(u256.Uint).Mul(positionLiquidity, _q96)
 			positionLiquidityX96x = positionLiquidityX96x.Mul(positionLiquidityX96x, u256.NewUint(1_000_000_000))

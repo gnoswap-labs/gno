@@ -145,7 +145,7 @@ func (r *RewardRecipientsMap) GenerateRewardRecipients(depositList map[uint64]De
 			continue
 		}
 		// 4. get position liquidity
-		positionLiquidity := pn.PositionGetPositionLiquidity(tokenId).Clone()
+		positionLiquidity := pn.PositionGetPositionLiquidity(tokenId).Clone() // WTF
 		println("USING CLONE FOR UNSTAKING POSITION LIQUIDITY")
 		// 5. get staked block height of the position
 		positionStakedHeight := deposit.stakeHeight
@@ -286,6 +286,17 @@ func (p *PoolLiquidity) GetStakedHeight(tokenID uint64) int64 {
 		return 0
 	}
 	return p.GetInRangeLiquidity(tokenID).GetStakedHeight()
+}
+
+func (p *PoolLiquidity) RemoveInRangePosition(tokenID uint64) {
+	if _, exist := p.inRangeLiquidityMap[tokenID]; !exist {
+		return
+	}
+	totalLiquidity := p.totalLiquidity
+	tokenLiquidity := p.inRangeLiquidityMap[tokenID].GetLiquidity()
+	totalLiquidity.Sub(totalLiquidity, tokenLiquidity)
+	p.SetTotalLiquidity(totalLiquidity)
+	delete(p.inRangeLiquidityMap, tokenID)
 }
 
 type InRangeLiquidity struct {
