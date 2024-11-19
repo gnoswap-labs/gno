@@ -346,11 +346,25 @@ func UnstakeToken(tokenId uint64, unwrapResult bool) (string, string, string) { 
 	internalEmission := rewardManger.GetInternalEmissionReward()
 	recipientsMap := internalEmission.GetRewardRecipientsMap()
 	poolLiquidity := recipientsMap.GetPoolLiquidity(deposit.targetPoolPath)
+	println("poolLiquidity", poolLiquidity)
+	println()
+
 	inRangeLiquidityMap := poolLiquidity.GetInRangeLiquidityMap()
+
 	totalLiquidity := poolLiquidity.GetTotalLiquidity()
+	println("totalLiquidity #1", totalLiquidity)
+	println()
+
+	// XXX:
 	inRangeLiquidity := poolLiquidity.GetInRangeLiquidity(tokenId)
+	println("inRangeLiquidity", inRangeLiquidity)
+	println()
+
 	totalLiquidity = totalLiquidity.Sub(totalLiquidity, inRangeLiquidity.liquidity)
+	println("totalLiquidity #2:", totalLiquidity)
+
 	delete(inRangeLiquidityMap, tokenId)
+
 	poolLiquidity.SetTotalLiquidity(totalLiquidity)
 	poolLiquidity.SetInRangeLiquidityMap(inRangeLiquidityMap)
 	recipientsMap.SetPoolLiquidity(deposit.targetPoolPath, poolLiquidity)

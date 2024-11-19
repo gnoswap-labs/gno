@@ -28,6 +28,11 @@ func TestPoolInitCreatePool(t *testing.T) {
 	gns.Approve(a2u(consts.POOL_ADDR), pl.GetPoolCreationFee())
 	pl.CreatePool(barPath, fooPath, fee500, common.TickMathGetSqrtRatioAtTick(-10000).ToString())
 	pl.CreatePool(bazPath, quxPath, fee500, "130621891405341611593710811006") // tick = 10000
+
+	std.TestSetRealm(adminRealm)
+
+	// set pool as internal target
+	sr.SetPoolTierByAdmin("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500", 1)
 }
 
 func TestMintFooBar(t *testing.T) {
@@ -37,24 +42,24 @@ func TestMintFooBar(t *testing.T) {
 
 	// admin mints => will get tid 1 nft
 	Mint(fooPath, barPath, fee500, int32(9000), int32(11000), "1000000", "1000000", "1", "1", max_timeout, admin, admin)
+
+	// admin mints => will get tid 2 nft
+	Mint(fooPath, barPath, fee500, int32(9000), int32(11000), "1000000", "1000000", "1", "1", max_timeout, admin, admin)
 }
 
-func TestLiquidityPointer(t *testing.T) {
-	{
+func TestLiquidityPointer01(t *testing.T) {
+	t.Run("mint 01", func(t *testing.T) {
 		// minted
 		lp1 := positions[1]
 		liq := lp1.liquidity.ToString()
 		if liq != "12437322" {
 			t.Fatalf("Expected liquidity to be 12437322, got %s", liq)
 		}
-	}
+	})
 
-	{
-		std.TestSetRealm(adminRealm)
-		// set pool as internal target
-		sr.SetPoolTierByAdmin("gno.land/r/onbloc/bar:gno.land/r/onbloc/foo:500", 1)
-
+	t.Run("stake 01", func(t *testing.T) {
 		// stake
+		std.TestSetRealm(adminRealm)
 		gnft.Approve(a2u(consts.STAKER_ADDR), "1")
 		std.TestSkipHeights(1)
 
@@ -66,9 +71,9 @@ func TestLiquidityPointer(t *testing.T) {
 		if liq != "12437322" {
 			t.Fatalf("Expected liquidity to be 12437322, got %s", liq)
 		}
-	}
+	})
 
-	{
+	t.Run("unstake 01", func(t *testing.T) {
 		// unstake
 		std.TestSetRealm(adminRealm)
 		sr.UnstakeToken(uint64(1), false)
@@ -79,5 +84,45 @@ func TestLiquidityPointer(t *testing.T) {
 		if liq != "12437322" {
 			t.Fatalf("Expected liquidity to be 12437322, got %s", liq)
 		}
-	}
+	})
+}
+
+func TestLiquidityPointer02(t *testing.T) {
+	t.Run("mint 02", func(t *testing.T) {
+		// minted
+		lp2 := positions[2]
+		liq := lp2.liquidity.ToString()
+		if liq != "12437322" {
+			t.Fatalf("Expected liquidity to be 12437322, got %s", liq)
+		}
+	})
+
+	t.Run("stake 02", func(t *testing.T) {
+		// stake
+		std.TestSetRealm(adminRealm)
+		gnft.Approve(a2u(consts.STAKER_ADDR), "2")
+		std.TestSkipHeights(1)
+
+		sr.StakeToken(uint64(2))
+		std.TestSkipHeights(1)
+
+		lp2 := positions[2]
+		liq := lp2.liquidity.ToString()
+		if liq != "12437322" {
+			t.Fatalf("Expected liquidity to be 12437322, got %s", liq)
+		}
+	})
+
+	t.Run("unstake 02", func(t *testing.T) {
+		// unstake
+		std.TestSetRealm(adminRealm)
+		sr.UnstakeToken(uint64(2), false)
+		std.TestSkipHeights(1)
+
+		lp2 := positions[2]
+		liq := lp2.liquidity.ToString()
+		if liq != "12437322" {
+			t.Fatalf("Expected liquidity to be 12437322, got %s", liq)
+		}
+	})
 }
