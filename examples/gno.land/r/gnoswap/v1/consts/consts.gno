@@ -6,14 +6,14 @@ import (
 
 // GNOSWAP SERVICE
 const (
-	ADMIN   std.Address = "g1lmvrrrr4er2us84h2732sru76c9zl2nvknha8c" // Admin
+	ADMIN   std.Address = "g17290cwvmrapvp869xfnhhawa8sm9edpufzat7d" // Admin
 	DEV_OPS std.Address = "g1mjvd83nnjee3z2g7683er55me9f09688pd4mj9" // DevOps
 
 	TOKEN_REGISTER std.Address = "g1er355fkjksqpdtwmhf5penwa82p0rhqxkkyhk5"
 
 	TOKEN_REGISTER_NAMESPACE string = "gno.land/r/g1er355fkjksqpdtwmhf5penwa82p0rhqxkkyhk5"
 
-	BLOCK_GENERATION_INTERVAL int64 = 1 // seconds
+	BLOCK_GENERATION_INTERVAL int64 = 2 // seconds
 )
 
 // WRAP & UNWRAP
