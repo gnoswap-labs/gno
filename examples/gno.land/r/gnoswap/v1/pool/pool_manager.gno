@@ -179,7 +179,6 @@ func newPool(
 ) *Pool {
 	maxLiquidityPerTick := tickTickSpacingToMaxLiquidityPerTick(tickSpacing)
 	tick := common.TickMathGetTickAtSqrtRatio(sqrtPriceX96)
-
 	slot0 := Slot0{
 		sqrtPriceX96: sqrtPriceX96,
 		tick:         tick,
