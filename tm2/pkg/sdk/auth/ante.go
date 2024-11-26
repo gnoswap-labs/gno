@@ -368,7 +368,6 @@ func NewGasFeeCollector(ak AccountKeeper, bank BankKeeperI) sdk.GasFeeCollector 
 			if !res.IsOK() {
 				return res
 			}
-			signerAccs[0] = ak.GetAccount(ctx, signerAccs[0].GetAddress())
 		}
 		return sdk.Result{GasWanted: tx.Fee.GasWanted}
 	}
