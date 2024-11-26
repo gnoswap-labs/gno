@@ -2,6 +2,7 @@ package sdk
 
 import (
 	"fmt"
+	"log"
 	"log/slog"
 	"os"
 	"runtime/debug"
@@ -44,6 +45,8 @@ type BaseApp struct {
 
 	beginTxHook BeginTxHook // BaseApp-specific hook run before running transaction messages.
 	endTxHook   EndTxHook   // BaseApp-specific hook run after running transaction messages.
+
+	gasFeeCollector GasFeeCollector // gas fee collector
 
 	// --------------------
 	// Volatile state
@@ -847,6 +850,12 @@ func (app *BaseApp) runTx(ctx Context, tx Tx) (result Result) {
 
 	if app.endTxHook != nil {
 		app.endTxHook(runMsgCtx, result)
+	}
+
+	if app.gasFeeCollector != nil {
+		log.Println("gasFeeCollector ", result.GasUsed)
+		log.Println("gasFeeCollector 2", ctx.GasMeter().GasConsumed())
+		app.gasFeeCollector(runMsgCtx, tx, result.GasUsed)
 	}
 
 	// only update state if all messages pass

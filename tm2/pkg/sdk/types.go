@@ -58,3 +58,6 @@ const (
 	// Deliver a transaction
 	RunTxModeDeliver RunTxMode = iota
 )
+
+// GasHandler handles gas consumption for each message.
+type GasFeeCollector func(ctx Context, tx Tx, gasUsed int64) (res Result)

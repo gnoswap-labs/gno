@@ -344,6 +344,36 @@ func consumeMultisignatureVerificationGas(meter store.GasMeter,
 	}
 }
 
+// NewGasFeeCollector returns a new GasFeeCollector that will be used to
+// deduct fees from the first signer.
+func NewGasFeeCollector(ak AccountKeeper, bank BankKeeperI) sdk.GasFeeCollector {
+	return func(
+		ctx sdk.Context,
+		tx std.Tx,
+		gasUsed int64,
+	) (res sdk.Result) {
+		signerAddrs := tx.GetSigners()
+		signerAccs := make([]std.Account, len(signerAddrs))
+		signerAccs[0], res = GetSignerAcc(ctx, ak, signerAddrs[0])
+		if !res.IsOK() {
+			return res
+		}
+
+		if !tx.Fee.GasFee.IsZero() {
+			collectGasFee := std.NewCoin(
+				tx.Fee.GasFee.Denom,
+				tx.Fee.GasFee.Amount*gasUsed,
+			)
+			res = DeductFees(bank, ctx, signerAccs[0], std.Coins{collectGasFee})
+			if !res.IsOK() {
+				return res
+			}
+			signerAccs[0] = ak.GetAccount(ctx, signerAccs[0].GetAddress())
+		}
+		return sdk.Result{GasWanted: tx.Fee.GasWanted}
+	}
+}
+
 // DeductFees deducts fees from the given account.
 //
 // NOTE: We could use the CoinKeeper (in addition to the AccountKeeper, because
