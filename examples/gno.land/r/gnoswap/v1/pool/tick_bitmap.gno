@@ -30,10 +30,9 @@ func (pool *Pool) tickBitmapFlipTick(
 	}
 
 	wordPos, bitPos := tickBitmapPosition(tick / tickSpacing)
-	pool.tickBitmaps[wordPos] = pool.tickBitmaps[wordPos].NilToZero()
 
-	mask := new(u256.Uint).Lsh(u256.NewUint(1), uint(bitPos))
-	pool.tickBitmaps[wordPos] = new(u256.Uint).Xor(pool.tickBitmaps[wordPos], mask)
+	mask := new(u256.Uint).Lsh(u256.One(), uint(bitPos))
+	pool.setTickBitmap(wordPos, new(u256.Uint).Xor(pool.getTickBitmap(wordPos), mask))
 }
 
 // tickBitmapNextInitializedTickWithInOneWord finds the next initialized tick within
@@ -48,67 +47,89 @@ func (pool *Pool) tickBitmapNextInitializedTickWithInOneWord(
 		compress--
 	}
 
-	if lte {
-		wordPos, bitPos := tickBitmapPosition(compress)
-		pool.tickBitmaps[wordPos] = pool.tickBitmaps[wordPos].NilToZero()
-
-		mask := generateFullMaskForBitPos(uint(bitPos))
-		masked := new(u256.Uint).And(pool.tickBitmaps[wordPos], mask)
-
-		// if there are no initialized ticks to the right of or at the current tick, return rightmost in the word
-		initialized := !(masked.IsZero())
-
-		// overflow/underflow is possible, but prevented externally by limiting both tickSpacing and tick
-		if initialized {
-			next := (compress - int32(bitPos-plp.BitMathMostSignificantBit(masked))) * tickSpacing
-			return next, initialized
-		}
-
-		next := (compress - int32(bitPos)) * tickSpacing
-		return next, initialized
-	}
-
-	wordPos, bitPos := tickBitmapPosition(compress + 1)
-	pool.tickBitmaps[wordPos] = pool.tickBitmaps[wordPos].NilToZero()
-
-	mask := generateMaskClearingBitsBelow(uint(bitPos))
-	masked := new(u256.Uint).And(pool.tickBitmaps[wordPos], mask)
-
+	wordPos, bitPos := getWordAndBitPos(compress, lte)
+	mask := getMaskBit(uint(bitPos), lte)
+	masked := new(u256.Uint).And(pool.getTickBitmap(wordPos), mask)
 	initialized := !(masked.IsZero())
-	if initialized {
-		next := (compress + 1 + int32(plp.BitMathLeastSignificantBit(masked)-bitPos)) * tickSpacing
-		return next, initialized
-	} else {
-		next := (compress + 1 + int32(255-bitPos)) * tickSpacing
 
-		return next, initialized
+	nextTick := getNextTick(lte, initialized, compress, bitPos, tickSpacing, masked)
+	return nextTick, initialized
+}
+
+// getTickBitmap gets the tick bitmap for the given word position
+// if the tick bitmap is not initialized, initialize it to zero
+func (pool *Pool) getTickBitmap(wordPos int16) *u256.Uint {
+	if pool.tickBitmaps[wordPos] == nil {
+		pool.tickBitmaps[wordPos] = u256.Zero()
 	}
+
+	return pool.tickBitmaps[wordPos]
 }
 
-func generateFullMaskForBitPos(bitPos uint) *u256.Uint {
-	// 1 << bitPos
-	one := u256.NewUint(1)
-	shifted := new(u256.Uint).Lsh(one, bitPos)
-
-	// (1 << bitPos) - 1
-	minusOne := new(u256.Uint).Sub(shifted, u256.NewUint(1))
-
-	// (1 << bitPos) - 1 + (1 << bitPos)
-	result := new(u256.Uint).Add(minusOne, shifted)
-
-	return result
+// setTickBitmap sets the tick bitmap for the given word position
+func (pool *Pool) setTickBitmap(wordPos int16, bitmap *u256.Uint) {
+	pool.tickBitmaps[wordPos] = bitmap
 }
 
-func generateMaskClearingBitsBelow(bitPos uint) *u256.Uint {
-	// 1 << bitPos
-	one := u256.NewUint(1)
-	shifted := new(u256.Uint).Lsh(one, bitPos)
+// getWordAndBitPos gets tick's wordPos and bitPos depending on the swap direction
+func getWordAndBitPos(tick int32, lte bool) (int16, uint8) {
+	if lte {
+		return tickBitmapPosition(tick)
+	}
 
-	// (1 << bitPos) - 1
-	minusOne := new(u256.Uint).Sub(shifted, u256.NewUint(1))
+	tick++
+	return tickBitmapPosition(tick)
+}
 
-	// ~((1 << bitPos) - 1)
-	mask := new(u256.Uint).Not(minusOne)
+// bMap is a map that maps boolean values to uint values.
+// true maps to 1, and false maps to 0.
+var bMap = map[bool]uint{
+	true:  1,
+	false: 0,
+}
 
+// getMaskBit generates a mask based on the provided bit position (bitPos) and a boolean flag (lte).
+// The function constructs a bitmask with a shift depending on the bit position and the boolean value.
+// It either returns the mask or its negation, based on the value of 'lte' (swap direction).
+func getMaskBit(bitPos uint, lte bool) *u256.Uint {
+	// Shift the number 1 to the left by (bitPos + bMap[lte]) positions.
+	// If lte is true, the shift will be bitPos + 1; if false, it will be just bitPos.
+	shifted := new(u256.Uint).Lsh(u256.One(), bitPos+bMap[lte])
+
+	// Subtract 1 from the shifted value to create a mask.
+	mask := new(u256.Uint).Sub(shifted, u256.One())
+
+	// If lte is false, return the negation of the mask.
+	if !lte {
+		return new(u256.Uint).Not(mask)
+	}
+	// Otherwise, return the mask itself.
 	return mask
+}
+
+// getNextTick gets the next tick depending on the initialized state and the swap direction
+func getNextTick(lte, initialized bool, compress int32, bitPos uint8, tickSpacing int32, masked *u256.Uint) int32 {
+	if initialized {
+		return getTickIfInitialized(compress, tickSpacing, bitPos, masked, lte)
+	}
+
+	return getTickIfNotInitialized(compress, tickSpacing, bitPos, lte)
+}
+
+// getTickIfInitialized gets the next tick if the tick bitmap is initialized
+func getTickIfInitialized(compress, tickSpacing int32, bitPos uint8, masked *u256.Uint, lte bool) int32 {
+	if lte {
+		return (compress - int32(bitPos-plp.BitMathMostSignificantBit(masked))) * tickSpacing
+	}
+
+	return (compress + 1 + int32(plp.BitMathLeastSignificantBit(masked)-bitPos)) * tickSpacing
+}
+
+// getTickIfNotInitialized gets the next tick if the tick bitmap is not initialized
+func getTickIfNotInitialized(compress, tickSpacing int32, bitPos uint8, lte bool) int32 {
+	if lte {
+		return (compress - int32(bitPos)) * tickSpacing
+	}
+
+	return (compress + 1 + int32(255-bitPos)) * tickSpacing
 }
