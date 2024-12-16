@@ -3,7 +3,10 @@ package pool
 import (
 	"std"
 
+	"gno.land/p/demo/ufmt"
+
 	"gno.land/r/gnoswap/v1/common"
+	"gno.land/r/gnoswap/v1/consts"
 
 	i256 "gno.land/p/gnoswap/int256"
 	u256 "gno.land/p/gnoswap/uint256"
@@ -56,16 +59,56 @@ func newProtocolFees() ProtocolFees {
 	}
 }
 
+// ModifyPositionParams repersents the parameters for modifying a liquidity position.
+// This structure is used internally both `Mint` and `Burn` operation to manage
+// the liquidity positions.
 type ModifyPositionParams struct {
-	owner std.Address // address that owns the position
+	// owner is the address that owns the position
+	owner std.Address
 
-	// the tick range of the position, bounds are included
-	tickLower int32
-	tickUpper int32
+	// tickLower and atickUpper define the price range
+	// The actual price range is calculated as 1.0001^tick
+	// This allows for precision in price range while using integer math.
 
-	liquidityDelta *i256.Int // any change in liquidity
+	tickLower int32 // lower tick of the position
+	tickUpper int32 // upper tick of the position
+
+	// liquidityDelta represents the change in liquidity
+	// Positive for minting, negative for burning
+	liquidityDelta *i256.Int
 }
 
+// newModifyPositionParams creates a new `ModifyPositionParams` instance.
+// This is used to preare parameters for the `modifyPosition` function,
+// which handles both minting and burning of liquidity positions.
+//
+// Parameters:
+//   - owner: address that will own (or owns) the position
+//   - tickLower: lower tick bound of the position
+//   - tickUpper: upper tick bound of the position
+//   - liquidityDelta: amount of liquidity to add (positive) or remove (negative)
+//
+// The tick parameters represent prices as powers of 1.0001:
+// - actual_price = 1.0001^tick
+// - For example, tick = 100 means price = 1.0001^100
+//
+// Returns:
+//   - ModifyPositionParams: a new instance of ModifyPositionParams
+func newModifyPositionParams(
+	owner std.Address,
+	tickLower int32,
+	tickUpper int32,
+	liquidityDelta *i256.Int,
+) ModifyPositionParams {
+	return ModifyPositionParams{
+		owner:          owner,
+		tickLower:      tickLower,
+		tickUpper:      tickUpper,
+		liquidityDelta: liquidityDelta,
+	}
+}
+
+// SwapCache holds data that remains constant throughout a swap.
 type SwapCache struct {
 	feeProtocol    uint8      // protocol fee for the input token
 	liquidityStart *u256.Uint // liquidity at the beginning of the swap
@@ -81,6 +124,9 @@ func newSwapCache(
 	}
 }
 
+// SwapState tracks the changing values during a swap.
+// This type helps manage the state transiktions that occur as the swap progresses
+// accross different price ranges.
 type SwapState struct {
 	amountSpecifiedRemaining *i256.Int  // amount remaining to be swapped in/out of the input/output token
 	amountCalculated         *i256.Int  // amount already swapped out/in of the output/input token
@@ -91,13 +137,12 @@ type SwapState struct {
 	liquidity                *u256.Uint // current liquidity in range
 }
 
-func (pool *Pool) newSwapState(
+func newSwapState(
 	amountSpecifiedRemaining *i256.Int,
 	feeGrowthGlobalX128 *u256.Uint,
 	liquidity *u256.Uint,
+	slot0 Slot0,
 ) SwapState {
-	slot0 := pool.slot0
-
 	return SwapState{
 		amountSpecifiedRemaining: amountSpecifiedRemaining,
 		amountCalculated:         i256.Zero(),
@@ -109,6 +154,25 @@ func (pool *Pool) newSwapState(
 	}
 }
 
+func (s *SwapState) SetSqrtPriceX96(sqrtPriceX96 string) {
+	s.sqrtPriceX96 = u256.MustFromDecimal(sqrtPriceX96)
+}
+
+func (s *SwapState) SetTick(tick int32) {
+	s.tick = tick
+}
+
+func (s *SwapState) SetFeeGrowthGlobalX128(feeGrowthGlobalX128 *u256.Uint) {
+	s.feeGrowthGlobalX128 = feeGrowthGlobalX128
+}
+
+func (s *SwapState) SetProtocolFee(fee *u256.Uint) {
+	s.protocolFee = fee
+}
+
+// StepComputations holds intermediate values used during a single step of a swap.
+// Each step represents movement from the current tick to the next initialized tick
+// or the target price, whichever comes first.
 type StepComputations struct {
 	sqrtPriceStartX96 *u256.Uint // price at the beginning of the step
 	tickNext          int32      // next tick to swap to from the current tick in the swap direction
@@ -119,15 +183,47 @@ type StepComputations struct {
 	feeAmount         *u256.Uint // how much fee is being paid in this step
 }
 
+// init initializes the computation for a single swap step
+func (step *StepComputations) initSwapStep(state SwapState, pool *Pool, zeroForOne bool) {
+	step.sqrtPriceStartX96 = state.sqrtPriceX96
+	step.tickNext, step.initialized = pool.tickBitmapNextInitializedTickWithInOneWord(
+		state.tick,
+		pool.tickSpacing,
+		zeroForOne,
+	)
+
+	// prevent overshoot the min/max tick
+	step.clampTickNext()
+
+	// get the price for the next tick
+	step.sqrtPriceNextX96 = common.TickMathGetSqrtRatioAtTick(step.tickNext)
+}
+
+// clampTickNext ensures that `tickNext` stays within the min, max tick boundaries
+// as the tick bitmap is not aware of these bounds
+func (step *StepComputations) clampTickNext() {
+	if step.tickNext < consts.MIN_TICK {
+		step.tickNext = consts.MIN_TICK
+	} else if step.tickNext > consts.MAX_TICK {
+		step.tickNext = consts.MAX_TICK
+	}
+}
+
 type PositionInfo struct {
 	liquidity *u256.Uint // amount of liquidity owned by this position
 
-	// fee growth per unit of liquidity as of the last update to liquidity or fees owed
+	// Fee growth per unit of liquidity as of the last update
+	// Used to calculate uncollected fees for token0
 	feeGrowthInside0LastX128 *u256.Uint
+
+	// Fee growth per unit of liquidity as of the last update
+	// Used to calculate uncollected fees for token1
 	feeGrowthInside1LastX128 *u256.Uint
 
-	// fees owed to the position owner in token0/token1
+	// accumulated fees in token0 waiting to be collected
 	tokensOwed0 *u256.Uint
+
+	// accumulated fees in token1 waiting to be collected
 	tokensOwed1 *u256.Uint
 }
 
@@ -139,6 +235,8 @@ func (p *PositionInfo) init() {
 	p.tokensOwed1 = p.tokensOwed1.NilToZero()
 }
 
+// TickInfo stores information about a specific tick in the pool.
+// TIcks represent discrete price points that can be used as boundaries for positions.
 type TickInfo struct {
 	liquidityGross *u256.Uint // total position liquidity that references this tick
 	liquidityNet   *i256.Int  // amount of net liquidity added (subtracted) when tick is crossed from left to right (right to left)
@@ -169,9 +267,11 @@ func (t *TickInfo) init() {
 	t.secondsPerLiquidityOutsideX128 = t.secondsPerLiquidityOutsideX128.NilToZero()
 }
 
-type Ticks map[int32]TickInfo          // tick => TickInfo
-type TickBitmaps map[int16]*u256.Uint  // tick(wordPos) => bitmap(tickWord ^ mask)
-type Positions map[string]PositionInfo // positionKey => PositionInfo
+type (
+	Ticks       map[int32]TickInfo   // tick => TickInfo
+	TickBitmaps map[int16]*u256.Uint // tick(wordPos) => bitmap(tickWord ^ mask)
+	Positions   map[string]PositionInfo // positionKey => PositionInfo
+)
 
 // type Pool describes a single Pool's state
 // A pool is identificed with a unique key (token0, token1, fee), where token0 < token1
@@ -225,4 +325,81 @@ func newPool(poolInfo *createPoolParams) *Pool {
 		tickBitmaps:          TickBitmaps{},
 		positions:            Positions{},
 	}
+}
+
+func (p *Pool) PoolGetToken0Path() string {
+	return p.token0Path
+}
+
+func (p *Pool) PoolGetToken1Path() string {
+	return p.token1Path
+}
+
+func (p *Pool) PoolGetFee() uint32 {
+	return p.fee
+}
+
+func (p *Pool) PoolGetBalanceToken0() *u256.Uint {
+	return p.balances.token0
+}
+
+func (p *Pool) PoolGetBalanceToken1() *u256.Uint {
+	return p.balances.token1
+}
+
+func (p *Pool) PoolGetTickSpacing() int32 {
+	return p.tickSpacing
+}
+
+func (p *Pool) PoolGetMaxLiquidityPerTick() *u256.Uint {
+	return p.maxLiquidityPerTick
+}
+
+func (p *Pool) PoolGetSlot0() Slot0 {
+	return p.slot0
+}
+
+func (p *Pool) PoolGetSlot0SqrtPriceX96() *u256.Uint {
+	return p.slot0.sqrtPriceX96
+}
+
+func (p *Pool) PoolGetSlot0Tick() int32 {
+	return p.slot0.tick
+}
+
+func (p *Pool) PoolGetSlot0FeeProtocol() uint8 {
+	return p.slot0.feeProtocol
+}
+
+func (p *Pool) PoolGetSlot0Unlocked() bool {
+	return p.slot0.unlocked
+}
+
+func (p *Pool) PoolGetFeeGrowthGlobal0X128() *u256.Uint {
+	return p.feeGrowthGlobal0X128
+}
+
+func (p *Pool) PoolGetFeeGrowthGlobal1X128() *u256.Uint {
+	return p.feeGrowthGlobal1X128
+}
+
+func (p *Pool) PoolGetProtocolFeesToken0() *u256.Uint {
+	return p.protocolFees.token0
+}
+
+func (p *Pool) PoolGetProtocolFeesToken1() *u256.Uint {
+	return p.protocolFees.token1
+}
+
+func (p *Pool) PoolGetLiquidity() *u256.Uint {
+	return p.liquidity
+}
+
+func mustGetPool(poolPath string) *Pool {
+	pool, exist := pools[poolPath]
+	if !exist {
+		panic(addDetailToError(errDataNotFound,
+			ufmt.Sprintf("poolPath(%s) does not exist", poolPath)))
+	}
+	return pool
 }

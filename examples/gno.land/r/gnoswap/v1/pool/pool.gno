@@ -5,8 +5,6 @@ import (
 
 	"gno.land/p/demo/ufmt"
 
-	plp "gno.land/p/gnoswap/pool"
-
 	"gno.land/r/gnoswap/v1/common"
 	"gno.land/r/gnoswap/v1/consts"
 
@@ -24,43 +22,34 @@ func Mint(
 	recipient std.Address,
 	tickLower int32,
 	tickUpper int32,
-	_liquidityAmount string, // uint128
+	_liquidityAmount string,
 	positionCaller std.Address,
-) (string, string) { // uint256 x2
+) (string, string) {
 	common.IsHalted()
 	if common.GetLimitCaller() {
 		caller := std.PrevRealm().Addr()
-		if caller != consts.POSITION_ADDR {
+		if err := common.PositionOnly(caller); err != nil {
 			panic(addDetailToError(
 				errNoPermission,
-				ufmt.Sprintf("pool.gno__Mint() || only position(%s) can call pool mint(), called from %s", consts.POSITION_ADDR, caller.String()),
+				ufmt.Sprintf("only position(%s) can call pool mint(), called from %s", consts.POSITION_ADDR, caller.String()),
 			))
 		}
 	}
 
 	liquidityAmount := u256.MustFromDecimal(_liquidityAmount)
 	if liquidityAmount.IsZero() {
-		panic(addDetailToError(
-			errZeroLiquidity,
-			ufmt.Sprintf("pool.gno__Mint() || liquidityAmount == 0"),
-		))
+		panic(errZeroLiquidity)
 	}
 
 	pool := GetPool(token0Path, token1Path, fee)
-	_, amount0, amount1 := pool.modifyPosition(
-		ModifyPositionParams{
-			recipient,                         // owner
-			tickLower,                         // tickLower
-			tickUpper,                         // tickUpper
-			i256.FromUint256(liquidityAmount), // liquidityDelta
-		},
-	)
+	position := newModifyPositionParams(recipient, tickLower, tickUpper, i256.FromUint256(liquidityAmount))
+	_, amount0, amount1 := pool.modifyPosition(position)
 
-	if amount0.Gt(i256.Zero()) {
+	if amount0.Gt(u256.Zero()) {
 		pool.transferFromAndVerify(positionCaller, consts.POOL_ADDR, pool.token0Path, amount0, true)
 	}
 
-	if amount1.Gt(i256.Zero()) {
+	if amount1.Gt(u256.Zero()) {
 		pool.transferFromAndVerify(positionCaller, consts.POOL_ADDR, pool.token1Path, amount1, false)
 	}
 
@@ -77,34 +66,26 @@ func Burn(
 	fee uint32,
 	tickLower int32,
 	tickUpper int32,
-	_liquidityAmount string, // uint128
+	liquidityAmount string, // uint128
 ) (string, string) { // uint256 x2
 	common.IsHalted()
 	caller := std.PrevRealm().Addr()
 	if common.GetLimitCaller() {
-		if caller != consts.POSITION_ADDR {
+		if err := common.PositionOnly(caller); err != nil {
 			panic(addDetailToError(
 				errNoPermission,
-				ufmt.Sprintf("pool.gno__Burn() || only position(%s) can call pool burn(), called from %s", consts.POSITION_ADDR, caller.String()),
+				ufmt.Sprintf("only position(%s) can call pool burn(), called from %s", consts.POSITION_ADDR, caller.String()),
 			))
 		}
 	}
 
-	liquidityAmount := u256.MustFromDecimal(_liquidityAmount)
+	liqAmount := u256.MustFromDecimal(liquidityAmount)
 
 	pool := GetPool(token0Path, token1Path, fee)
 
-	position, amount0Int, amount1Int := pool.modifyPosition( // in256 x2
-		ModifyPositionParams{
-			caller, // msg.sender
-			tickLower,
-			tickUpper,
-			i256.Zero().Neg(i256.FromUint256(liquidityAmount)),
-		},
-	)
-
-	amount0 := amount0Int.Abs()
-	amount1 := amount1Int.Abs()
+	liqDelta := i256.Zero().Neg(i256.FromUint256(liqAmount))
+	posParams := newModifyPositionParams(caller, tickLower, tickUpper, liqDelta)
+	position, amount0, amount1 := pool.modifyPosition(posParams)
 
 	if amount0.Gt(u256.Zero()) || amount1.Gt(u256.Zero()) {
 		position.tokensOwed0 = new(u256.Uint).Add(position.tokensOwed0, amount0)
@@ -129,22 +110,19 @@ func Collect(
 	recipient std.Address,
 	tickLower int32,
 	tickUpper int32,
-	_amount0Requested string, // uint128
-	_amount1Requested string, // uint128
-) (string, string) { // uint128 x2
+	amount0Requested string,
+	amount1Requested string,
+) (string, string) {
 	common.IsHalted()
 	if common.GetLimitCaller() {
 		caller := std.PrevRealm().Addr()
-		if caller != consts.POSITION_ADDR {
+		if err := common.PositionOnly(caller); err != nil {
 			panic(addDetailToError(
 				errNoPermission,
-				ufmt.Sprintf("pool.gno__Collect() || only position(%s) can call pool collect(), called from %s", consts.POSITION_ADDR, caller.String()),
+				ufmt.Sprintf("only position(%s) can call pool collect(), called from %s", consts.POSITION_ADDR, caller.String()),
 			))
 		}
 	}
-
-	amount0Requested := u256.MustFromDecimal(_amount0Requested)
-	amount1Requested := u256.MustFromDecimal(_amount1Requested)
 
 	pool := GetPool(token0Path, token1Path, fee)
 
@@ -153,299 +131,58 @@ func Collect(
 	if !exist {
 		panic(addDetailToError(
 			errDataNotFound,
-			ufmt.Sprintf("pool.gno__Collect() || positionKey(%s) does not exist", positionKey),
+			ufmt.Sprintf("positionKey(%s) does not exist", positionKey),
 		))
 	}
 
-	// Smallest of three: amount0Requested, position.tokensOwed0, pool.balances.token0
-	amount0 := u256Min(amount0Requested, position.tokensOwed0)
-	amount0 = u256Min(amount0, pool.balances.token0)
-
-	// Update state first then transfer
-	position.tokensOwed0 = new(u256.Uint).Sub(position.tokensOwed0, amount0)
-	pool.balances.token0 = new(u256.Uint).Sub(pool.balances.token0, amount0)
-	transferByRegisterCall(pool.token0Path, recipient, amount0.Uint64())
+	var amount0, amount1 *u256.Uint
 
 	// Smallest of three: amount0Requested, position.tokensOwed0, pool.balances.token0
-	amount1 := u256Min(amount1Requested, position.tokensOwed1)
-	amount1 = u256Min(amount1, pool.balances.token1)
+	amount0Req := u256.MustFromDecimal(amount0Requested)
+	amount0, position.tokensOwed0, pool.balances.token0 = collectToken(amount0Req, position.tokensOwed0, pool.balances.token0)
+	token0 := common.GetTokenTeller(pool.token0Path)
+	checkTransferError(token0.Transfer(recipient, amount0.Uint64()))
+
+	// Smallest of three: amount0Requested, position.tokensOwed0, pool.balances.token0
+	amount1Req := u256.MustFromDecimal(amount1Requested)
+	amount1, position.tokensOwed1, pool.balances.token1 = collectToken(amount1Req, position.tokensOwed1, pool.balances.token1)
 
 	// Update state first then transfer
 	position.tokensOwed1 = new(u256.Uint).Sub(position.tokensOwed1, amount1)
 	pool.balances.token1 = new(u256.Uint).Sub(pool.balances.token1, amount1)
-	transferByRegisterCall(pool.token1Path, recipient, amount1.Uint64())
+	token1 := common.GetTokenTeller(pool.token1Path)
+	checkTransferError(token1.Transfer(recipient, amount1.Uint64()))
 
 	pool.positions[positionKey] = position
 
 	return amount0.ToString(), amount1.ToString()
 }
 
-// Swap swaps token0 for token1, or token1 for token0
-// Returns swapped amount0, amount1 in string
-// ref: https://docs.gnoswap.io/contracts/pool/pool.gno#swap
-func Swap(
-	token0Path string,
-	token1Path string,
-	fee uint32,
-	recipient std.Address,
-	zeroForOne bool,
-	_amountSpecified string, // int256
-	_sqrtPriceLimitX96 string, // uint160
-	payer std.Address, // router
-) (string, string) { // int256 x2
-	common.IsHalted()
-	if common.GetLimitCaller() {
-		caller := std.PrevRealm().Addr()
-		if caller != consts.ROUTER_ADDR {
-			panic(addDetailToError(
-				errNoPermission,
-				ufmt.Sprintf("pool.gno__Swap() || only router(%s) can call pool swap(), called from %s", consts.ROUTER_ADDR, caller.String()),
-			))
-		}
-	}
+// collectToken handles the collection of tokens (either token0 or token1) from a position.
+// It calculates the actual amount that can be collected based on three constraints:
+// the requested amount, tokens owed, and available pool balance.
+//
+// Parameters:
+//   - amountReq: amount requested to collect
+//   - tokensOwed: amount of tokens owed to the position
+//   - poolBalance: current balance of tokens in the pool
+//
+// Returns:
+//   - amount: actual amount that will be collected (minimum of the three inputs)
+//   - newTokensOwed: remaining tokens owed after collection
+//   - newPoolBalance: remaining pool balance after collection
+func collectToken(
+	amountReq, tokensOwed, poolBalance *u256.Uint,
+) (amount, newTokensOwed, newPoolBalance *u256.Uint) {
+	// find smallest of three amounts
+	amount = u256Min(amountReq, tokensOwed)
+	amount = u256Min(amount, poolBalance)
 
-	if _amountSpecified == "0" {
-		panic(addDetailToError(
-			errInvalidSwapAmount,
-			ufmt.Sprintf("pool.gno__Swap() || amountSpecified == 0"),
-		))
-	}
+	// value for update state
+	newTokensOwed = new(u256.Uint).Sub(tokensOwed, amount)
+	newPoolBalance = new(u256.Uint).Sub(poolBalance, amount)
 
-	amountSpecified := i256.MustFromDecimal(_amountSpecified)
-	sqrtPriceLimitX96 := u256.MustFromDecimal(_sqrtPriceLimitX96)
-
-	pool := GetPool(token0Path, token1Path, fee)
-	slot0Start := pool.slot0
-
-	if !(slot0Start.unlocked) {
-		panic(addDetailToError(
-			errLockedPool,
-			ufmt.Sprintf("pool.gno__Swap() || slot0Start.unlocked(false) must be unlocked)"),
-		))
-	}
-
-	var feeProtocol uint8
-	var feeGrowthGlobalX128 *u256.Uint
-
-	if zeroForOne {
-		minSqrtRatio := u256.MustFromDecimal(consts.MIN_SQRT_RATIO)
-
-		cond1 := sqrtPriceLimitX96.Lt(slot0Start.sqrtPriceX96)
-		cond2 := sqrtPriceLimitX96.Gt(minSqrtRatio)
-		if !(cond1 && cond2) {
-			panic(addDetailToError(
-				errPriceOutOfRange,
-				ufmt.Sprintf("pool.gno__Swap() || sqrtPriceLimitX96(%s) < slot0Start.sqrtPriceX96(%s) && sqrtPriceLimitX96(%s) > consts.MIN_SQRT_RATIO(%s)", sqrtPriceLimitX96.ToString(), slot0Start.sqrtPriceX96.ToString(), sqrtPriceLimitX96.ToString(), consts.MIN_SQRT_RATIO),
-			))
-		}
-		feeProtocol = slot0Start.feeProtocol % 16
-		feeGrowthGlobalX128 = pool.feeGrowthGlobal0X128
-
-	} else {
-		maxSqrtRatio := u256.MustFromDecimal(consts.MAX_SQRT_RATIO)
-
-		cond1 := sqrtPriceLimitX96.Gt(slot0Start.sqrtPriceX96)
-		cond2 := sqrtPriceLimitX96.Lt(maxSqrtRatio)
-		if !(cond1 && cond2) {
-			panic(addDetailToError(
-				errPriceOutOfRange,
-				ufmt.Sprintf("pool.gno__Swap() || sqrtPriceLimitX96(%s) > slot0Start.sqrtPriceX96(%s) && sqrtPriceLimitX96(%s) < consts.MAX_SQRT_RATIO(%s)", sqrtPriceLimitX96.ToString(), slot0Start.sqrtPriceX96.ToString(), sqrtPriceLimitX96.ToString(), consts.MAX_SQRT_RATIO),
-			))
-		}
-
-		feeProtocol = slot0Start.feeProtocol / 16
-		feeGrowthGlobalX128 = pool.feeGrowthGlobal1X128
-	}
-
-	pool.slot0.unlocked = false
-	cache := newSwapCache(feeProtocol, pool.liquidity)
-	state := pool.newSwapState(amountSpecified, feeGrowthGlobalX128, cache.liquidityStart)
-
-	exactInput := amountSpecified.Gt(i256.Zero())
-
-	// continue swapping as long as we haven't used the entire input/output and haven't reached the price limit
-	swapFee := u256.Zero()
-	for !(state.amountSpecifiedRemaining.IsZero()) && !(state.sqrtPriceX96.Eq(sqrtPriceLimitX96)) {
-		var step StepComputations
-		step.sqrtPriceStartX96 = state.sqrtPriceX96
-
-		step.tickNext, step.initialized = pool.tickBitmapNextInitializedTickWithInOneWord(
-			state.tick,
-			pool.tickSpacing,
-			zeroForOne,
-		)
-
-		// ensure that we do not overshoot the min/max tick, as the tick bitmap is not aware of these bounds
-		if step.tickNext < consts.MIN_TICK {
-			step.tickNext = consts.MIN_TICK
-		} else if step.tickNext > consts.MAX_TICK {
-			step.tickNext = consts.MAX_TICK
-		}
-
-		// get the price for the next tick
-		step.sqrtPriceNextX96 = common.TickMathGetSqrtRatioAtTick(step.tickNext)
-
-		isLower := step.sqrtPriceNextX96.Lt(sqrtPriceLimitX96)
-		isHigher := step.sqrtPriceNextX96.Gt(sqrtPriceLimitX96)
-
-		var sqrtRatioTargetX96 *u256.Uint
-		if (zeroForOne && isLower) || (!zeroForOne && isHigher) {
-			sqrtRatioTargetX96 = sqrtPriceLimitX96
-		} else {
-			sqrtRatioTargetX96 = step.sqrtPriceNextX96
-		}
-
-		_sqrtPriceX96Str, _amountInStr, _amountOutStr, _feeAmountStr := plp.SwapMathComputeSwapStepStr(
-			state.sqrtPriceX96,
-			sqrtRatioTargetX96,
-			state.liquidity,
-			state.amountSpecifiedRemaining,
-			uint64(pool.fee),
-		)
-		state.sqrtPriceX96 = u256.MustFromDecimal(_sqrtPriceX96Str)
-		step.amountIn = u256.MustFromDecimal(_amountInStr)
-		step.amountOut = u256.MustFromDecimal(_amountOutStr)
-		step.feeAmount = u256.MustFromDecimal(_feeAmountStr)
-
-		amountInWithFee := i256.FromUint256(new(u256.Uint).Add(step.amountIn, step.feeAmount))
-		if exactInput {
-			state.amountSpecifiedRemaining = i256.Zero().Sub(state.amountSpecifiedRemaining, amountInWithFee)
-			state.amountCalculated = i256.Zero().Sub(state.amountCalculated, i256.FromUint256(step.amountOut))
-		} else {
-			state.amountSpecifiedRemaining = i256.Zero().Add(state.amountSpecifiedRemaining, i256.FromUint256(step.amountOut))
-			state.amountCalculated = i256.Zero().Add(state.amountCalculated, amountInWithFee)
-		}
-
-		// if the protocol fee is on, calculate how much is owed, decrement feeAmount, and increment protocolFee
-		if cache.feeProtocol > 0 {
-			delta := new(u256.Uint).Div(step.feeAmount, u256.NewUint(uint64(cache.feeProtocol)))
-			step.feeAmount = new(u256.Uint).Sub(step.feeAmount, delta)
-			state.protocolFee = new(u256.Uint).Add(state.protocolFee, delta)
-		}
-
-		// update global fee tracker
-		if state.liquidity.Gt(u256.Zero()) {
-			update := u256.MulDiv(step.feeAmount, u256.MustFromDecimal(consts.Q128), state.liquidity)
-			state.feeGrowthGlobalX128 = new(u256.Uint).Add(state.feeGrowthGlobalX128, update)
-		}
-		swapFee = new(u256.Uint).Add(swapFee, step.feeAmount)
-
-		// shift tick if we reached the next price
-		if state.sqrtPriceX96.Eq(step.sqrtPriceNextX96) {
-			// if the tick is initialized, run the tick transition
-			if step.initialized {
-				var fee0, fee1 *u256.Uint
-
-				// check for the placeholder value, which we replace with the actual value the first time the swap crosses an initialized tick
-				if zeroForOne {
-					fee0 = state.feeGrowthGlobalX128
-					fee1 = pool.feeGrowthGlobal1X128
-				} else {
-					fee0 = pool.feeGrowthGlobal0X128
-					fee1 = state.feeGrowthGlobalX128
-				}
-
-				liquidityNet := pool.tickCross(
-					step.tickNext,
-					fee0,
-					fee1,
-				)
-
-				// if we're moving leftward, we interpret liquidityNet as the opposite sign
-				if zeroForOne {
-					liquidityNet = i256.Zero().Neg(liquidityNet)
-				}
-
-				state.liquidity = liquidityMathAddDelta(state.liquidity, liquidityNet)
-			}
-
-			if zeroForOne {
-				state.tick = step.tickNext - 1
-			} else {
-				state.tick = step.tickNext
-			}
-		} else if !(state.sqrtPriceX96.Eq(step.sqrtPriceStartX96)) {
-			// recompute unless we're on a lower tick boundary (i.e. already transitioned ticks), and haven't moved
-			state.tick = common.TickMathGetTickAtSqrtRatio(state.sqrtPriceX96)
-		}
-	}
-	// END LOOP
-
-	// update pool sqrtPrice
-	pool.slot0.sqrtPriceX96 = state.sqrtPriceX96
-
-	// update tick if it changed
-	if state.tick != slot0Start.tick {
-		pool.slot0.tick = state.tick
-	}
-
-	// update liquidity if it changed
-	if !(cache.liquidityStart.Eq(state.liquidity)) {
-		pool.liquidity = state.liquidity
-	}
-
-	// update fee growth global and, if necessary, protocol fees
-	// overflow is acceptable, protocol has to withdraw before it hits MAX_UINT256 fees
-	if zeroForOne {
-		pool.feeGrowthGlobal0X128 = state.feeGrowthGlobalX128
-		if state.protocolFee.Gt(u256.Zero()) {
-			pool.protocolFees.token0 = new(u256.Uint).Add(pool.protocolFees.token0, state.protocolFee)
-		}
-	} else {
-		pool.feeGrowthGlobal1X128 = state.feeGrowthGlobalX128
-		if state.protocolFee.Gt(u256.Zero()) {
-			pool.protocolFees.token1 = new(u256.Uint).Add(pool.protocolFees.token1, state.protocolFee)
-		}
-	}
-
-	var amount0, amount1 *i256.Int
-	if zeroForOne == exactInput {
-		amount0 = i256.Zero().Sub(amountSpecified, state.amountSpecifiedRemaining)
-		amount1 = state.amountCalculated
-	} else {
-		amount0 = state.amountCalculated
-		amount1 = i256.Zero().Sub(amountSpecified, state.amountSpecifiedRemaining)
-	}
-
-	// actual swap
-	if zeroForOne {
-		// payer > POOL
-		pool.transferFromAndVerify(payer, consts.POOL_ADDR, pool.token0Path, amount0, true)
-
-		// POOL > recipient
-		pool.transferAndVerify(recipient, pool.token1Path, amount1, false)
-
-	} else {
-		// payer > POOL
-		pool.transferFromAndVerify(payer, consts.POOL_ADDR, pool.token1Path, amount1, false)
-
-		// POOL > recipient
-		pool.transferAndVerify(recipient, pool.token0Path, amount0, true)
-
-	}
-
-	prevAddr, prevRealm := getPrev()
-
-	std.Emit(
-		"Swap",
-		"prevAddr", prevAddr,
-		"prevRealm", prevRealm,
-		"poolPath", GetPoolPath(token0Path, token1Path, fee),
-		"zeroForOne", ufmt.Sprintf("%t", zeroForOne),
-		"amountSpecified", _amountSpecified,
-		"sqrtPriceLimitX96", _sqrtPriceLimitX96,
-		"payer", payer.String(),
-		"recipient", recipient.String(),
-		"internal_amount0", amount0.ToString(),
-		"internal_amount1", amount1.ToString(),
-		"internal_protocolFee0", pool.protocolFees.token0.ToString(),
-		"internal_protocolFee1", pool.protocolFees.token1.ToString(),
-		"internal_swapFee", swapFee.ToString(),
-		"internal_sqrtPriceX96", pool.slot0.sqrtPriceX96.ToString(),
-	)
-
-	pool.slot0.unlocked = true
-	return amount0.ToString(), amount1.ToString()
+	return amount, newTokensOwed, newPoolBalance
 }
 
 // SetFeeProtocolByAdmin sets the fee protocol for all pools
@@ -476,10 +213,7 @@ func SetFeeProtocolByAdmin(
 // Only governance contract can execute this function via proposal
 // Also it will be applied to new created pools
 // ref: https://docs.gnoswap.io/contracts/pool/pool.gno#setfeeprotocol
-func SetFeeProtocol(
-	feeProtocol0 uint8,
-	feeProtocol1 uint8,
-) {
+func SetFeeProtocol(feeProtocol0, feeProtocol1 uint8) {
 	caller := std.PrevRealm().Addr()
 	if err := common.GovernanceOnly(caller); err != nil {
 		panic(err)
@@ -498,21 +232,44 @@ func SetFeeProtocol(
 	)
 }
 
-func setFeeProtocol(
-	feeProtocol0 uint8,
-	feeProtocol1 uint8,
-) uint8 {
+// setFeeProtocol updates the protocol fee configuration for all existing pools and sets
+// the default for new pools. This is an internal function called by both `admin` and `governance`
+// protocol fee management functions.
+//
+// The protocol fee is stored as a single `uint8` value where:
+//   - Lower 4 bits store feeProtocol0 (for token0)
+//   - Upper 4 bits store feeProtocol1 (for token1)
+//
+// This compact representation allows storing both fee values in a single byte.
+//
+// Parameters (must be 0 or between 4 and 10 inclusive):
+//   - feeProtocol0: protocol fee for token0
+//   - feeProtocol1: protocol fee for token1
+//
+// Returns:
+//   - newFee (uint8): the combined fee protocol value
+//
+// Example:
+// If feeProtocol0 = 4 and feeProtocol1 = 5:
+//
+//	newFee = 4 + (5 << 4)
+//	// Results in: 0x54 (84 in decimal)
+//	// Binary: 0101 0100
+//	//         ^^^^ ^^^^
+//	//       fee1=5  fee0=4
+func setFeeProtocol(feeProtocol0, feeProtocol1 uint8) uint8 {
 	common.IsHalted()
 
-	fee0Cond := feeProtocol0 == 0 || (feeProtocol0 >= 4 && feeProtocol0 <= 10)
-	fee1Cond := feeProtocol1 == 0 || (feeProtocol1 >= 4 && feeProtocol1 <= 10)
-	if !(fee0Cond && fee1Cond) {
+	if err := validateFeeProtocol(feeProtocol0, feeProtocol1); err != nil {
 		panic(addDetailToError(
-			errInvalidProtocolFeePct,
-			ufmt.Sprintf("pool.gno__setFeeProtocol() || expected (feeProtocol0(%d) == 0 || (feeProtocol0(%d) >= 4 && feeProtocol0(%d) <= 10)) && (feeProtocol1(%d) == 0 || (feeProtocol1(%d) >= 4 && feeProtocol1(%d) <= 10))", feeProtocol0, feeProtocol0, feeProtocol0, feeProtocol1, feeProtocol1, feeProtocol1),
+			err,
+			ufmt.Sprintf("expected (feeProtocol0(%d) == 0 || (feeProtocol0(%d) >= 4 && feeProtocol0(%d) <= 10)) && (feeProtocol1(%d) == 0 || (feeProtocol1(%d) >= 4 && feeProtocol1(%d) <= 10))", feeProtocol0, feeProtocol0, feeProtocol0, feeProtocol1, feeProtocol1, feeProtocol1),
 		))
 	}
 
+	// combine both protocol fee into a single byte:
+	// - feePrtocol0 occupies the lower 4 bits
+	// - feeProtocol1 is shifted the lower 4 positions to occupy the upper 4 bits
 	newFee := feeProtocol0 + (feeProtocol1 << 4) // ( << 4 ) = ( * 16 )
 
 	// iterate all pool
@@ -526,6 +283,19 @@ func setFeeProtocol(
 	return newFee
 }
 
+func validateFeeProtocol(feeProtocol0, feeProtocol1 uint8) error {
+	if !isValidFeeProtocolValue(feeProtocol0) || !isValidFeeProtocolValue(feeProtocol1) {
+		return errInvalidProtocolFeePct
+	}
+	return nil
+}
+
+// isValidFeeProtocolValue checks if a fee protocol value is within acceptable range.
+// valid values are either 0 or between 4 and 10 inclusive.
+func isValidFeeProtocolValue(value uint8) bool {
+	return value == 0 || (value >= 4 && value <= 10)
+}
+
 // CollectProtocolByAdmin collects protocol fees for the given pool that accumulated while it was being used for swap
 // Returns collected amount0, amount1 in string
 func CollectProtocolByAdmin(
@@ -533,9 +303,12 @@ func CollectProtocolByAdmin(
 	token1Path string,
 	fee uint32,
 	recipient std.Address,
-	_amount0Requested string, // uint128
-	_amount1Requested string, // uint128
+	amount0Requested string, // uint128
+	amount1Requested string, // uint128
 ) (string, string) { // uint128 x2
+	common.MustRegistered(token0Path)
+	common.MustRegistered(token1Path)
+
 	caller := std.PrevRealm().Addr()
 	if err := common.AdminOnly(caller); err != nil {
 		panic(err)
@@ -546,8 +319,8 @@ func CollectProtocolByAdmin(
 		token1Path,
 		fee,
 		recipient,
-		_amount0Requested,
-		_amount1Requested,
+		amount0Requested,
+		amount1Requested,
 	)
 
 	prevAddr, prevRealm := getPrev()
@@ -575,9 +348,12 @@ func CollectProtocol(
 	token1Path string,
 	fee uint32,
 	recipient std.Address,
-	_amount0Requested string, // uint128
-	_amount1Requested string, // uint128
+	amount0Requested string, // uint128
+	amount1Requested string, // uint128
 ) (string, string) { // uint128 x2
+	common.MustRegistered(token0Path)
+	common.MustRegistered(token1Path)
+
 	caller := std.PrevRealm().Addr()
 	if err := common.GovernanceOnly(caller); err != nil {
 		panic(err)
@@ -588,8 +364,8 @@ func CollectProtocol(
 		token1Path,
 		fee,
 		recipient,
-		_amount0Requested,
-		_amount1Requested,
+		amount0Requested,
+		amount1Requested,
 	)
 
 	prevAddr, prevRealm := getPrev()
@@ -613,225 +389,55 @@ func collectProtocol(
 	token1Path string,
 	fee uint32,
 	recipient std.Address,
-	_amount0Requested string, // uint128
-	_amount1Requested string, // uint128
-) (string, string) { // uint128 x2
+	amount0Requested string,
+	amount1Requested string,
+) (string, string) {
 	common.IsHalted()
-
-	amount0Requested := u256.MustFromDecimal(_amount0Requested)
-	amount1Requested := u256.MustFromDecimal(_amount1Requested)
 
 	pool := GetPool(token0Path, token1Path, fee)
 
-	amount0 := u256Min(amount0Requested, pool.protocolFees.token0)
-	amount1 := u256Min(amount1Requested, pool.protocolFees.token1)
+	amount0Req := u256.MustFromDecimal(amount0Requested)
+	amount1Req := u256.MustFromDecimal(amount1Requested)
+
+	amount0 := u256Min(amount0Req, pool.protocolFees.token0)
+	amount1 := u256Min(amount1Req, pool.protocolFees.token1)
 
 	amount0, amount1 = pool.saveProtocolFees(amount0, amount1)
 	uAmount0 := amount0.Uint64()
 	uAmount1 := amount1.Uint64()
 
-	transferByRegisterCall(pool.token0Path, recipient, uAmount0)
-	transferByRegisterCall(pool.token1Path, recipient, uAmount1)
+	token0Teller := common.GetTokenTeller(pool.token0Path)
+	checkTransferError(token0Teller.Transfer(recipient, uAmount0))
+
+	token1Teller := common.GetTokenTeller(pool.token1Path)
+	checkTransferError(token1Teller.Transfer(recipient, uAmount1))
 
 	return amount0.ToString(), amount1.ToString()
 }
 
-func (pool *Pool) saveProtocolFees(amount0, amount1 *u256.Uint) (*u256.Uint, *u256.Uint) {
+// saveProtocolFees updates the protocol fee balances after collection.
+//
+// Parameters:
+//   - amount0: amount of token0 fees to collect
+//   - amount1: amount of token1 fees to collect
+//
+// Returns the adjusted amounts that will actually be collected for both tokens.
+func (p *Pool) saveProtocolFees(amount0, amount1 *u256.Uint) (*u256.Uint, *u256.Uint) {
 	cond01 := amount0.Gt(u256.Zero())
-	cond02 := amount0.Eq(pool.protocolFees.token0)
+	cond02 := amount0.Eq(p.protocolFees.token0)
 	if cond01 && cond02 {
 		amount0 = new(u256.Uint).Sub(amount0, u256.One())
 	}
 
 	cond11 := amount1.Gt(u256.Zero())
-	cond12 := amount1.Eq(pool.protocolFees.token1)
+	cond12 := amount1.Eq(p.protocolFees.token1)
 	if cond11 && cond12 {
 		amount1 = new(u256.Uint).Sub(amount1, u256.One())
 	}
 
-	pool.protocolFees.token0 = new(u256.Uint).Sub(pool.protocolFees.token0, amount0)
-	pool.protocolFees.token1 = new(u256.Uint).Sub(pool.protocolFees.token1, amount1)
+	p.protocolFees.token0 = new(u256.Uint).Sub(p.protocolFees.token0, amount0)
+	p.protocolFees.token1 = new(u256.Uint).Sub(p.protocolFees.token1, amount1)
 
 	// return rest fee
 	return amount0, amount1
-}
-
-func (pool *Pool) transferAndVerify(
-	to std.Address,
-	tokenPath string,
-	amount *i256.Int,
-	isToken0 bool,
-) {
-	if amount.IsZero() {
-		return
-	}
-
-	// must be negative to send token from pool to user
-	// as point of view from pool, it is negative
-	if !amount.IsNeg() {
-		panic(addDetailToError(
-			errMustBeNegative,
-			ufmt.Sprintf("pool.gno__transferAndVerify() || amount(%s) must be negative", amount.ToString()),
-		))
-	}
-
-	// check pool.balances
-	if isToken0 {
-		if pool.balances.token0.Lt(amount.Abs()) {
-			panic(addDetailToError(
-				errTransferFailed,
-				ufmt.Sprintf("pool.gno__transferAndVerify() || pool.balances.token0(%s) >= amount.Abs(%s)", pool.balances.token0.ToString(), amount.Abs().ToString()),
-			))
-		}
-	} else {
-		if pool.balances.token1.Lt(amount.Abs()) {
-			panic(addDetailToError(
-				errTransferFailed,
-				ufmt.Sprintf("pool.gno__transferAndVerify() || pool.balances.token1(%s) >= amount.Abs(%s)", pool.balances.token1.ToString(), amount.Abs().ToString()),
-			))
-		}
-	}
-
-	amountUint64 := checkAmountRange(amount)
-
-	// try sending
-	// will panic if following conditions are met:
-	// - POOL does not have enough balance
-	// - token is not registered
-	transferByRegisterCall(tokenPath, to, amountUint64)
-
-	// update pool.balances
-	var overflow bool
-	if isToken0 {
-		pool.balances.token0, overflow = new(u256.Uint).SubOverflow(pool.balances.token0, amount.Abs())
-		if overflow {
-			panic(addDetailToError(
-				errTransferFailed,
-				ufmt.Sprintf("pool.gno__transferAndVerify() || cannot decrease, pool.balances.token0(%s) - amount(%s)", pool.balances.token0.ToString(), amount.Abs().ToString()),
-			))
-		}
-	} else {
-		pool.balances.token1, overflow = new(u256.Uint).SubOverflow(pool.balances.token1, amount.Abs())
-		if pool.balances.token1.Lt(u256.Zero()) {
-			panic(addDetailToError(
-				errTransferFailed,
-				ufmt.Sprintf("pool.gno__transferAndVerify() || cannot decrease, pool.balances.token1(%s) - amount(%s)", pool.balances.token1.ToString(), amount.Abs().ToString()),
-			))
-		}
-	}
-}
-
-func (pool *Pool) transferFromAndVerify(
-	from, to std.Address,
-	tokenPath string,
-	amount *i256.Int,
-	isToken0 bool,
-) {
-	amountUint64 := checkAmountRange(amount)
-
-	// try sending
-	// will panic if following conditions are met:
-	// - POOL does not have enough approved amount
-	// - from does not have enough balance
-	// - token is not registered
-	transferFromByRegisterCall(tokenPath, from, to, amountUint64)
-
-	// update pool.balances
-	if isToken0 {
-		pool.balances.token0 = new(u256.Uint).Add(pool.balances.token0, amount.Abs())
-	} else {
-		pool.balances.token1 = new(u256.Uint).Add(pool.balances.token1, amount.Abs())
-	}
-}
-
-func checkAmountRange(amount *i256.Int) uint64 {
-	// check amount is in uint64 range
-	amountAbs := amount.Abs()
-	amountUint64, overflow := amountAbs.Uint64WithOverflow()
-	if overflow {
-		panic(addDetailToError(
-			errOutOfRange,
-			ufmt.Sprintf("pool.gno__checkAmountRange() || amountAbs(%s) overflows uint64 range", amountAbs.ToString()),
-		))
-	}
-
-	return amountUint64
-}
-
-// receiver getters
-func (p *Pool) PoolGetToken0Path() string {
-	return p.token0Path
-}
-
-func (p *Pool) PoolGetToken1Path() string {
-	return p.token1Path
-}
-
-func (p *Pool) PoolGetFee() uint32 {
-	return p.fee
-}
-
-func (p *Pool) PoolGetBalanceToken0() *u256.Uint {
-	return p.balances.token0
-}
-
-func (p *Pool) PoolGetBalanceToken1() *u256.Uint {
-	return p.balances.token1
-}
-
-func (p *Pool) PoolGetTickSpacing() int32 {
-	return p.tickSpacing
-}
-
-func (p *Pool) PoolGetMaxLiquidityPerTick() *u256.Uint {
-	return p.maxLiquidityPerTick
-}
-
-func (p *Pool) PoolGetSlot0() Slot0 {
-	return p.slot0
-}
-
-func (p *Pool) PoolGetSlot0SqrtPriceX96() *u256.Uint {
-	return p.slot0.sqrtPriceX96
-}
-
-func (p *Pool) PoolGetSlot0Tick() int32 {
-	return p.slot0.tick
-}
-
-func (p *Pool) PoolGetSlot0FeeProtocol() uint8 {
-	return p.slot0.feeProtocol
-}
-
-func (p *Pool) PoolGetSlot0Unlocked() bool {
-	return p.slot0.unlocked
-}
-
-func (p *Pool) PoolGetFeeGrowthGlobal0X128() *u256.Uint {
-	return p.feeGrowthGlobal0X128
-}
-
-func (p *Pool) PoolGetFeeGrowthGlobal1X128() *u256.Uint {
-	return p.feeGrowthGlobal1X128
-}
-
-func (p *Pool) PoolGetProtocolFeesToken0() *u256.Uint {
-	return p.protocolFees.token0
-}
-
-func (p *Pool) PoolGetProtocolFeesToken1() *u256.Uint {
-	return p.protocolFees.token1
-}
-
-func (p *Pool) PoolGetLiquidity() *u256.Uint {
-	return p.liquidity
-}
-
-func mustGetPool(poolPath string) *Pool {
-	pool, exist := pools[poolPath]
-	if !exist {
-		panic(addDetailToError(errDataNotFound,
-			ufmt.Sprintf("poolPath(%s) does not exist", poolPath)))
-	}
-	return pool
 }
