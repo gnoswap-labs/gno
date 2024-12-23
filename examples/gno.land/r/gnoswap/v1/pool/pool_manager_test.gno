@@ -8,29 +8,6 @@ import (
 	"gno.land/r/gnoswap/v1/consts"
 )
 
-func TestPoolMapOperations(t *testing.T) {
-	pm := make(poolMap)
-
-	poolPath := "token0:token1:500"
-	params := newPoolParams("token0", "token1", 500, "4295128740")
-	pool := newPool(params)
-
-	pm.Set(poolPath, pool)
-
-	retrieved, exists := pm.Get(poolPath)
-	if !exists {
-		t.Error("Expected pool to exist")
-	}
-	if retrieved != pool {
-		t.Error("Retrieved pool doesn't match original")
-	}
-
-	_, exists = pm.Get("nonexistent")
-	if exists {
-		t.Error("Expected pool to not exist")
-	}
-}
-
 func TestNewPoolParams(t *testing.T) {
 	params := newPoolParams(
 		"token0",
@@ -98,7 +75,7 @@ func TestTickSpacingMap(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		spacing := feeAmountTickSpacing.Get(tt.fee)
+		spacing := GetFeeAmountTickSpacing(tt.fee)
 		if spacing != tt.tickSpacing {
 			t.Errorf("For fee %d, expected tick spacing %d, got %d",
 				tt.fee, tt.tickSpacing, spacing)
@@ -164,7 +141,7 @@ func TestCreatePool(t *testing.T) {
 						t.Errorf("expected panic but got none")
 						return
 					}
-					errMsg := string(r)
+					errMsg := r.(string)
 					if !strings.Contains(errMsg, tt.panicMsg) {
 						t.Errorf("expected panic message containing %q but got %q", tt.panicMsg, errMsg)
 					}
@@ -176,11 +153,7 @@ func TestCreatePool(t *testing.T) {
 			if !tt.shouldPanic {
 				// verify pool was created correctly
 				poolPath := GetPoolPath(tt.token0Path, tt.token1Path, tt.fee)
-				pool, exists := pools.Get(poolPath)
-				if !exists {
-					t.Errorf("pool was not created")
-					return
-				}
+				pool := mustGetPool(poolPath)
 
 				// check if GNOT was properly wrapped
 				expectedToken0 := tt.token0Path
