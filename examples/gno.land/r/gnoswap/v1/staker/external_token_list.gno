@@ -30,7 +30,7 @@ func init() {
 func AddToken(tokenPath string) {
 	caller := std.PrevRealm().Addr()
 	if err := common.AdminOnly(caller); err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 
 	// if exist just return
@@ -56,7 +56,7 @@ func AddToken(tokenPath string) {
 func RemoveToken(tokenPath string) {
 	caller := std.PrevRealm().Addr()
 	if err := common.AdminOnly(caller); err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 
 	// if default token, can not remove

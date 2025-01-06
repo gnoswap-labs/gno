@@ -1,4 +1,4 @@
-package router
+package tests
 
 import (
 	"std"
@@ -41,7 +41,7 @@ func TestPositionMintBarBaz(t *testing.T) {
 	std.TestSetRealm(adminRealm)
 	bar.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 	baz.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
-	tokenId, liquidity, amount0, amount1 := pn.Mint(barPath, bazPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, admin, admin)
+	tokenId, liquidity, amount0, amount1 := pn.Mint(barPath, bazPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, adminAddr, adminAddr)
 
 	uassert.Equal(t, tokenId, uint64(1))
 	uassert.Equal(t, amount0, "36790")  // bar
@@ -53,7 +53,7 @@ func TestPositionMintBazQux(t *testing.T) {
 	baz.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 	qux.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 
-	tokenId, liquidity, amount0, amount1 := pn.Mint(bazPath, quxPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, admin, admin)
+	tokenId, liquidity, amount0, amount1 := pn.Mint(bazPath, quxPath, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, adminAddr, adminAddr)
 
 	uassert.Equal(t, tokenId, uint64(2))
 	uassert.Equal(t, amount0, "36790")
@@ -64,7 +64,7 @@ func TestPositionMintQuxGnot(t *testing.T) {
 	std.TestSetRealm(adminRealm)
 
 	// send
-	std.TestIssueCoins(admin, std.Coins{{"ugnot", 1000009}})
+	std.TestIssueCoins(adminAddr, std.Coins{{"ugnot", 1000009}})
 	std.TestSetOrigSend(std.Coins{{"ugnot", 1000009}}, nil)
 
 	// Deposit(wrap)
@@ -74,7 +74,7 @@ func TestPositionMintQuxGnot(t *testing.T) {
 	qux.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 	wugnot.Approve(a2u(consts.POOL_ADDR), consts.UINT64_MAX)
 
-	tokenId, liquidity, amount0, amount1 := pn.Mint(quxPath, consts.WRAPPED_WUGNOT, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, admin, admin)
+	tokenId, liquidity, amount0, amount1 := pn.Mint(quxPath, consts.WRAPPED_WUGNOT, fee500, int32(9000), int32(11000), "100000", "100000", "0", "0", max_timeout, adminAddr, adminAddr)
 
 	uassert.Equal(t, tokenId, uint64(3))
 	uassert.Equal(t, amount0, "100000")
@@ -91,6 +91,7 @@ func TestDrySwapRouteBarGnotExactIn(t *testing.T) {
 		"EXACT_IN",            // swapType
 		"gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/demo/wugnot:500", // strRouteArr
 		"100", // quoteArr
+		"1",
 	)
 	uassert.Equal(t, dryResult, "19740")
 }
@@ -105,6 +106,7 @@ func TestDrySwapRouteBarGnotExactOut(t *testing.T) {
 		"EXACT_OUT",           // swapType
 		"gno.land/r/onbloc/bar:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/demo/wugnot:500", // strRouteArr
 		"100", // quoteArr
+		"2000000",
 	)
 	uassert.Equal(t, dryResult, "1014")
 }
@@ -119,6 +121,7 @@ func TestDrySwapRouteGnotBarExactIn(t *testing.T) {
 		"EXACT_IN",            // swapType
 		"gno.land/r/demo/wugnot:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/bar:500", // strRouteArr
 		"100", // quoteArr
+		"1",
 	)
 	uassert.Equal(t, dryResult, "247")
 }
@@ -133,6 +136,7 @@ func TestDrySwapRouteGnotBarExactOut(t *testing.T) {
 		"EXACT_OUT",           // swapType
 		"gno.land/r/demo/wugnot:gno.land/r/onbloc/qux:500*POOL*gno.land/r/onbloc/qux:gno.land/r/onbloc/baz:500*POOL*gno.land/r/onbloc/baz:gno.land/r/onbloc/bar:500", // strRouteArr
 		"100", // quoteArr
+		"100000",
 	)
 	uassert.Equal(t, dryResult, "2027")
 }
