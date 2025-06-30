@@ -42,3 +42,9 @@ wal/
 
 # Gnoweb frontend
 node_modules/
+
+examples/gno.land/p/gnoswap
+examples/gno.land/p/onbloc
+
+examples/gno.land/r/gnoswap
+examples/gno.land/r/onbloc
