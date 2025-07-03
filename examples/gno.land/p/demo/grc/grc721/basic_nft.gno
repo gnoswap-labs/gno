@@ -82,7 +82,7 @@ func (s *basicNFT) SetTokenURI(tid TokenID, tURI TokenURI) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	caller := std.OriginCaller()
+	caller := std.PreviousRealm().Address()
 	if caller != owner {
 		return false, ErrCallerIsNotOwner
 	}
@@ -148,7 +148,7 @@ func (s *basicNFT) SetApprovalForAll(operator std.Address, approved bool) error 
 		return ErrInvalidAddress
 	}
 
-	caller := std.OriginCaller()
+	caller := std.PreviousRealm().Address()
 	return s.setApprovalForAll(caller, operator, approved)
 }
 
