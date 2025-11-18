@@ -1,0 +1,7 @@
+loadpkg gno.land/r/g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5/tnft
+
+gnoland start
+
+# Bulk mint
+gnokey maketx call -pkgpath gno.land/r/g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5/tnft -func BulkMint -args g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5 -args 100 -gas-fee 10000000ugnot -gas-wanted 2000000000 -broadcast -chainid=tendermint_test test1
+stdout 'OK!'
