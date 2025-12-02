@@ -141,6 +141,13 @@ func (m *Machine) doOpCall() {
 	fv := fr.Func
 	fs := fv.GetSource(m.Store)
 	ft := fr.Func.GetType(m.Store)
+
+	// Track gas consumption for function entry
+	if m.gasTracker != nil && fv.Name != "" {
+		currentGas := m.GetGasConsumed()
+		m.gasTracker.EnterFunction(string(fv.Name), fv.PkgPath, currentGas)
+	}
+
 	// Create new block scope.
 	pb := fr.Func.GetParent(m.Store)
 	b := m.Alloc.NewBlock(fs, pb)
@@ -272,6 +279,12 @@ func (m *Machine) maybeFinalize(cfr *Frame) {
 
 // Assumes that result values are pushed onto the Values stack.
 func (m *Machine) doOpReturn() {
+	// Track gas consumption for function exit
+	if m.gasTracker != nil {
+		currentGas := m.GetGasConsumed()
+		m.gasTracker.ExitFunction(currentGas)
+	}
+	
 	// Unwind stack.
 	cfr := m.PopUntilLastCallFrame()
 	// Finalize if exiting realm boundary.
@@ -282,6 +295,12 @@ func (m *Machine) doOpReturn() {
 
 // Like doOpReturn but first copies results to block.
 func (m *Machine) doOpReturnAfterCopy() {
+	// Track gas consumption for function exit
+	if m.gasTracker != nil {
+		currentGas := m.GetGasConsumed()
+		m.gasTracker.ExitFunction(currentGas)
+	}
+	
 	// If there are named results that are heap defined,
 	// need to write to those from stack before returning.
 	cfr := m.MustPeekCallFrame(1)
@@ -308,6 +327,12 @@ func (m *Machine) doOpReturnAfterCopy() {
 // i.e. named result vars declared in func signatures,
 // because return was called with no return arguments.
 func (m *Machine) doOpReturnFromBlock() {
+	// Track gas consumption for function exit
+	if m.gasTracker != nil {
+		currentGas := m.GetGasConsumed()
+		m.gasTracker.ExitFunction(currentGas)
+	}
+	
 	// Copy results from block.
 	cfr := m.PopUntilLastCallFrame()
 	fv := cfr.Func

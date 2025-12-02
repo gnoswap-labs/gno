@@ -80,6 +80,11 @@ func (opts *TestOptions) runFiletest(fname string, source []byte, tgs gno.Store,
 	})
 	defer m.Release()
 
+	// Enable gas tracking for verbose mode
+	if opts.Verbose {
+		m.EnableGasTracking()
+	}
+
 	// RUN THE FILETEST /////////////////////////////////////
 	result := opts.runTest(m, pkgPath, fname, source, opslog, tcheck)
 
@@ -88,6 +93,11 @@ func (opts *TestOptions) runFiletest(fname string, source []byte, tgs gno.Store,
 	if totalGas > 0 {
 		if opts.Verbose {
 			fmt.Printf("[FILETEST] %s - Total gas consumed: %d\n", fname, totalGas)
+			// Print per-function gas report
+			report := m.GetGasReport()
+			if report != "" {
+				fmt.Print(report)
+			}
 		}
 		// Also log to machine output if Debug is enabled
 		if opts.Debug && totalGas > 0 {

@@ -47,6 +47,9 @@ type Machine struct {
 	Store    Store
 	Context  any
 	GasMeter store.GasMeter
+
+	// Gas tracking per function
+	gasTracker *GasTracker
 }
 
 // NewMachine initializes a new gno virtual machine, acting as a shorthand
@@ -1118,6 +1121,22 @@ func (m *Machine) GetGasConsumed() int64 {
 	}
 	return m.GasMeter.GasConsumed()
 }
+
+// EnableGasTracking enables gas tracking per function
+func (m *Machine) EnableGasTracking() {
+	if m.gasTracker == nil {
+		m.gasTracker = NewGasTracker(true)
+	}
+}
+
+// GetGasReport returns the gas consumption report per function
+func (m *Machine) GetGasReport() string {
+	if m.gasTracker == nil {
+		return ""
+	}
+	return m.gasTracker.GetReport()
+}
+
 
 //----------------------------------------
 // "CPU" steps.
