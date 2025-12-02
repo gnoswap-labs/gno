@@ -36,6 +36,41 @@ func X_getContext(m *gno.Machine) (
 	return
 }
 
+func X_getCycles(m *gno.Machine) (
+	cycles int64,
+) {
+	cycles = m.Cycles
+
+	return
+}
+
+func X_getGas(m *gno.Machine) (
+	gas int64,
+) {
+	if m.GasMeter == nil {
+		return 0
+	}
+
+	gas = m.GasMeter.GasConsumed()
+
+	return
+}
+
+func X_getRealmStorageDiffs(m *gno.Machine) (
+	realmStorageDiffs []string,
+	realmStorageDiffsAmounts []int64,
+) {
+	realmStorageDiffs = make([]string, 0, len(m.Store.RealmStorageDiffs()))
+	realmStorageDiffsAmounts = make([]int64, 0, len(m.Store.RealmStorageDiffs()))
+
+	for realm, diff := range m.Store.RealmStorageDiffs() {
+		realmStorageDiffs = append(realmStorageDiffs, realm)
+		realmStorageDiffsAmounts = append(realmStorageDiffsAmounts, diff)
+	}
+
+	return
+}
+
 func X_setContext(
 	m *gno.Machine,
 	originCaller string,
