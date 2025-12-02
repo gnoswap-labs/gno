@@ -15,6 +15,12 @@ func getContext() (
 	timeUnix int64, timeNano int64,
 )
 
+func getCycles() (cycles int64)
+
+func getGas() (gas int64)
+
+func getRealmStorageDiffs() (realmStorageDiffs []string, realmStorageDiffsAmounts []int64)
+
 func setContext(
 	originCaller string,
 	currRealmAddr string, currRealmPkgPath string,
@@ -85,6 +91,27 @@ func SetHeight(height int64) {
 	ctx := GetContext()
 	ctx.Height = height
 	SetContext(ctx)
+}
+
+func GetCycles() int64 {
+	cycles := getCycles()
+	return cycles
+}
+
+func GetGas() int64 {
+	gas := getGas()
+	return gas
+}
+
+func GetRealmStorageDiffs() map[string]int64 {
+	realmStorageDiffs, realmStorageDiffsAmounts := getRealmStorageDiffs()
+	realmStorageDiffsMap := make(map[string]int64)
+
+	for i := range realmStorageDiffs {
+		realmStorageDiffsMap[realmStorageDiffs[i]] = realmStorageDiffsAmounts[i]
+	}
+
+	return realmStorageDiffsMap
 }
 
 // SetRealm sets the realm for the current frame.
