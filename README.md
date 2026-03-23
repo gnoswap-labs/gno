@@ -13,6 +13,9 @@ make init
 make
 ```
 
+Benchmarks now run in isolated git worktrees under `.worktrees/`.
+The shared `gnoswap/` and `gno/` submodules are used as seed repositories and are no longer checked out in place during report generation.
+
 ## Usage
 
 The tool provides simplified commands for generating and comparing reports.
@@ -29,6 +32,7 @@ The tool provides simplified commands for generating and comparing reports.
 | **`make compare-metric-force`** | Compare metric reports | **Force Regenerate** |
 | **`make compare-stress`** | Compare stress reports | **Skip** (Reuse) |
 | **`make compare-stress-force`** | Compare stress reports | **Force Regenerate** |
+| **`make clean-worktrees`** | Remove cached benchmark worktrees | N/A |
 
 ### 2. Examples
 
@@ -93,6 +97,18 @@ make summary-force
   - Individual: `reports/stress/commits/{commit_hash}.md`
   - Comparison: `reports/stress/compares/diff_{new}_{old}.md`
 - **Summary Report:** `SUMMARY.md`
+
+### 5. Benchmark Workspace Behavior
+
+- `gnoswap/` stays as the source repository for commit resolution.
+- Each benchmark resolves the requested ref to a full commit and reuses a cached detached `gnoswap` worktree under `.worktrees/gnoswap/{full_commit}`.
+- Each run also creates a temporary isolated `gno` worktree under `.worktrees/runs/` so copied scenario files and linked contracts do not mutate the shared `gno/` checkout.
+- Temporary run worktrees are removed automatically after each benchmark.
+- To remove cached worktrees manually, run:
+
+```bash
+make clean-worktrees
+```
 
 #### Report Example
 
