@@ -1,4 +1,6 @@
-.PHONY: help init gas-report stress-report metric metric-force stress stress-force compare-metric compare-metric-force compare-stress compare-stress-force summary summary-force
+SHELL := /bin/bash
+
+.PHONY: help init gas-report stress-report metric metric-force stress stress-force compare-metric compare-metric-force compare-stress compare-stress-force summary summary-force clean-worktrees
 
 # Default target
 help:
@@ -20,6 +22,7 @@ help:
 	@echo ""
 	@echo "Usage (Setup):"
 	@echo "  make init                          # Initialize project"
+	@echo "  make clean-worktrees               # Remove cached benchmark worktrees"
 
 init:
 	git submodule update --init --recursive
@@ -61,27 +64,41 @@ compare-stress-force:
 
 # Usage: make gas-report [commit]
 gas-report:
-	$(eval COMMIT := $(or $(word 2,$(MAKECMDGOALS)),main))
-	$(eval CURRENT_COMMIT := $(shell cd gnoswap && git fetch >/dev/null 2>&1 && git checkout -f $(COMMIT) >/dev/null 2>&1 && git rev-parse --short=7 HEAD))
-	cd gnoswap && python3 setup.py --exclude-tests -w ../
-	rm -rf gno/examples/gno.land/r/gnoswap/scenario/metric
-	cp -r tests/metric gno/examples/gno.land/r/gnoswap/scenario/metric
-	mkdir -p reports/metric/commits
-	(cd gno/examples/gno.land/r/gnoswap/scenario/metric && gno test . -v -run .) 2>&1 | ./scripts/parse_metrics.sh > reports/metric/commits/$(CURRENT_COMMIT).md
-	@echo "Report saved to reports/metric/commits/$(CURRENT_COMMIT).md"
+	@set -eu; \
+	REF="$(or $(word 2,$(MAKECMDGOALS)),main)"; \
+	eval "$$(./scripts/prepare_benchmark_workspace.sh "$$REF")"; \
+	cleanup() { \
+		git -C "$(CURDIR)/gno" worktree remove --force "$$GNO_WORKTREE" >/dev/null 2>&1 || true; \
+		git -C "$(CURDIR)/gno" worktree prune >/dev/null 2>&1 || true; \
+		rm -rf "$$RUN_ROOT"; \
+	}; \
+	trap cleanup EXIT; \
+	(cd "$$GNOSWAP_WORKTREE" && python3 setup.py --exclude-tests -w "$$RUN_ROOT"); \
+	rm -rf "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric"; \
+	cp -r tests/metric "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric"; \
+	mkdir -p reports/metric/commits; \
+	(cd "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric" && gno test . -v -run .) 2>&1 | ./scripts/parse_metrics.sh > "reports/metric/commits/$$SHORT_COMMIT.md"; \
+	echo "Report saved to reports/metric/commits/$$SHORT_COMMIT.md"
 
 # Usage: make stress-report [commit]
 stress-report:
-	$(eval COMMIT := $(or $(word 2,$(MAKECMDGOALS)),main))
-	$(eval CURRENT_COMMIT := $(shell cd gnoswap && git fetch >/dev/null 2>&1 && git checkout -f $(COMMIT) >/dev/null 2>&1 && git rev-parse --short=7 HEAD))
-	cd gnoswap && python3 setup.py --exclude-tests -w ../
-	rm -rf gno/examples/gno.land/r/gnoswap/scenario/metric
-	cp -r tests/metric gno/examples/gno.land/r/gnoswap/scenario/metric
-	rm -rf gno/examples/gno.land/r/gnoswap/scenario/stress
-	cp -r tests/stress gno/examples/gno.land/r/gnoswap/scenario/stress
-	mkdir -p reports/stress/commits
-	(cd gno/examples/gno.land/r/gnoswap/scenario/stress && gno test . -v -run .) 2>&1 | ./scripts/parse_metrics.sh > reports/stress/commits/$(CURRENT_COMMIT).md
-	@echo "Report saved to reports/stress/commits/$(CURRENT_COMMIT).md"
+	@set -eu; \
+	REF="$(or $(word 2,$(MAKECMDGOALS)),main)"; \
+	eval "$$(./scripts/prepare_benchmark_workspace.sh "$$REF")"; \
+	cleanup() { \
+		git -C "$(CURDIR)/gno" worktree remove --force "$$GNO_WORKTREE" >/dev/null 2>&1 || true; \
+		git -C "$(CURDIR)/gno" worktree prune >/dev/null 2>&1 || true; \
+		rm -rf "$$RUN_ROOT"; \
+	}; \
+	trap cleanup EXIT; \
+	(cd "$$GNOSWAP_WORKTREE" && python3 setup.py --exclude-tests -w "$$RUN_ROOT"); \
+	rm -rf "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric"; \
+	cp -r tests/metric "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric"; \
+	rm -rf "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/stress"; \
+	cp -r tests/stress "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/stress"; \
+	mkdir -p reports/stress/commits; \
+	(cd "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/stress" && gno test . -v -run .) 2>&1 | ./scripts/parse_metrics.sh > "reports/stress/commits/$$SHORT_COMMIT.md"; \
+	echo "Report saved to reports/stress/commits/$$SHORT_COMMIT.md"
 
 # Generate summary report from commit-history.txt
 summary:
@@ -89,6 +106,27 @@ summary:
 
 summary-force:
 	@./scripts/generate_summary_report.sh --force
+
+clean-worktrees:
+	@set -eu; \
+	if [ -d .worktrees/runs ]; then \
+		for dir in .worktrees/runs/*; do \
+			if [ -d "$$dir/gno" ]; then \
+				git -C gno worktree remove --force "$$(python3 -c 'import os,sys; print(os.path.abspath(sys.argv[1]))' "$$dir/gno")" >/dev/null 2>&1 || true; \
+			fi; \
+		done; \
+	fi; \
+	if [ -d .worktrees/gnoswap ]; then \
+		for dir in .worktrees/gnoswap/*; do \
+			if [ -d "$$dir" ]; then \
+				git -C gnoswap worktree remove --force "$$(python3 -c 'import os,sys; print(os.path.abspath(sys.argv[1]))' "$$dir")" >/dev/null 2>&1 || true; \
+			fi; \
+		done; \
+	fi; \
+	rm -rf .worktrees; \
+	git -C gnoswap worktree prune >/dev/null 2>&1 || true; \
+	git -C gno worktree prune >/dev/null 2>&1 || true; \
+	echo "Removed benchmark worktrees"
 
 # Prevent "No rule to make target" errors for commit hash arguments
 %:
