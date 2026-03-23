@@ -116,25 +116,53 @@ parse_table "$PREVIOUS_FILE" > "$PREVIOUS_DATA"
         
         # Calculate changes for Storage Diff
         storage_diff=$((latest_storage - prev_storage))
-        if [ "$prev_storage" -ne 0 ]; then
-            storage_pct=$(awk "BEGIN {printf \"%.2f\", ($storage_diff / $prev_storage) * 100}")
-        else
-            if [ "$storage_diff" -ne 0 ]; then
-                storage_pct="N/A"
+
+        # For negative storage values (refund), use absolute value comparison
+        if [ "$prev_storage" -lt 0 ] && [ "$latest_storage" -lt 0 ]; then
+            # Both are negative (storage refund)
+            # Calculate percentage based on absolute values
+            prev_abs=${prev_storage#-}  # Remove minus sign
+            latest_abs=${latest_storage#-}
+            abs_diff=$((latest_abs - prev_abs))
+            storage_pct=$(awk "BEGIN {printf \"%.2f\", ($abs_diff / $prev_abs) * 100}")
+
+            # More refund (larger absolute value) = improvement
+            if [ "$abs_diff" -gt 0 ]; then
+                storage_change="$(printf "%'d" $storage_diff)"
+                storage_emoji="⚡️"
+                # Negate the percentage to show improvement
+                storage_pct=$(awk "BEGIN {printf \"%.2f\", -1 * $storage_pct}")
+            elif [ "$abs_diff" -lt 0 ]; then
+                storage_change="+$(printf "%'d" ${storage_diff#-})"
+                storage_emoji="⚠️"
+                # Negate the percentage (it's already negative from abs_diff)
+                storage_pct=$(awk "BEGIN {printf \"%.2f\", -1 * $storage_pct}")
             else
-                storage_pct="0.00"
+                storage_change="0"
+                storage_emoji=""
             fi
-        fi
-        
-        if [ "$storage_diff" -gt 0 ]; then
-            storage_change="+$(printf "%'d" $storage_diff)"
-            storage_emoji="⚠️"
-        elif [ "$storage_diff" -lt 0 ]; then
-            storage_change="$(printf "%'d" $storage_diff)"
-            storage_emoji="⚡️"
         else
-            storage_change="0"
-            storage_emoji=""
+            # Normal calculation for positive values
+            if [ "$prev_storage" -ne 0 ]; then
+                storage_pct=$(awk "BEGIN {printf \"%.2f\", ($storage_diff / $prev_storage) * 100}")
+            else
+                if [ "$storage_diff" -ne 0 ]; then
+                    storage_pct="N/A"
+                else
+                    storage_pct="0.00"
+                fi
+            fi
+
+            if [ "$storage_diff" -gt 0 ]; then
+                storage_change="+$(printf "%'d" $storage_diff)"
+                storage_emoji="⚠️"
+            elif [ "$storage_diff" -lt 0 ]; then
+                storage_change="$(printf "%'d" $storage_diff)"
+                storage_emoji="⚡️"
+            else
+                storage_change="0"
+                storage_emoji=""
+            fi
         fi
         
         # Calculate changes for CPU Cycles

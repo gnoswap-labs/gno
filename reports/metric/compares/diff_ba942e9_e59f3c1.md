@@ -90,16 +90,16 @@
 | | Storage Diff | -342,165 | -342,165 | 0 |  0.00% |
 | | CPU Cycles | 7,417,794 | 7,417,794 | 0 |  0.00% |
 | **CollectUndelegatedGns (1 delegation, 10 withdraws)** | Gas Used | 1,207,406 | 1,207,406 | 0 |  0.00% |
-| | Storage Diff | -16,654 | -16,653 | -1 | ⚡️ 0.01% |
+| | Storage Diff | -16,654 | -16,653 | -1 | ⚡️ -0.01% |
 | | CPU Cycles | 922,639 | 922,639 | 0 |  0.00% |
 | **CollectUndelegatedGns (1 delegation, 1 withdraws)** | Gas Used | 641,831 | 641,831 | 0 |  0.00% |
-| | Storage Diff | -6,745 | -6,744 | -1 | ⚡️ 0.01% |
+| | Storage Diff | -6,745 | -6,744 | -1 | ⚡️ -0.01% |
 | | CPU Cycles | 423,934 | 423,934 | 0 |  0.00% |
 | **CollectUndelegatedGns (1 delegation, 50 withdraws)** | Gas Used | 3,714,742 | 3,714,742 | 0 |  0.00% |
 | | Storage Diff | -60,755 | -60,754 | -1 | ⚡️ 0.00% |
 | | CPU Cycles | 3,132,759 | 3,132,759 | 0 |  0.00% |
 | **CollectUndelegatedGns (1 delegation, 5 withdraws)** | Gas Used | 892,563 | 892,563 | 0 |  0.00% |
-| | Storage Diff | -11,149 | -11,148 | -1 | ⚡️ 0.01% |
+| | Storage Diff | -11,149 | -11,148 | -1 | ⚡️ -0.01% |
 | | CPU Cycles | 644,946 | 644,946 | 0 |  0.00% |
 | **CollectReward (100 delegations, 1 withdraws)** | Gas Used | 1,365,603 | 1,365,603 | 0 |  0.00% |
 | | Storage Diff | 2,387 | 2,387 | 0 |  0.00% |

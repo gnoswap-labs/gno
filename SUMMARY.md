@@ -1,6 +1,6 @@
 # GnoSwap Performance Summary Report
 
-> Generated: 2026-01-14 15:55:02
+> Generated: 2026-01-21 19:11:19
 
 ## Overview
 
@@ -118,31 +118,31 @@ This comparison shows the total gas usage changes between the baseline commit an
 | | Storage Diff | 13,252 | 14,102 | -850 | ⚡️ -6.03% |
 | | CPU Cycles | 1,092,063 | 12,682,065 | -11,590,002 | ⚡️ -91.39% |
 | **CollectUndelegatedGns (100 delegations, 1 withdraws)** | Gas Used | 96,257,252 | 153,034,501 | -56,777,249 | ⚡️ -37.10% |
-| | Storage Diff | -5,987,528 | -5,985,986 | -1,542 | ⚡️ 0.03% |
+| | Storage Diff | -5,987,528 | -5,985,986 | -1,542 | ⚡️ -0.03% |
 | | CPU Cycles | 55,805,444 | 112,625,659 | -56,820,215 | ⚡️ -50.45% |
 | **CollectUndelegatedGns (10 delegations, 10 withdraws)** | Gas Used | 12,872,544 | 19,980,991 | -7,108,447 | ⚡️ -35.58% |
-| | Storage Diff | -646,747 | -646,658 | -89 | ⚡️ 0.01% |
+| | Storage Diff | -646,747 | -646,658 | -89 | ⚡️ -0.01% |
 | | CPU Cycles | 8,253,206 | 15,404,491 | -7,151,285 | ⚡️ -46.42% |
 | **CollectUndelegatedGns (10 delegations, 1 withdraws)** | Gas Used | 3,524,265 | 6,382,642 | -2,858,377 | ⚡️ -44.78% |
-| | Storage Diff | -98,656 | -98,551 | -105 | ⚡️ 0.11% |
+| | Storage Diff | -98,656 | -98,551 | -105 | ⚡️ -0.11% |
 | | CPU Cycles | 2,582,777 | 5,483,992 | -2,901,215 | ⚡️ -52.90% |
 | **CollectUndelegatedGns (10 delegations, 50 withdraws)** | Gas Used | 54,405,708 | 80,403,243 | -25,997,535 | ⚡️ -32.33% |
-| | Storage Diff | -3,099,833 | -3,097,986 | -1,847 | ⚡️ 0.06% |
+| | Storage Diff | -3,099,833 | -3,097,986 | -1,847 | ⚡️ -0.06% |
 | | CPU Cycles | 33,439,606 | 59,480,091 | -26,040,485 | ⚡️ -43.78% |
 | **CollectUndelegatedGns (10 delegations, 5 withdraws)** | Gas Used | 7,677,505 | 12,424,802 | -4,747,297 | ⚡️ -38.21% |
-| | Storage Diff | -342,286 | -342,189 | -97 | ⚡️ 0.03% |
+| | Storage Diff | -342,286 | -342,189 | -97 | ⚡️ -0.03% |
 | | CPU Cycles | 5,101,417 | 9,891,552 | -4,790,135 | ⚡️ -48.43% |
 | **CollectUndelegatedGns (1 delegation, 10 withdraws)** | Gas Used | 1,129,258 | 1,560,800 | -431,542 | ⚡️ -27.65% |
-| | Storage Diff | -16,635 | -16,653 | +18 | ⚠️ -0.11% |
+| | Storage Diff | -16,635 | -16,653 | +18 | ⚠️ 0.11% |
 | | CPU Cycles | 761,861 | 1,276,033 | -514,172 | ⚡️ -40.29% |
 | **CollectUndelegatedGns (1 delegation, 1 withdraws)** | Gas Used | 730,705 | 995,225 | -264,520 | ⚡️ -26.58% |
-| | Storage Diff | -6,726 | -6,744 | +18 | ⚠️ -0.27% |
+| | Storage Diff | -6,726 | -6,744 | +18 | ⚠️ 0.27% |
 | | CPU Cycles | 430,178 | 777,328 | -347,150 | ⚡️ -44.66% |
 | **CollectUndelegatedGns (1 delegation, 50 withdraws)** | Gas Used | 2,894,338 | 4,068,136 | -1,173,798 | ⚡️ -28.85% |
-| | Storage Diff | -60,845 | -60,777 | -68 | ⚡️ 0.11% |
+| | Storage Diff | -60,845 | -60,777 | -68 | ⚡️ -0.11% |
 | | CPU Cycles | 2,229,661 | 3,486,153 | -1,256,492 | ⚡️ -36.04% |
 | **CollectUndelegatedGns (1 delegation, 5 withdraws)** | Gas Used | 907,205 | 1,245,957 | -338,752 | ⚡️ -27.19% |
-| | Storage Diff | -11,130 | -11,148 | +18 | ⚠️ -0.16% |
+| | Storage Diff | -11,130 | -11,148 | +18 | ⚠️ 0.16% |
 | | CPU Cycles | 576,958 | 998,340 | -421,382 | ⚡️ -42.21% |
 | **CollectReward (100 delegations, 1 withdraws)** | Gas Used | 1,332,834 | 1,992,217 | -659,383 | ⚡️ -33.10% |
 | | Storage Diff | 1,384 | 3,093 | -1,709 | ⚡️ -55.25% |
@@ -235,7 +235,7 @@ This comparison shows the total gas usage changes between the baseline commit an
 | | Storage Diff | 58 | 72 | -14 | ⚡️ -19.44% |
 | | CPU Cycles | 9,826,573 | 21,291,144 | -11,464,571 | ⚡️ -53.85% |
 | **IncreaseLiquidity** | Gas Used | 10,544,756 | 23,198,296 | -12,653,540 | ⚡️ -54.55% |
-| | Storage Diff | -2,064 | -2,022 | -42 | ⚡️ 2.08% |
+| | Storage Diff | -2,064 | -2,022 | -42 | ⚡️ -2.08% |
 | | CPU Cycles | 9,460,572 | 21,925,540 | -12,464,968 | ⚡️ -56.85% |
 | **Mint (bar:foo:500)** | Gas Used | 20,289,672 | 39,889,642 | -19,599,970 | ⚡️ -49.14% |
 | | Storage Diff | 40,589 | 52,777 | -12,188 | ⚡️ -23.09% |
@@ -388,7 +388,7 @@ This comparison shows the total gas usage changes between the baseline commit an
 | | Storage Diff | 30,612 | 28,826 | +1,786 | ⚠️ 6.20% |
 | | CPU Cycles | 1,614,860 | 1,853,138 | -238,278 | ⚡️ -12.86% |
 | **EndExternalIncentive** | Gas Used | 1,341,967 | 1,497,591 | -155,624 | ⚡️ -10.39% |
-| | Storage Diff | -5,255 | -1,988 | -3,267 | ⚡️ 164.34% |
+| | Storage Diff | -5,255 | -1,988 | -3,267 | ⚡️ -164.34% |
 | | CPU Cycles | 755,344 | 797,271 | -41,927 | ⚡️ -5.26% |
 | **RegisterInitializer (v1)** | Gas Used | 328,425 | 598,333 | -269,908 | ⚡️ -45.11% |
 | | Storage Diff | 0 | 0 | 0 |  0.00% |
