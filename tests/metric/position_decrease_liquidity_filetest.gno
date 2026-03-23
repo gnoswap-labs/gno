@@ -128,7 +128,7 @@ func decreasePositionLiquidity() {
 	bar.Approve(cross, poolAddr, 100000000)
 	foo.Approve(cross, poolAddr, 100000000)
 
-	_, _, _, _, _, _ = position.CollectFee(cross, 1, false)
+	_, _, _, _, _, _ = position.CollectFee(cross, 1)
 
 	metric.PrintMetricsBy("DecreaseLiquidity", func() {
 		_, _, _, _, _, _, _ = position.DecreaseLiquidity(
@@ -138,7 +138,6 @@ func decreasePositionLiquidity() {
 			"0",
 			"0",
 			9999999999,
-			false,
 		)
 	})
 }

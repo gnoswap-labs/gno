@@ -65,11 +65,11 @@ func createLaunchpadProject() string {
 		int64(10),
 		int64(20),
 		int64(70),
-		time.Now().Unix()+3600,
+		time.Now().Unix()+604800,
 	)
 
 	// Activate project.
-	testing.SkipHeights(3600 / 5)
+	testing.SkipHeights(604800 / 5)
 
 	return projectId
 }
@@ -92,6 +92,7 @@ func depositGns(projectId string) string {
 
 func collectRewardMetric(depositId string) {
 	testing.SetRealm(aliceRealm)
+	testing.SkipHeights((3 * 24 * 60 * 60 / 5) + 1)
 
 	metric.PrintMetricsBy("Launchpad CollectRewardByDepositId", func() {
 		launchpad.CollectRewardByDepositId(cross, depositId)

@@ -12,3 +12,4 @@ a7e1bc3bdb6d4b47af1912672944f7b16610f197:Make stake use AVL tree
 e59f3c16a1cf15ee109254cfc77db5ad64ba3e7a:Optimize position
 ba942e93b94661c32bb3d7e3696443f6005b588d:Optimize staker
 2b031c563ad2157ed61fc6c633c4a2a4ae58efca:Finalize Optimization
+3f2642b8898ae02d14a14c4050d80919f18f3f21:New baseline

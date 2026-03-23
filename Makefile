@@ -77,7 +77,14 @@ gas-report:
 	rm -rf "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric"; \
 	cp -r tests/metric "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric"; \
 	mkdir -p reports/metric/commits; \
+	set +e; \
 	(cd "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/metric" && gno test . -v -run .) 2>&1 | ./scripts/parse_metrics.sh > "reports/metric/commits/$$SHORT_COMMIT.md"; \
+	test_exit=$${PIPESTATUS[0]}; \
+	set -e; \
+	if [ "$$test_exit" -ne 0 ] && [ ! -s "reports/metric/commits/$$SHORT_COMMIT.md" ]; then \
+		echo "Metric run failed before report generation" >&2; \
+		exit "$$test_exit"; \
+	fi; \
 	echo "Report saved to reports/metric/commits/$$SHORT_COMMIT.md"
 
 # Usage: make stress-report [commit]
@@ -97,7 +104,14 @@ stress-report:
 	rm -rf "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/stress"; \
 	cp -r tests/stress "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/stress"; \
 	mkdir -p reports/stress/commits; \
+	set +e; \
 	(cd "$$GNO_WORKTREE/examples/gno.land/r/gnoswap/scenario/stress" && gno test . -v -run .) 2>&1 | ./scripts/parse_metrics.sh > "reports/stress/commits/$$SHORT_COMMIT.md"; \
+	test_exit=$${PIPESTATUS[0]}; \
+	set -e; \
+	if [ "$$test_exit" -ne 0 ] && [ ! -s "reports/stress/commits/$$SHORT_COMMIT.md" ]; then \
+		echo "Stress run failed before report generation" >&2; \
+		exit "$$test_exit"; \
+	fi; \
 	echo "Report saved to reports/stress/commits/$$SHORT_COMMIT.md"
 
 # Generate summary report from commit-history.txt

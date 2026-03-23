@@ -73,10 +73,10 @@ func createLaunchpadProject() string {
 		int64(10),
 		int64(20),
 		int64(70),
-		time.Now().Unix()+3600,
+		time.Now().Unix()+604800,
 	)
 
-	testing.SkipHeights(3600 / 5)
+	testing.SkipHeights(604800 / 5)
 	return projectId
 }
 

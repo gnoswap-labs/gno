@@ -149,5 +149,5 @@ Compare two report files.
 
 | Submodule | Branch     | Description                           |
 | --------- | ---------- | ------------------------------------- |
-| gno       | metric-gas | gno fork with gas measurement feature |
+| gno       | new-metric-gas | gno metric branch used by the tracker |
 | gnoswap   | main       | GnoSwap smart contracts               |

@@ -6,7 +6,6 @@ package main
 
 import (
 	"chain"
-	"chain/banker"
 	"testing"
 
 	prabc "gno.land/p/gnoswap/rbac"
@@ -45,6 +44,10 @@ var t *testing.T
 
 func main() {
 	initializeSwapSetup()
+	testing.SetRealm(adminRealm)
+	testing.SetOriginSend(chain.Coins{{"ugnot", 100000000000000}})
+	wugnot.Deposit(cross)
+	testing.SetOriginSend(chain.Coins{})
 	createPool500()
 	mintPosition500()
 
@@ -56,9 +59,6 @@ func initializeSwapSetup() {
 	pool.SetPoolCreationFee(cross, 0)
 
 	testing.IssueCoins(adminAddr, chain.Coins{{"ugnot", 1000000000000000}})
-	testing.SetOriginSend(chain.Coins{{"ugnot", 100000000000000}})
-	testing.SetRealm(adminRealm)
-	wugnot.Deposit(cross)
 
 	gns.Approve(cross, poolAddr, maxInt64)
 	wugnot.Approve(cross, poolAddr, maxInt64)
@@ -81,14 +81,12 @@ func createPool500() {
 func mintPosition500() {
 	testing.SetRealm(adminRealm)
 
-	banker_ := banker.NewBanker(banker.BankerTypeRealmIssue)
-	banker_.SendCoins(adminAddr, positionAddr, chain.Coins{{"ugnot", 50000000}})
-	testing.SetOriginSend(chain.Coins{{"ugnot", 50000000}})
+	testing.SetOriginSend(chain.Coins{})
 
 	position.Mint(
 		cross,
 		gnsPath,
-		"ugnot",
+		wugnotPath,
 		500,
 		-887220,
 		887220,

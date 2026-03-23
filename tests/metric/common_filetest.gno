@@ -24,9 +24,6 @@ func main() {
 	LiquidityMathAddDelta_Positive()
 	LiquidityMathAddDelta_Negative()
 	LiquidityMathAddDelta()
-	IsGNOTPath()
-	IsGNOTNativePath()
-	IsGNOTWrappedPath()
 	ExistsUserSendCoins()
 }
 
@@ -110,24 +107,6 @@ func LiquidityMathAddDelta() {
 		y := i256.MustFromDecimal("500000")
 
 		common.LiquidityMathAddDelta(x, y)
-	})
-}
-
-func IsGNOTPath() {
-	metric.PrintMetricsBy("IsGNOTPath", func() {
-		common.IsGNOTPath("ugnot")
-	})
-}
-
-func IsGNOTNativePath() {
-	metric.PrintMetricsBy("IsGNOTNativePath", func() {
-		common.IsGNOTNativePath("ugnot")
-	})
-}
-
-func IsGNOTWrappedPath() {
-	metric.PrintMetricsBy("IsGNOTWrappedPath", func() {
-		common.IsGNOTWrappedPath("gno.land/r/gnoland/wugnot")
 	})
 }
 

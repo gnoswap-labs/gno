@@ -101,6 +101,6 @@ func collectRewardMetric() {
 	testing.SetRealm(aliceRealm)
 
 	metric.PrintMetricsBy("CollectReward (immediately after stake)", func() {
-		staker.CollectReward(cross, uint64(1), false)
+		staker.CollectReward(cross, uint64(1))
 	})
 }

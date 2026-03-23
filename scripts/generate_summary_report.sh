@@ -88,8 +88,8 @@ done < "$HISTORY_FILE"
 
 COMMIT_COUNT=${#COMMITS[@]}
 
-if [[ $COMMIT_COUNT -lt 2 ]]; then
-    echo "Error: At least 2 commits are required in $HISTORY_FILE"
+if [[ $COMMIT_COUNT -lt 1 ]]; then
+    echo "Error: At least 1 commit is required in $HISTORY_FILE"
     exit 1
 fi
 
@@ -101,29 +101,42 @@ for ((i = COMMIT_COUNT - 1; i >= 0; i--)); do
     REVERSED_COMMITS+=("${COMMITS[$i]}")
 done
 
-# Run comparisons (always)
 echo ""
 echo "=========================================="
-if [[ "$FORCE_REGENERATE" = true ]]; then
-    echo "Force regenerating all reports and comparisons..."
+if [[ $COMMIT_COUNT -eq 1 ]]; then
+    echo "Single commit detected; generating baseline report only..."
     echo "=========================================="
 
-    # Build the command with commits in reverse order (newest first)
-    # Use compare-metric-force to regenerate all reports
-    CMD="make compare-metric-force ${REVERSED_COMMITS[*]}"
-    echo "Executing: $CMD"
-    echo ""
-    eval "$CMD"
+    single_commit="${REVERSED_COMMITS[0]}"
+    single_short="${single_commit:0:7}"
+    report_file="$COMMITS_DIR/${single_short}.md"
+
+    if [[ "$FORCE_REGENERATE" = true || ! -f "$report_file" ]]; then
+        CMD="make gas-report $single_commit"
+        echo "Executing: $CMD"
+        echo ""
+        eval "$CMD"
+    else
+        echo "Reusing existing baseline report: $report_file"
+    fi
 else
-    echo "Generating comparisons (reusing existing reports)..."
-    echo "=========================================="
+    if [[ "$FORCE_REGENERATE" = true ]]; then
+        echo "Force regenerating all reports and comparisons..."
+        echo "=========================================="
 
-    # Build the command with commits in reverse order (newest first)
-    # Use compare-metric to reuse existing reports
-    CMD="make compare-metric ${REVERSED_COMMITS[*]}"
-    echo "Executing: $CMD"
-    echo ""
-    eval "$CMD"
+        CMD="make compare-metric-force ${REVERSED_COMMITS[*]}"
+        echo "Executing: $CMD"
+        echo ""
+        eval "$CMD"
+    else
+        echo "Generating comparisons (reusing existing reports)..."
+        echo "=========================================="
+
+        CMD="make compare-metric ${REVERSED_COMMITS[*]}"
+        echo "Executing: $CMD"
+        echo ""
+        eval "$CMD"
+    fi
 fi
 
 # Generate summary report
@@ -223,7 +236,12 @@ EOF
 # Check if overall comparison exists
 # Note: diff file is named as diff_{last}_{first}.md because make compare runs in reverse order
 overall_diff_file="$COMPARES_DIR/diff_${LAST_SHORT}_${FIRST_SHORT}.md"
-if [[ -f "$overall_diff_file" ]]; then
+if [[ $COMMIT_COUNT -eq 1 ]]; then
+    cat >> "$OUTPUT_FILE" << EOF
+_Single baseline commit only. Comparisons will appear once additional commits are tracked._
+
+EOF
+elif [[ -f "$overall_diff_file" ]]; then
     # Count improvements and regressions
     improvements=$(grep -c "⚡️" "$overall_diff_file" 2>/dev/null || echo "0")
     regressions=$(grep -c "⚠️" "$overall_diff_file" 2>/dev/null || echo "0")
@@ -265,4 +283,3 @@ echo ""
 echo "=========================================="
 echo "Summary generation completed!"
 echo "=========================================="
-
