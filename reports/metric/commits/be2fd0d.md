@@ -17,7 +17,7 @@
 | Propose Community Pool Spend | 2,814,069 | 13,409 | 1,204,473 |
 | Propose Parameter Change | 2,573,575 | 12,390 | 1,808,263 |
 | Vote | 1,145,651 | 2,064 | 916,541 |
-| Execute | 4,100,734 | 76 | 533,869 |
+| Execute | 4,044,174 | 76 | 533,869 |
 | Propose Text | 1,378,050 | 11,191 | 1,046,978 |
 | Propose Text with Inactive: 100 | 2,175,133 | 11,693 | 1,420,800 |
 | CollectUndelegatedGns (100 delegations, 1 withdraws) | 38,744,498 | 0 | 33,252,780 |
@@ -55,40 +55,40 @@
 | Create Launchpad Project | 9,156,353 | 29,194 | 1,847,409 |
 | Launchpad DepositGns | 6,251,707 | 12,161 | 1,368,219 |
 | Launchpad TransferLeftFromProjectByAdmin | 1,319,030 | 5 | 452,250 |
-| CreatePool | 7,281,363 | 18,572 | 2,308,411 |
-| Mint (fee:3000, wide range) | 17,451,553 | 40,776 | 11,107,467 |
-| Swap (gns -> wugnot, fee:500) | 31,831,685 | 19,876 | 19,735,001 |
-| DecreaseLiquidity | 13,299,869 | -2,051 | 10,547,142 |
-| IncreaseLiquidity | 10,924,973 | -2,054 | 9,837,477 |
-| Mint (bar:foo:500) | 20,864,241 | 40,759 | 10,172,455 |
-| CollectFee (with unwrap) | 5,927,777 | 4,406 | 2,629,558 |
-| DecreaseLiquidity (w. Remove) | 13,811,142 | 4,434 | 9,673,550 |
-| Mint (reposition) | 11,870,695 | 33,844 | 10,258,731 |
+| CreatePool | 7,253,273 | 16,880 | 2,306,113 |
+| Mint (fee:3000, wide range) | 17,801,189 | 28,130 | 11,627,119 |
+| Swap (gns -> wugnot, fee:500) | 31,800,989 | 19,876 | 19,727,025 |
+| DecreaseLiquidity | 15,644,759 | -2,081 | 13,286,830 |
+| IncreaseLiquidity | 11,491,084 | -2,102 | 10,608,190 |
+| Mint (bar:foo:500) | 21,222,232 | 28,123 | 10,700,302 |
+| CollectFee (with unwrap) | 6,196,957 | 4,376 | 3,002,270 |
+| DecreaseLiquidity (w. Remove) | 14,743,469 | 4,380 | 11,002,915 |
+| Mint (reposition) | 12,203,506 | 21,203 | 10,784,198 |
 | SetPoolTier (tier 1) | 4,541,230 | 21,548 | 1,449,066 |
 | StakeToken | 9,838,872 | 23,549 | 6,095,409 |
-| ExactInSingleSwapRoute(grc20) - fee:10000 | 29,333,599 | 5,039 | 10,536,225 |
-| ExactInSingleSwapRoute(grc20) - fee:100 | 31,382,774 | 7,874 | 12,583,336 |
-| ExactInSingleSwapRoute(grc20) - fee:3000 | 29,769,003 | 5,041 | 10,547,364 |
-| ExactInSingleSwapRoute(grc20) - fee:500 | 29,214,646 | 5,039 | 10,458,664 |
-| ExactInSwapRoute(grc20) - fee:10000 | 29,071,040 | 5,039 | 10,273,666 |
-| ExactInSwapRoute(grc20) - fee:100 | 31,126,759 | 7,874 | 12,327,321 |
-| ExactInSwapRoute(grc20) - fee:3000 | 29,509,716 | 5,041 | 10,288,077 |
-| ExactInSwapRoute(grc20) - fee:500 | 28,958,631 | 5,039 | 10,202,649 |
-| ExactOutSingleSwapRoute(grc20) - fee:10000 | 30,128,311 | 5,039 | 11,341,289 |
-| ExactOutSingleSwapRoute(grc20) - fee:100 | 32,107,441 | 7,874 | 13,318,355 |
-| ExactOutSingleSwapRoute(grc20) - fee:3000 | 30,498,254 | 5,041 | 11,297,319 |
-| ExactOutSingleSwapRoute(grc20) - fee:500 | 29,958,630 | 5,039 | 11,223,352 |
-| ExactOutSwapRoute(grc20) - fee:10000 | 29,877,040 | 5,039 | 11,090,018 |
-| ExactOutSwapRoute(grc20) - fee:100 | 31,862,714 | 7,874 | 13,073,628 |
-| ExactOutSwapRoute(grc20) - fee:3000 | 30,250,255 | 5,041 | 11,049,320 |
-| ExactOutSwapRoute(grc20) - fee:500 | 29,713,903 | 5,039 | 10,978,625 |
+| ExactInSingleSwapRoute(grc20) - fee:10000 | 29,302,903 | 5,039 | 10,528,249 |
+| ExactInSingleSwapRoute(grc20) - fee:100 | 31,352,078 | 7,874 | 12,575,360 |
+| ExactInSingleSwapRoute(grc20) - fee:3000 | 29,738,307 | 5,041 | 10,539,388 |
+| ExactInSingleSwapRoute(grc20) - fee:500 | 29,183,950 | 5,039 | 10,450,688 |
+| ExactInSwapRoute(grc20) - fee:10000 | 29,040,344 | 5,039 | 10,265,690 |
+| ExactInSwapRoute(grc20) - fee:100 | 31,096,063 | 7,874 | 12,319,345 |
+| ExactInSwapRoute(grc20) - fee:3000 | 29,479,020 | 5,041 | 10,280,101 |
+| ExactInSwapRoute(grc20) - fee:500 | 28,927,935 | 5,039 | 10,194,673 |
+| ExactOutSingleSwapRoute(grc20) - fee:10000 | 30,097,615 | 5,039 | 11,333,313 |
+| ExactOutSingleSwapRoute(grc20) - fee:100 | 32,076,745 | 7,874 | 13,310,379 |
+| ExactOutSingleSwapRoute(grc20) - fee:3000 | 30,467,558 | 5,041 | 11,289,343 |
+| ExactOutSingleSwapRoute(grc20) - fee:500 | 29,927,934 | 5,039 | 11,215,376 |
+| ExactOutSwapRoute(grc20) - fee:10000 | 29,846,344 | 5,039 | 11,082,042 |
+| ExactOutSwapRoute(grc20) - fee:100 | 31,832,018 | 7,874 | 13,065,652 |
+| ExactOutSwapRoute(grc20) - fee:3000 | 30,219,559 | 5,041 | 11,041,344 |
+| ExactOutSwapRoute(grc20) - fee:500 | 29,683,207 | 5,039 | 10,970,649 |
 | BuildSingleHopRoutePath | 1,743,185 | 0 | 23,398 |
-| MultiHop ExactIn (2 hops) | 30,671,319 | 10,748 | 20,945,920 |
-| MultiHop ExactOut (2 hops) | 33,905,245 | 26 | 32,338,355 |
-| MultiHop ExactIn (3 hops) | 32,769,646 | 5,745 | 30,453,200 |
-| MultiHop ExactOut (3 hops) | 51,810,629 | 14 | 49,672,139 |
-| MultiRoute ExactIn (50:50 split) | 33,040,804 | 2,867 | 30,267,887 |
-| MultiRoute ExactOut (50:50 split) | 45,481,389 | 42 | 42,828,102 |
+| MultiHop ExactIn (2 hops) | 30,632,647 | 10,748 | 20,929,968 |
+| MultiHop ExactOut (2 hops) | 33,889,293 | 26 | 32,322,403 |
+| MultiHop ExactIn (3 hops) | 32,745,718 | 5,745 | 30,429,272 |
+| MultiHop ExactOut (3 hops) | 51,786,701 | 14 | 49,648,211 |
+| MultiRoute ExactIn (50:50 split) | 33,016,876 | 2,867 | 30,243,959 |
+| MultiRoute ExactOut (50:50 split) | 45,456,789 | 2 | 42,804,174 |
 | CollectReward (immediately after stake) | 4,082,773 | -6 | 2,932,633 |
 | CreateExternalIncentive | 3,111,315 | 30,770 | 1,641,677 |
 | EndExternalIncentive | 1,361,189 | -5,300 | 773,670 |
