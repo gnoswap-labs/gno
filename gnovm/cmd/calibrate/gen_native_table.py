@@ -138,6 +138,47 @@ NATIVE_SPECS = [
     # ---- time ----
     ("time", "now", None, "Flat",
      r"BenchmarkNative_Time_Now-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+
+    # ---- crypto/keccak256 ----
+    ("crypto/keccak256", "sum256", 0, "LenBytes",
+     r"BenchmarkNative_Keccak256_Sum256_(\d+)-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+
+    # ---- crypto/bn254 (EIP-196/197 precompile shape) ----
+    # g1Add and g1Mul are flat: input length is bounded by the spec (g1Add
+    # right-pads to 128, g1Mul rejects ≠ 96). pairingCheck slope is on
+    # len(input), which is 192 * n_pairs at runtime.
+    ("crypto/bn254", "g1Add", None, "Flat",
+     r"BenchmarkNative_BN254_G1Add-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+    ("crypto/bn254", "g1Mul", None, "Flat",
+     r"BenchmarkNative_BN254_G1Mul-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+    ("crypto/bn254", "pairingCheck", 0, "LenBytes",
+     r"BenchmarkNative_BN254_PairingCheck_(\d+)-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+
+    # ---- crypto/cometbls ----
+    # Groth16 verify is constant-time over fixed-size inputs (chainID ≤ 31,
+    # tvh = 32, header = 116, zkp = 384). Flat fit.
+    ("crypto/cometbls", "verifyZKP", None, "Flat",
+     r"BenchmarkNative_CometBLS_VerifyZKP-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+
+    # ---- crypto/merkle ----
+    # leafHash slopes on input bytes. innerHash is flat (production always
+    # passes 32-byte sha256 outputs). hashFromByteSlices slopes on len(encoded);
+    # verifySimpleProof slopes on len(aunts) at param idx 4 (rootHash=0, leaf=1,
+    # index=2, total=3, aunts=4).
+    ("crypto/merkle", "leafHash", 0, "LenBytes",
+     r"BenchmarkNative_Merkle_LeafHash_(\d+)-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+    ("crypto/merkle", "innerHash", None, "Flat",
+     r"BenchmarkNative_Merkle_InnerHash-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+    ("crypto/merkle", "hashFromByteSlices", 0, "LenBytes",
+     r"BenchmarkNative_Merkle_HashFromByteSlices_(\d+)-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+    ("crypto/merkle", "verifySimpleProof", 4, "LenBytes",
+     r"BenchmarkNative_Merkle_VerifySimpleProof_(\d+)-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
+
+    # ---- crypto/modexp (EIP-198 shape) ----
+    # Slope on len(exp); modulus held at 256 bytes in the bench. See
+    # gnovm/stdlibs/native_gas.go for the safety trade-off.
+    ("crypto/modexp", "modExp", 1, "LenBytes",
+     r"BenchmarkNative_Modexp_(\d+)-\d+\s+\d+\s+([\d.]+)\s+ns/op"),
 ]
 
 

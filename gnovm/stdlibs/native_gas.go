@@ -76,7 +76,19 @@ type nativeGasEntry struct {
 // today, so the table stays single-slope; the schema fields support
 // future natives that genuinely scale on both dimensions.
 //
-// 46 entries — exhaustive coverage of gnovm/stdlibs/generated.go.
+// 56 entries — exhaustive coverage of gnovm/stdlibs/generated.go.
+//
+// The crypto/{keccak256,bn254,cometbls,merkle,modexp} entries were added for
+// the IBC and CometBLS Phase 2 native bindings.
+//
+// These rows were calibrated on Apple M5 ARM64, while the sha256/ed25519/etc.
+// rows above were calibrated on Apple M2 ARM64. Both calibration sets must be
+// re-run on the reference Xeon 8168 before any consensus-relevant deployment.
+//
+// crypto/modexp is calibrated against len(exp) with a fixed 256-byte modulus.
+// See gnovm/cmd/calibrate/native_bench_test.go for the benchmark shape and
+// safety trade-off: the model overcharges small moduli and would undercharge
+// moduli larger than 256 bytes, which current IBC clients do not exercise.
 var calibratedNativeGas = []nativeGasEntry{
 	{Pkg: "crypto/sha256", Fn: "sum256", Base: 226, Slope: 8906, SlopeIdx: 0, SlopeKind: SizeLenBytes},                                                           // fit base=226.3ns slope=8.6969ns/N (=8906/1024) R²=1.000
 	{Pkg: "crypto/ed25519", Fn: "verify", Base: 56534, Slope: 8975, SlopeIdx: 1, SlopeKind: SizeLenBytes},                                                        // fit base=56534.0ns slope=8.7645ns/N (=8975/1024) R²=0.991
@@ -118,6 +130,16 @@ var calibratedNativeGas = []nativeGasEntry{
 	{Pkg: "chain/runtime", Fn: "AssertOriginCall", Base: 5, SlopeIdx: -1, SlopeKind: SizeFlat},                                                                   // flat, median 5.0ns
 	{Pkg: "chain/runtime", Fn: "getRealm", Base: 1003, Slope: 1319, SlopeIdx: -1, SlopeKind: SizeNumCallFrames},                                                  // fit base=1003.0ns slope=1.2880ns/N (=1319/1024) R²=0.995
 	{Pkg: "time", Fn: "now", Base: 47, SlopeIdx: -1, SlopeKind: SizeFlat},                                                                                        // flat, median 46.9ns
+	{Pkg: "crypto/keccak256", Fn: "sum256", Base: 344, Slope: 6729, SlopeIdx: 0, SlopeKind: SizeLenBytes},                                                        // fit base=343.7ns slope=6.5713ns/N (=6729/1024) R²=0.999
+	{Pkg: "crypto/bn254", Fn: "g1Add", Base: 2405, SlopeIdx: -1, SlopeKind: SizeFlat},                                                                            // flat, median 2405.0ns
+	{Pkg: "crypto/bn254", Fn: "g1Mul", Base: 24831, SlopeIdx: -1, SlopeKind: SizeFlat},                                                                           // flat, median 24831.0ns
+	{Pkg: "crypto/bn254", Fn: "pairingCheck", Base: 360, Slope: 1056325, SlopeIdx: 0, SlopeKind: SizeLenBytes},                                                   // fit base=359.6ns slope=1031.5672ns/N (=1056325/1024) R²=0.935
+	{Pkg: "crypto/cometbls", Fn: "verifyZKP", Base: 1320088, SlopeIdx: -1, SlopeKind: SizeFlat},                                                                  // flat, median 1320088.0ns
+	{Pkg: "crypto/merkle", Fn: "leafHash", Base: 399, Slope: 5740, SlopeIdx: 0, SlopeKind: SizeLenBytes},                                                         // fit base=398.6ns slope=5.6055ns/N (=5740/1024) R²=1.000
+	{Pkg: "crypto/merkle", Fn: "innerHash", Base: 829, SlopeIdx: -1, SlopeKind: SizeFlat},                                                                        // flat, median 829.4ns
+	{Pkg: "crypto/merkle", Fn: "hashFromByteSlices", Base: 645, Slope: 9546, SlopeIdx: 0, SlopeKind: SizeLenBytes},                                               // fit base=645.0ns slope=9.3225ns/N (=9546/1024) R²=1.000
+	{Pkg: "crypto/merkle", Fn: "verifySimpleProof", Base: 939, Slope: 9122, SlopeIdx: 4, SlopeKind: SizeLenBytes},                                                // fit base=939.2ns slope=8.9084ns/N (=9122/1024) R²=0.893
+	{Pkg: "crypto/modexp", Fn: "modExp", Base: 22405, Slope: 7573342, SlopeIdx: 1, SlopeKind: SizeLenBytes},                                                      // fit base=22405.0ns slope=7395.8420ns/N (=7573342/1024) R²=0.978
 	{Pkg: "chain", Fn: "emit", Base: 362, Slope: 40218, SlopeIdx: 1, SlopeKind: SizeLenSlice},                                                                    // fit base=361.9ns slope=39.2750ns/N (=40218/1024) R²=0.955
 	{Pkg: "chain/params", Fn: "SetStrings", Base: 1601, Slope: 39842, SlopeIdx: 1, SlopeKind: SizeLenSlice},                                                      // fit base=1601.1ns slope=38.9082ns/N (=39842/1024) R²=0.993
 	{Pkg: "chain/params", Fn: "UpdateParamStrings", Base: 1298, Slope: 24077, SlopeIdx: 1, SlopeKind: SizeLenSlice},                                              // fit base=1298.0ns slope=23.5122ns/N (=24077/1024) R²=1.000

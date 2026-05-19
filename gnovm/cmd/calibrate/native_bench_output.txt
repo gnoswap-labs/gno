@@ -394,3 +394,126 @@ BenchmarkNative_Time_Now-8                              	 5115765	        46.77 
 BenchmarkNative_Time_Now-8                              	 5072408	        46.93 ns/op
 PASS
 ok  	github.com/gnolang/gno/gnovm/cmd/calibrate	117.193s
+goos: darwin
+goarch: arm64
+pkg: github.com/gnolang/gno/gnovm/cmd/calibrate
+cpu: Apple M5
+BenchmarkNative_Keccak256_Sum256_0-10                 	  669494	       343.7 ns/op
+BenchmarkNative_Keccak256_Sum256_0-10                 	  685902	       349.8 ns/op
+BenchmarkNative_Keccak256_Sum256_0-10                 	  693349	       341.3 ns/op
+BenchmarkNative_Keccak256_Sum256_64-10                	  339596	       692.3 ns/op	  92.45 MB/s
+BenchmarkNative_Keccak256_Sum256_64-10                	  339656	       692.8 ns/op	  92.38 MB/s
+BenchmarkNative_Keccak256_Sum256_64-10                	  328281	       714.0 ns/op	  89.64 MB/s
+BenchmarkNative_Keccak256_Sum256_256-10               	  124950	      1956 ns/op	 130.88 MB/s
+BenchmarkNative_Keccak256_Sum256_256-10               	  124621	      1887 ns/op	 135.68 MB/s
+BenchmarkNative_Keccak256_Sum256_256-10               	  123993	      1894 ns/op	 135.19 MB/s
+BenchmarkNative_Keccak256_Sum256_1024-10              	   32847	      7217 ns/op	 141.89 MB/s
+BenchmarkNative_Keccak256_Sum256_1024-10              	   33483	      7209 ns/op	 142.04 MB/s
+BenchmarkNative_Keccak256_Sum256_1024-10              	   33650	      7121 ns/op	 143.81 MB/s
+BenchmarkNative_Keccak256_Sum256_4096-10              	    8547	     28536 ns/op	 143.54 MB/s
+BenchmarkNative_Keccak256_Sum256_4096-10              	    8522	     28226 ns/op	 145.11 MB/s
+BenchmarkNative_Keccak256_Sum256_4096-10              	    8498	     28219 ns/op	 145.15 MB/s
+BenchmarkNative_Keccak256_Sum256_16384-10             	    2178	    110518 ns/op	 148.25 MB/s
+BenchmarkNative_Keccak256_Sum256_16384-10             	    2180	    110272 ns/op	 148.58 MB/s
+BenchmarkNative_Keccak256_Sum256_16384-10             	    2190	    112292 ns/op	 145.91 MB/s
+BenchmarkNative_Keccak256_Sum256_65536-10             	     514	    441912 ns/op	 148.30 MB/s
+BenchmarkNative_Keccak256_Sum256_65536-10             	     547	    443167 ns/op	 147.88 MB/s
+BenchmarkNative_Keccak256_Sum256_65536-10             	     546	    447154 ns/op	 146.56 MB/s
+BenchmarkNative_BN254_G1Add-10                        	   98685	      2389 ns/op
+BenchmarkNative_BN254_G1Add-10                        	   96363	      2663 ns/op
+BenchmarkNative_BN254_G1Add-10                        	   96193	      2405 ns/op
+BenchmarkNative_BN254_G1Mul-10                        	    9553	     24624 ns/op
+BenchmarkNative_BN254_G1Mul-10                        	    9220	     24831 ns/op
+BenchmarkNative_BN254_G1Mul-10                        	    9793	     25001 ns/op
+BenchmarkNative_BN254_PairingCheck_0-10               	  612062	       359.5 ns/op
+BenchmarkNative_BN254_PairingCheck_0-10               	  656170	       374.0 ns/op
+BenchmarkNative_BN254_PairingCheck_0-10               	  650031	       358.8 ns/op
+BenchmarkNative_BN254_PairingCheck_192-10             	     738	    294953 ns/op
+BenchmarkNative_BN254_PairingCheck_192-10             	     800	    296951 ns/op
+BenchmarkNative_BN254_PairingCheck_192-10             	     812	    299931 ns/op
+BenchmarkNative_BN254_PairingCheck_384-10             	     531	    428461 ns/op
+BenchmarkNative_BN254_PairingCheck_384-10             	     543	    457542 ns/op
+BenchmarkNative_BN254_PairingCheck_384-10             	     531	    440320 ns/op
+BenchmarkNative_BN254_PairingCheck_768-10             	     307	    717621 ns/op
+BenchmarkNative_BN254_PairingCheck_768-10             	     343	    710205 ns/op
+BenchmarkNative_BN254_PairingCheck_768-10             	     330	    724354 ns/op
+BenchmarkNative_BN254_PairingCheck_1536-10            	     175	   1346004 ns/op
+BenchmarkNative_BN254_PairingCheck_1536-10            	     178	   1359214 ns/op
+BenchmarkNative_BN254_PairingCheck_1536-10            	     175	   1357460 ns/op
+BenchmarkNative_CometBLS_VerifyZKP-10                 	     177	   1313065 ns/op
+BenchmarkNative_CometBLS_VerifyZKP-10                 	     183	   1320088 ns/op
+BenchmarkNative_CometBLS_VerifyZKP-10                 	     188	   1320105 ns/op
+BenchmarkNative_Merkle_LeafHash_0-10                  	  587545	       396.5 ns/op
+BenchmarkNative_Merkle_LeafHash_0-10                  	  602144	       394.6 ns/op
+BenchmarkNative_Merkle_LeafHash_0-10                  	  587730	       401.4 ns/op
+BenchmarkNative_Merkle_LeafHash_64-10                 	  299965	       764.9 ns/op	  83.67 MB/s
+BenchmarkNative_Merkle_LeafHash_64-10                 	  307032	       772.5 ns/op	  82.84 MB/s
+BenchmarkNative_Merkle_LeafHash_64-10                 	  312368	       765.3 ns/op	  83.62 MB/s
+BenchmarkNative_Merkle_LeafHash_256-10                	  128497	      1834 ns/op	 139.61 MB/s
+BenchmarkNative_Merkle_LeafHash_256-10                	  129278	      1828 ns/op	 140.05 MB/s
+BenchmarkNative_Merkle_LeafHash_256-10                	  129950	      2436 ns/op	 105.08 MB/s
+BenchmarkNative_Merkle_LeafHash_1024-10               	   39046	      6839 ns/op	 149.72 MB/s
+BenchmarkNative_Merkle_LeafHash_1024-10               	   39541	      6093 ns/op	 168.06 MB/s
+BenchmarkNative_Merkle_LeafHash_1024-10               	   38749	      6132 ns/op	 167.00 MB/s
+BenchmarkNative_Merkle_LeafHash_4096-10               	   10000	     23872 ns/op	 171.58 MB/s
+BenchmarkNative_Merkle_LeafHash_4096-10               	   10000	     23389 ns/op	 175.13 MB/s
+BenchmarkNative_Merkle_LeafHash_4096-10               	    9176	     23461 ns/op	 174.59 MB/s
+BenchmarkNative_Merkle_LeafHash_16384-10              	    2655	     92075 ns/op	 177.94 MB/s
+BenchmarkNative_Merkle_LeafHash_16384-10              	    2644	     91487 ns/op	 179.08 MB/s
+BenchmarkNative_Merkle_LeafHash_16384-10              	    2637	     91362 ns/op	 179.33 MB/s
+BenchmarkNative_Merkle_InnerHash-10                   	  278062	       841.8 ns/op
+BenchmarkNative_Merkle_InnerHash-10                   	  274015	       822.4 ns/op
+BenchmarkNative_Merkle_InnerHash-10                   	  284403	       829.4 ns/op
+BenchmarkNative_Merkle_HashFromByteSlices_40-10       	  352532	       645.5 ns/op	  61.97 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_40-10       	  374032	       645.0 ns/op	  62.02 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_40-10       	  364396	       641.6 ns/op	  62.35 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_148-10      	  137156	      1658 ns/op	  89.26 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_148-10      	  140968	      1678 ns/op	  88.19 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_148-10      	  142822	      1689 ns/op	  87.64 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_580-10      	   41972	      5626 ns/op	 103.10 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_580-10      	   42224	      5631 ns/op	 102.99 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_580-10      	   42576	      5651 ns/op	 102.65 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_2308-10     	   10000	     22088 ns/op	 104.49 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_2308-10     	   10000	     21818 ns/op	 105.78 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_2308-10     	   10000	     21770 ns/op	 106.02 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_9220-10     	    2728	     84854 ns/op	 108.66 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_9220-10     	    2806	     86134 ns/op	 107.04 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_9220-10     	    2733	     86202 ns/op	 106.96 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_36868-10    	     693	    344626 ns/op	 106.98 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_36868-10    	     705	    343485 ns/op	 107.34 MB/s
+BenchmarkNative_Merkle_HashFromByteSlices_36868-10    	     690	    343844 ns/op	 107.22 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_32-10        	  254604	       937.9 ns/op	  34.12 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_32-10        	  244466	       939.2 ns/op	  34.07 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_32-10        	  252542	       949.1 ns/op	  33.72 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_64-10        	  186019	      1205 ns/op	  53.13 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_64-10        	  195352	      1206 ns/op	  53.09 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_64-10        	  196036	      1198 ns/op	  53.43 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_128-10       	  136602	      1741 ns/op	  73.52 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_128-10       	  135331	      1716 ns/op	  74.60 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_128-10       	  138310	      1743 ns/op	  73.45 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_192-10       	   94173	      2305 ns/op	  83.28 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_192-10       	  103683	      2598 ns/op	  73.90 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_192-10       	   98833	      2351 ns/op	  81.67 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_256-10       	   83270	      3320 ns/op	  77.10 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_256-10       	   83281	      2835 ns/op	  90.29 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_256-10       	   84741	      3075 ns/op	  83.26 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_320-10       	   70112	      3351 ns/op	  95.50 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_320-10       	   70988	      3417 ns/op	  93.65 MB/s
+BenchmarkNative_Merkle_VerifySimpleProof_320-10       	   70489	      3655 ns/op	  87.55 MB/s
+BenchmarkNative_Modexp_1-10                           	   10000	     23025 ns/op	   0.04 MB/s
+BenchmarkNative_Modexp_1-10                           	   10000	     22405 ns/op	   0.04 MB/s
+BenchmarkNative_Modexp_1-10                           	   10000	     21927 ns/op	   0.05 MB/s
+BenchmarkNative_Modexp_8-10                           	    1524	    156479 ns/op	   0.05 MB/s
+BenchmarkNative_Modexp_8-10                           	    1515	    156539 ns/op	   0.05 MB/s
+BenchmarkNative_Modexp_8-10                           	    1522	    157371 ns/op	   0.05 MB/s
+BenchmarkNative_Modexp_32-10                          	    1023	    237229 ns/op	   0.13 MB/s
+BenchmarkNative_Modexp_32-10                          	    1006	    238010 ns/op	   0.13 MB/s
+BenchmarkNative_Modexp_32-10                          	    1009	    238602 ns/op	   0.13 MB/s
+BenchmarkNative_Modexp_64-10                          	     518	    464920 ns/op	   0.14 MB/s
+BenchmarkNative_Modexp_64-10                          	     519	    466923 ns/op	   0.14 MB/s
+BenchmarkNative_Modexp_64-10                          	     513	    489071 ns/op	   0.13 MB/s
+BenchmarkNative_Modexp_128-10                         	     262	    909418 ns/op	   0.14 MB/s
+BenchmarkNative_Modexp_128-10                         	     262	    904626 ns/op	   0.14 MB/s
+BenchmarkNative_Modexp_128-10                         	     262	    941194 ns/op	   0.14 MB/s
+PASS
+ok  	github.com/gnolang/gno/gnovm/cmd/calibrate	32.112s
