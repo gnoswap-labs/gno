@@ -45,6 +45,16 @@ Slope is ns/N; runtime stores it as `Slope/1024` and computes `base + slope*N/10
 | `chain/runtime.AssertOriginCall` | flat | 5.0 | — | — | — | — |
 | `chain/runtime.getRealm` | base+α·N | 1003.0 | 1.2880 | — | m.NumCallFrames() | 0.995 |
 | `time.now` | flat | 46.9 | — | — | — | — |
+| `crypto/keccak256.sum256` | base+α·N | 343.7 | 6.5713 | — | len(p0) bytes | 0.999 |
+| `crypto/bn254.g1Add` | flat | 2405.0 | — | — | — | — |
+| `crypto/bn254.g1Mul` | flat | 24831.0 | — | — | — | — |
+| `crypto/bn254.pairingCheck` | base+α·N | 359.6 | 1031.5672 | — | len(p0) bytes | 0.935 |
+| `crypto/cometbls.verifyZKP` | flat | 1320088.0 | — | — | — | — |
+| `crypto/merkle.leafHash` | base+α·N | 398.6 | 5.6055 | — | len(p0) bytes | 1.000 |
+| `crypto/merkle.innerHash` | flat | 829.4 | — | — | — | — |
+| `crypto/merkle.hashFromByteSlices` | base+α·N | 645.0 | 9.3225 | — | len(p0) bytes | 1.000 |
+| `crypto/merkle.verifySimpleProof` | base+α·N | 939.2 | 8.9084 | — | len(p4) bytes | 0.893 |
+| `crypto/modexp.modExp` | base+α·N | 22405.0 | 7395.8420 | — | len(p1) bytes | 0.978 |
 | `chain.emit` | base+α·N | 361.9 | 39.2750 | — | len(p1) slice | 0.955 |
 | `chain/params.SetStrings` | base+α·N | 1601.1 | 38.9082 | — | len(p1) slice | 0.993 |
 | `chain/params.UpdateParamStrings` | base+α·N | 1298.0 | 23.5122 | — | len(p1) slice | 1.000 |
